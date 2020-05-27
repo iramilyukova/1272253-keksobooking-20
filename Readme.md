@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Ирина Милюкова](https://up.htmlacademy.ru/javascript/20/user/1272253).
-* Наставник: `Неизвестно`.
+* Наставник: [Алексей Михеев](https://htmlacademy.ru/profile/id454457).
 
 ---
 
