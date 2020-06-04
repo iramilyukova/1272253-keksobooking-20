@@ -30,6 +30,10 @@ var TIMES = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'elevator', 'conditioner'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 
+var map = document.querySelector('.map');
+var mapPins = document.querySelector('.map__pins');
+var mapPinTemplate = template.content.querySelector('.map__pin');
+
 // Функция, возвращающая случайное число в диапазоне
 var getRandomValue = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -103,14 +107,34 @@ debugger;
 
 //Удаляем неактивный класс у метки
   var activePins = function () {
-    var map = document.querySelector('.map');
     var mapFaded = map.querySelector('.map--faded');
     if (mapFaded) () {
       map.classList.remove('map--faded');
     }
   };
 
+  //Второй вариант удаления неактивного класса у метки
+  //document.querySelector('.map').classList.remove('map--faded');
+
 // var name = 'bungalo';
 
 // var title = document.querySelector('.notice__title');
 // title.innerText = name;
+
+//Отрисовываем метки на карте 
+var renderPoints = function(mark) {
+  var mapPoint = buttonTemplate.cloneNode(true);
+  mapPoint.style.left = mark.location.x + 'px';
+  mapPoint.style.left = mark.location.y + 'px';
+  mapPoint.querySelector('img').src = mark.author.avatar;
+  
+    return mark;
+  }
+  //Записываем все метки во fragment
+  var getPinsFragment = function (mark) {
+  var fragment = document.createDocumentFragment();
+  for (var i = 0; i < mark.length; i++) {
+    fragment.appendChild(renderPoints(mark[i]));
+  }
+}
+  mapPins.appendChild(fragment);
