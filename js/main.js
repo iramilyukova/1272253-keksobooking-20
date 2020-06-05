@@ -32,7 +32,7 @@ var FEATURES = ['wifi', 'dishwasher', 'parking', 'elevator', 'conditioner'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 var DESCRIPTION = ['Маленькая чистая квартира на краю города', 'Большая квартира из трех комнат в центре города', 'Однушка у парка'];
 var mapPins = document.querySelector('.map__pins');
-var mapPinTemplate = document.querySelector('#pin').сontent.querySelector('.map-pin');
+var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
 // Удаляем неактивный класс у метки
 document.querySelector('.map').classList.remove('map--faded');
@@ -47,24 +47,24 @@ var getRandomItem = function (items) {
   for (var i = 0; i < items.length; i++) {
     var randomIndex = getRandomValue(0, items.length);
   }
-  randomItem = items[randomIndex];
+  var randomItem = items[randomIndex];
   return randomItem;
 };
 
 // Функция, возвращающая случайную длину массива
 var getRandomItems = function (count, items) {
-  var randomItem = [];
+  var randomItems = [];
 
   for (var i = 0; i < count; i++) {
     var randomItem = getRandomValue(items);
-    items.push(randomItem);
+    randomItems.push(randomItem);
   }
   return randomItems;
 };
 
 // Работаем с массивом аватарок
 var generateAvatar = function (index) {
-  return 'img/avatars/user0' + index + '.png';
+  return 'img/avatars/user0' + (index + 1) + '.png';
 };
 
 // Функция, возвращающаая массив объектов объявлений
@@ -123,7 +123,7 @@ var getMarkFragment = function (mark) {
 var renderMarks = function (marks) {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < marks.length; i++) {
-    fragment.appendChild(renderMarks(marks[i]));
+    fragment.appendChild(getMarkFragment(marks[i]));
   }
   mapPins.appendChild(fragment);
 };
