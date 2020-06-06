@@ -7,7 +7,13 @@ var PriseLimit = {
   MAX: 1000000
 };
 
-var TYPES = ['palace', 'flat', 'house', 'bungalo'];
+var Types = {
+  PALACE: 'Дворец',
+  FLAT: 'Квартира',
+  HOUSE: 'Дом',
+  BUNGALO: 'Бунгало'
+};
+
 var RoomLimit = {
   MIN: 1,
   MAX: 100
@@ -16,6 +22,11 @@ var RoomLimit = {
 var GuestLimit = {
   MIN: 1,
   MAX: 20
+};
+
+var PinSize = {
+  WIDTH: 65,
+  HEIGHT: 65,
 };
 
 var PinLimit = {
@@ -33,6 +44,9 @@ var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.g
 var DESCRIPTION = ['Маленькая чистая квартира на краю города', 'Большая квартира из трех комнат в центре города', 'Однушка у парка'];
 var mapPins = document.querySelector('.map__pins');
 var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+var mapFiltersContainer = document.querySelector('.map__filters-container');
+var adTemplate = document.querySelector('#card').content.querySelector('map__card');
+var popupAvatar = document.querySelector('.popup__avatar');
 
 // Удаляем неактивный класс у метки
 document.querySelector('.map').classList.remove('map--faded');
@@ -80,7 +94,7 @@ var getMark = function (index) {
         address: '600, 350', // строка, адрес предложения
         price: getRandomValue(PriseLimit.MIN, PriseLimit.MAX),
         rooms: getRandomValue(RoomLimit.MIN, RoomLimit.MAX),
-        type: getRandomItem(TYPES),
+        type: getRandomItem(Types),
         guests: getRandomValue(GuestLimit.MIN, GuestLimit.MAX),
         checkin: getRandomItem(TIMES),
         checkout: getRandomItem(TIMES),
@@ -112,10 +126,10 @@ var getMarks = function (count) {
 // Отрисовываем метки на карте
 var getMarkFragment = function (mark) {
   var mapPoint = mapPinTemplate.cloneNode(true);
-  mapPoint.style.left = mark.location.x + 'px';
-  mapPoint.style.top = mark.location.y + 'px';
+  mapPoint.style.top = (mark.location.y - PinSize.HEIGHT) + 'px';
+  mapPoint.style.left = mark.location.x - (PinSize.WIDTH / 2) + 'px';
   mapPoint.querySelector('img').src = mark.author.avatar;
-
+  mapPoint.querySelector('img').alt = mark.offer.title;
   return mapPoint;
 };
 
@@ -130,3 +144,20 @@ var renderMarks = function (marks) {
 
 var marks = getMarks(8);
 renderMarks(marks);
+
+// Заполняем объявление на карте. Клонирование
+var getAdvert = function (mark) {
+  var ad = adTemplate.cloneNode(true);
+  ad.querySelector('.popup__title').textContent = mark.offer.title;
+  ad.querySelector('.popup__text--address').textContent = mark.offer.address;
+  ad.querySelector('.popup__text--price').textContent = mark.offer.price + ' ₽/ночь';
+  ad.querySelector('.popup__type').textContent = mark.offer.type;
+  ad.querySelector('.popup__text--capacity').textContent = mark.offer.rooms + ' комнаты для ' + mark.offer.guests + ' гостей';
+  ad.querySelector('.popup__text--time').textContent = 'Заезд после ' + mark.offer.checkin + ', выезд до ' + mark.offer.checkout;
+  ad.querySelector('.popup__features').textContent = mark.offer.description;
+  ad.querySelector('.popup__photos').textContent = mark.offer.photos;
+  ad.querySelector('.popup__photos').textContent = mark.offer.photos;
+
+  mapFiltersContainer.insertAdjacentElement('beforebegin', ad);
+  return ad;
+};
