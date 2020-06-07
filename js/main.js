@@ -46,7 +46,6 @@ var mapPins = document.querySelector('.map__pins');
 var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var mapFiltersContainer = document.querySelector('.map__filters-container');
 var adTemplate = document.querySelector('#card').content.querySelector('map__card');
-var popupAvatar = document.querySelector('.popup__avatar');
 
 // Удаляем неактивный класс у метки
 document.querySelector('.map').classList.remove('map--faded');
@@ -76,6 +75,17 @@ var getRandomItems = function (count, items) {
   return randomItems;
 };
 
+// Функция, возращающая массив строк случайной длины из предложенных
+var getRandomFeatures = function (items) {
+  var iterationCount = getRandomValue(0, items.length);
+  var randomItems = [];
+
+  for (var i = 0; i < iterationCount; i++) {
+    randomItems.push(items[i]);
+  }// пройти по массиву items iterationCount - раз и добавить items[i] в массив randomItems
+  return randomItems;
+};
+
 // Работаем с массивом аватарок
 var generateAvatar = function (index) {
   return 'img/avatars/user0' + (index + 1) + '.png';
@@ -98,7 +108,7 @@ var getMark = function (index) {
         guests: getRandomValue(GuestLimit.MIN, GuestLimit.MAX),
         checkin: getRandomItem(TIMES),
         checkout: getRandomItem(TIMES),
-        features: getRandomItems(4, FEATURES), // массив строк случайной длины из ниже предложенных
+        features: getRandomFeatures(4, FEATURES), // массив строк случайной длины из ниже предложенных
         description: getRandomItem(DESCRIPTION), // строка с описанием
         photos: getRandomItems(3, PHOTOS) // массив строк случайной длины, содержащий адреса фотографий
       },
@@ -146,7 +156,7 @@ var marks = getMarks(8);
 renderMarks(marks);
 
 // Заполняем объявление на карте. Клонирование
-var getAdvert = function (mark) {
+var RenderMapPopup = function (mark) {
   var ad = adTemplate.cloneNode(true);
   ad.querySelector('.popup__title').textContent = mark.offer.title;
   ad.querySelector('.popup__text--address').textContent = mark.offer.address;
@@ -155,9 +165,33 @@ var getAdvert = function (mark) {
   ad.querySelector('.popup__text--capacity').textContent = mark.offer.rooms + ' комнаты для ' + mark.offer.guests + ' гостей';
   ad.querySelector('.popup__text--time').textContent = 'Заезд после ' + mark.offer.checkin + ', выезд до ' + mark.offer.checkout;
   ad.querySelector('.popup__features').textContent = mark.offer.description;
-  ad.querySelector('.popup__photos').textContent = mark.offer.photos;
-  ad.querySelector('.popup__photos').textContent = mark.offer.photos;
+  ad.querySelector('.popup__avatar').src = mark.author.avatar;
+  ad.renderPhotoContainer(imgs);
 
   mapFiltersContainer.insertAdjacentElement('beforebegin', ad);
   return ad;
 };
+// Функция проверки конейнера с фотографиями на наличие фото
+var renderPhotoContainer = function (imgs) {
+  var adCardPhotos = ad.querySelector('.popup__photos');
+  if (adCardPhotos.length === 0) {
+    renderImgs(adCardPhotos, imgs);
+  } // если нет фотографий удалить блок popup__photos, вызвать функцию renderImgs и передать 2 параметра, 1 контэйнер, 2 массив imgs
+};
+// Колонируем фотографии в их контейнер
+var renderImgs = function (popupPhotos, imgs) {
+  var firstImage = popupPhotos.querySelector('.popup__photo'); // Шаблон
+  var cloneImage = firstImage.cloneNode(true); // шаблон клонировать в переменную
+  firstImage.remove(); // очистить контэйнер
+  if (imgs.length > 0) {
+    var fragment = document.createDocumentFragment();
+    var cloneImage = firstImage.cloneNode(true);
+    cloneImage.src = firstImage[i];
+
+    for (var i = 0; i < imgs.length; i++) {
+      fragment.appendChild(getMarkFragment(imgs[i]));
+    }
+    popupPhotos.appendChild(fragment);
+  }
+};
+
