@@ -156,7 +156,7 @@ var marks = getMarks(8);
 renderMarks(marks);
 
 // Заполняем объявление на карте. Клонирование
-var RenderMapPopup = function (mark) {
+var renderMapPopup = function (mark) {
   var ad = adTemplate.cloneNode(true);
   ad.querySelector('.popup__title').textContent = mark.offer.title;
   ad.querySelector('.popup__text--address').textContent = mark.offer.address;
@@ -166,32 +166,33 @@ var RenderMapPopup = function (mark) {
   ad.querySelector('.popup__text--time').textContent = 'Заезд после ' + mark.offer.checkin + ', выезд до ' + mark.offer.checkout;
   ad.querySelector('.popup__features').textContent = mark.offer.description;
   ad.querySelector('.popup__avatar').src = mark.author.avatar;
-  ad.renderPhotoContainer(imgs);
+  renderPhotoContainer(ad, mark.offer.photos);
 
   mapFiltersContainer.insertAdjacentElement('beforebegin', ad);
   return ad;
 };
+
 // Функция проверки конейнера с фотографиями на наличие фото
-var renderPhotoContainer = function (imgs) {
+var renderPhotoContainer = function (ad, imgs) {
   var adCardPhotos = ad.querySelector('.popup__photos');
   if (adCardPhotos.length === 0) {
-    renderImgs(adCardPhotos, imgs);
-  } // если нет фотографий удалить блок popup__photos, вызвать функцию renderImgs и передать 2 параметра, 1 контэйнер, 2 массив imgs
-};
-// Колонируем фотографии в их контейнер
-var renderImgs = function (popupPhotos, imgs) {
-  var firstImage = popupPhotos.querySelector('.popup__photo'); // Шаблон
-  var cloneImage = firstImage.cloneNode(true); // шаблон клонировать в переменную
-  firstImage.remove(); // очистить контэйнер
-  if (imgs.length > 0) {
-    var fragment = document.createDocumentFragment();
-    var cloneImage = firstImage.cloneNode(true);
-    cloneImage.src = firstImage[i];
-
-    for (var i = 0; i < imgs.length; i++) {
-      fragment.appendChild(getMarkFragment(imgs[i]));
-    }
-    popupPhotos.appendChild(fragment);
+    adCardPhotos.remove(); // если нет фотографий удалить блок popup__photos
+  } else {
+    renderImgs(adCardPhotos, imgs); // вызвать функцию renderImgs и передать 2 параметра, 1 контэйнер, 2 массив imgs
   }
 };
 
+// Колонируем фотографии в их контейнер
+var renderImgs = function (popupPhotos, imgs) {
+  var firstImage = popupPhotos.querySelector('.popup__photo'); // Шаблон
+  var fragment = document.createDocumentFragment();
+  firstImage.remove(); // очистить контэйнер
+  var photos = [];
+
+  for (var i = 0; i < imgs.length; i++) {
+    var cloneImage = firstImage.cloneNode(true);// шаблон клонировать в переменную
+    cloneImage.src = photos[i];
+    fragment.appendChild(cloneImage);
+  }
+  popupPhotos.appendChild(fragment);
+};
