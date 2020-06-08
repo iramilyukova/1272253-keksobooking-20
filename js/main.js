@@ -45,7 +45,7 @@ var DESCRIPTION = ['Маленькая чистая квартира на кра
 var mapPins = document.querySelector('.map__pins');
 var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var mapFiltersContainer = document.querySelector('.map__filters-container');
-var adTemplate = document.querySelector('#card').content.querySelector('map__card');
+var adTemplate = document.querySelector('#card').content.querySelector('.map');
 
 // Удаляем неактивный класс у метки
 document.querySelector('.map').classList.remove('map--faded');
@@ -155,7 +155,7 @@ var renderMarks = function (marks) {
 var marks = getMarks(8);
 renderMarks(marks);
 
-// Заполняем объявление на карте. Клонирование элеиентов
+// Заполняем объявление на карте. Клонирование
 var renderMapPopup = function (mark) {
   var ad = adTemplate.cloneNode(true);
   ad.querySelector('.popup__title').textContent = mark.offer.title;
@@ -168,6 +168,7 @@ var renderMapPopup = function (mark) {
   ad.querySelector('.popup__avatar').src = mark.author.avatar;
   renderPhotoContainer(ad, mark.offer.photos);
 
+  renderMapPopup(mark);
   mapFiltersContainer.insertAdjacentElement('beforebegin', ad);
   return ad;
 };
@@ -178,21 +179,22 @@ var renderPhotoContainer = function (ad, imgs) {
   if (adCardPhotos.length === 0) {
     adCardPhotos.remove(); // если нет фотографий удалить блок popup__photos
   } else {
-    renderImgs(adCardPhotos, imgs); // вызвать функцию renderImgs и передать 2 параметра, 1 контэйнер, 2 массив imgs
+    renderPhotos(adCardPhotos, imgs); // вызвать функцию renderPhotos и передать 2 параметра, 1 контэйнер, 2 массив imgs
   }
 };
 
-// Колонируем фотографии в их контейнер!!!!
-var renderImgs = function (popupPhotos, imgs) {
+// Колонируем фотографии в их контейнер
+var renderPhotos = function (popupPhotos, photos) {
   var firstImage = popupPhotos.querySelector('.popup__photo'); // Шаблон
   var fragment = document.createDocumentFragment();
   firstImage.remove(); // очистить контэйнер
-  var photos = [];
 
-  for (var i = 0; i < imgs.length; i++) {
+  for (var i = 0; i < photos.length; i++) {
     var cloneImage = firstImage.cloneNode(true);// шаблон клонировать в переменную
     cloneImage.src = photos[i];
     fragment.appendChild(cloneImage);
   }
   popupPhotos.appendChild(fragment);
+
+  renderPhotos(popupPhotos, photos);
 };
