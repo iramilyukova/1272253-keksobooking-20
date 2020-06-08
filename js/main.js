@@ -4,7 +4,7 @@ var COUNT_USERS = 8;
 var TITLE = ['Уютное гнездышко для молодоженов', 'Милая, уютная квартирка в центре Токио', 'Большая уютная квартира'];
 var PriseLimit = {
   MIN: 1000,
-  MAX: 1000000
+  MAX: 100000
 };
 
 var Types = {
@@ -45,7 +45,7 @@ var DESCRIPTION = ['Маленькая чистая квартира на кра
 var mapPins = document.querySelector('.map__pins');
 var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var mapFiltersContainer = document.querySelector('.map__filters-container');
-var adTemplate = document.querySelector('#card').content.querySelector('.map');
+var adTemplate = document.querySelector('#card').content.querySelector('.map__card.popup');
 
 // Удаляем неактивный класс у метки
 document.querySelector('.map').classList.remove('map--faded');
@@ -129,7 +129,6 @@ var getMarks = function (count) {
     var mark = getMark(i);
     marks.push(mark);
   }
-
   return marks;
 };
 
@@ -152,9 +151,6 @@ var renderMarks = function (marks) {
   mapPins.appendChild(fragment);
 };
 
-var marks = getMarks(8);
-renderMarks(marks);
-
 // Заполняем объявление на карте. Клонирование
 var renderMapPopup = function (mark) {
   var ad = adTemplate.cloneNode(true);
@@ -167,10 +163,7 @@ var renderMapPopup = function (mark) {
   ad.querySelector('.popup__features').textContent = mark.offer.description;
   ad.querySelector('.popup__avatar').src = mark.author.avatar;
   renderPhotoContainer(ad, mark.offer.photos);
-
-  renderMapPopup(mark);
   mapFiltersContainer.insertAdjacentElement('beforebegin', ad);
-  return ad;
 };
 
 // Функция проверки конейнера с фотографиями на наличие фото
@@ -195,6 +188,8 @@ var renderPhotos = function (popupPhotos, photos) {
     fragment.appendChild(cloneImage);
   }
   popupPhotos.appendChild(fragment);
-
-  renderPhotos(popupPhotos, photos);
 };
+
+var marks = getMarks(8);
+renderMarks(marks);
+renderMapPopup(marks[0]);
