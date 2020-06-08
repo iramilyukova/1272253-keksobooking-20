@@ -4,7 +4,7 @@ var COUNT_USERS = 8;
 var TITLE = ['Уютное гнездышко для молодоженов', 'Милая, уютная квартирка в центре Токио', 'Большая уютная квартира'];
 var PriseLimit = {
   MIN: 1000,
-  MAX: 100000
+  MAX: 10000
 };
 
 var Types = {
@@ -52,7 +52,7 @@ document.querySelector('.map').classList.remove('map--faded');
 
 // Функция, возвращающая случайное число в диапазоне
 var getRandomValue = function (min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  return Math.floor(Math.random() * (max - min)) + min;
 };
 
 // Функция, возвращающая случайный элемемент массива
@@ -69,7 +69,8 @@ var getRandomItems = function (count, items) {
   var randomItems = [];
 
   for (var i = 0; i < count; i++) {
-    var randomItem = getRandomValue(items);
+    var randomIndex = getRandomValue(0, items.length);// Выбираем случайное число из массива items
+    var randomItem = items[randomIndex];
     randomItems.push(randomItem);
   }
   return randomItems;
@@ -110,7 +111,7 @@ var getMark = function (index) {
         checkout: getRandomItem(TIMES),
         features: getRandomFeatures(4, FEATURES), // массив строк случайной длины из ниже предложенных
         description: getRandomItem(DESCRIPTION), // строка с описанием
-        photos: getRandomItems(3, PHOTOS) // массив строк случайной длины, содержащий адреса фотографий
+        photos: getRandomItems(4, PHOTOS) // массив строк случайной длины, содержащий адреса фотографий
       },
       location: {
         y: getRandomValue(PinLimit.MIN_Y, PinLimit.MAX_Y),
