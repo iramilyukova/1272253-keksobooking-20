@@ -155,7 +155,7 @@ var renderMarks = function (marks) {
 var marks = getMarks(8);
 renderMarks(marks);
 
-// Заполняем объявление на карте. Клонирование
+// Заполняем объявление на карте. Клонирование элеиентов
 var renderMapPopup = function (mark) {
   var ad = adTemplate.cloneNode(true);
   ad.querySelector('.popup__title').textContent = mark.offer.title;
@@ -182,7 +182,7 @@ var renderPhotoContainer = function (ad, imgs) {
   }
 };
 
-// Колонируем фотографии в их контейнер
+// Колонируем фотографии в их контейнер!!!!
 var renderImgs = function (popupPhotos, imgs) {
   var firstImage = popupPhotos.querySelector('.popup__photo'); // Шаблон
   var fragment = document.createDocumentFragment();
