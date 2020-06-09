@@ -4,10 +4,16 @@ var COUNT_USERS = 8;
 var TITLE = ['Уютное гнездышко для молодоженов', 'Милая, уютная квартирка в центре Токио', 'Большая уютная квартира'];
 var PriseLimit = {
   MIN: 1000,
-  MAX: 1000000
+  MAX: 10000
 };
 
-var TYPES = ['palace', 'flat', 'house', 'bungalo'];
+var Types = {
+  PALACE: 'Дворец',
+  FLAT: 'Квартира',
+  HOUSE: 'Дом',
+  BUNGALO: 'Бунгало'
+};
+
 var RoomLimit = {
   MIN: 1,
   MAX: 100
@@ -16,6 +22,11 @@ var RoomLimit = {
 var GuestLimit = {
   MIN: 1,
   MAX: 20
+};
+
+var PinSize = {
+  WIDTH: 65,
+  HEIGHT: 65,
 };
 
 var PinLimit = {
@@ -33,13 +44,15 @@ var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.g
 var DESCRIPTION = ['Маленькая чистая квартира на краю города', 'Большая квартира из трех комнат в центре города', 'Однушка у парка'];
 var mapPins = document.querySelector('.map__pins');
 var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+var mapFiltersContainer = document.querySelector('.map__filters-container');
+var adTemplate = document.querySelector('#card').content.querySelector('.map__card.popup');
 
 // Удаляем неактивный класс у метки
 document.querySelector('.map').classList.remove('map--faded');
 
 // Функция, возвращающая случайное число в диапазоне
 var getRandomValue = function (min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  return Math.floor(Math.random() * (max - min)) + min;
 };
 
 // Функция, возвращающая случайный элемемент массива
@@ -56,9 +69,21 @@ var getRandomItems = function (count, items) {
   var randomItems = [];
 
   for (var i = 0; i < count; i++) {
-    var randomItem = getRandomValue(items);
+    var randomIndex = getRandomValue(0, items.length);// Выбираем случайное число из массива items
+    var randomItem = items[randomIndex];
     randomItems.push(randomItem);
   }
+  return randomItems;
+};
+
+// Функция, возращающая массив строк случайной длины из предложенных
+var getRandomFeatures = function (items) {
+  var iterationCount = getRandomValue(0, items.length);
+  var randomItems = [];
+
+  for (var i = 0; i < iterationCount; i++) {
+    randomItems.push(items[i]);
+  }// пройти по массиву items iterationCount - раз и добавить items[i] в массив randomItems
   return randomItems;
 };
 
@@ -80,13 +105,13 @@ var getMark = function (index) {
         address: '600, 350', // строка, адрес предложения
         price: getRandomValue(PriseLimit.MIN, PriseLimit.MAX),
         rooms: getRandomValue(RoomLimit.MIN, RoomLimit.MAX),
-        type: getRandomItem(TYPES),
+        type: getRandomItem(Types),
         guests: getRandomValue(GuestLimit.MIN, GuestLimit.MAX),
         checkin: getRandomItem(TIMES),
         checkout: getRandomItem(TIMES),
-        features: getRandomItems(4, FEATURES), // массив строк случайной длины из ниже предложенных
+        features: getRandomFeatures(4, FEATURES), // массив строк случайной длины из ниже предложенных
         description: getRandomItem(DESCRIPTION), // строка с описанием
-        photos: getRandomItems(3, PHOTOS) // массив строк случайной длины, содержащий адреса фотографий
+        photos: getRandomItems(4, PHOTOS) // массив строк случайной длины, содержащий адреса фотографий
       },
       location: {
         y: getRandomValue(PinLimit.MIN_Y, PinLimit.MAX_Y),
@@ -105,17 +130,16 @@ var getMarks = function (count) {
     var mark = getMark(i);
     marks.push(mark);
   }
-
   return marks;
 };
 
 // Отрисовываем метки на карте
 var getMarkFragment = function (mark) {
   var mapPoint = mapPinTemplate.cloneNode(true);
-  mapPoint.style.left = mark.location.x + 'px';
-  mapPoint.style.top = mark.location.y + 'px';
+  mapPoint.style.top = (mark.location.y - PinSize.HEIGHT) + 'px';
+  mapPoint.style.left = mark.location.x - (PinSize.WIDTH / 2) + 'px';
   mapPoint.querySelector('img').src = mark.author.avatar;
-
+  mapPoint.querySelector('img').alt = mark.offer.title;
   return mapPoint;
 };
 
@@ -128,5 +152,45 @@ var renderMarks = function (marks) {
   mapPins.appendChild(fragment);
 };
 
+// Заполняем объявление на карте. Клонирование
+var renderMapPopup = function (mark) {
+  var ad = adTemplate.cloneNode(true);
+  ad.querySelector('.popup__title').textContent = mark.offer.title;
+  ad.querySelector('.popup__text--address').textContent = mark.offer.address;
+  ad.querySelector('.popup__text--price').textContent = mark.offer.price + ' ₽/ночь';
+  ad.querySelector('.popup__type').textContent = mark.offer.type;
+  ad.querySelector('.popup__text--capacity').textContent = mark.offer.rooms + ' комнаты для ' + mark.offer.guests + ' гостей';
+  ad.querySelector('.popup__text--time').textContent = 'Заезд после ' + mark.offer.checkin + ', выезд до ' + mark.offer.checkout;
+  ad.querySelector('.popup__features').textContent = mark.offer.description;
+  ad.querySelector('.popup__avatar').src = mark.author.avatar;
+  renderPhotoContainer(ad, mark.offer.photos);
+  mapFiltersContainer.insertAdjacentElement('beforebegin', ad);
+};
+
+// Функция проверки конейнера с фотографиями на наличие фото
+var renderPhotoContainer = function (ad, imgs) {
+  var adCardPhotos = ad.querySelector('.popup__photos');
+  if (adCardPhotos.length === 0) {
+    adCardPhotos.remove(); // если нет фотографий удалить блок popup__photos
+  } else {
+    renderPhotos(adCardPhotos, imgs); // вызвать функцию renderPhotos и передать 2 параметра, 1 контэйнер, 2 массив imgs
+  }
+};
+
+// Колонируем фотографии в их контейнер
+var renderPhotos = function (popupPhotos, photos) {
+  var firstImage = popupPhotos.querySelector('.popup__photo'); // Шаблон
+  var fragment = document.createDocumentFragment();
+  firstImage.remove(); // очистить контэйнер
+
+  for (var i = 0; i < photos.length; i++) {
+    var cloneImage = firstImage.cloneNode(true);// шаблон клонировать в переменную
+    cloneImage.src = photos[i];
+    fragment.appendChild(cloneImage);
+  }
+  popupPhotos.appendChild(fragment);
+};
+
 var marks = getMarks(8);
 renderMarks(marks);
+renderMapPopup(marks[0]);
