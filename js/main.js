@@ -48,10 +48,9 @@ var mapPinButton = document.querySelector('.map__pin');
 var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var mapFiltersContainer = document.querySelector('.map__filters-container');
 var adTemplate = document.querySelector('#card').content.querySelector('.map__card.popup');
-var mapFieldset = map.querySelector('.map__features');
-var adFieldset  = map.querySelector('.ad-form-header');
-var adFormElementFieldset = map.querySelector('.ad-form__element');
-// var mapPinMain = mapPins.querySelector('.map__pin--main');
+var fieldsets = document.querySelectorAll('fieldset');
+var mapPinMain = document.querySelector('.map__pin—main');
+var activePage = false;
 // Удаляем неактивный класс у метки
 // document.querySelector('.map').classList.remove('map--faded');
 
@@ -196,18 +195,62 @@ var renderPhotos = function (popupPhotos, photos) {
   popupPhotos.appendChild(fragment);
 };
 
+var onMapEscPress = function (evt) {
+  if (evt.key === 'Escape') {
+    evt.preventDefault();
+    agetActivePage();
+  }
+};
+
 // Функция для перевода страницы в активное состояние
 var agetActivePage = function (marks) {
   map.classList.remove('map--faded');// Активируем карту
   renderMarks(marks);// Показываем все метки на странице
 };
+
+// Функция для проверки состояния активации формы (fieldset)
+var agetActiveForm = function () {
+  if (!activePage) {
+    agetActivePage();
+    window.form.activate();
+    activePage = true;
+  }
+  fieldsets.disabled = false;
+};
+
 // Навешивание обработчиков событий
 var initEvents = function () {
   mapPinButton.addEventListener('click', function () {
     agetActivePage(marks);// При клике на кнопку автивируем метки
+    document.addEventListener('keydown', onMapEscPress);
   });
+  agetActivePage(marks);
+};
+
+// Удаляем со страницы marks
+var removeMarks = function () {
+  var mapMarksItems = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+  mapMarksItems.forEach(function (it) {
+    it.remove();
+  });
+};
+// Удаляем со страницы
+var removeMapCard = function () {
+  var mapCard = document.querySelector('.map__card');
+  if (mapCard) {
+    mapCard.remove();
+  }
+};
+
+// Функция для перевода страницы в неактивное состояние
+var agetClosePage = function () {
+  map.classList.add('map--faded');
+  removeMarks();
+  removeMapCard();
+  document.removeEventListener('keydown', onMapEscPress);
 };
 
 initEvents(marks);
 var marks = getMarks(8);
+agetActiveForm();
 // renderMapPopup(marks[0]);
