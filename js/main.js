@@ -7,7 +7,7 @@ var PriseLimit = {
   MAX: 10000
 };
 
-var Types = {
+var TYPES = {
   PALACE: 'Дворец',
   FLAT: 'Квартира',
   HOUSE: 'Дом',
@@ -43,12 +43,17 @@ var FEATURES = ['wifi', 'dishwasher', 'parking', 'elevator', 'conditioner'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 var DESCRIPTION = ['Маленькая чистая квартира на краю города', 'Большая квартира из трех комнат в центре города', 'Однушка у парка'];
 var mapPins = document.querySelector('.map__pins');
+var map = document.querySelector('.map');
+var mapPinButton = document.querySelector('.map__pin');
 var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var mapFiltersContainer = document.querySelector('.map__filters-container');
 var adTemplate = document.querySelector('#card').content.querySelector('.map__card.popup');
-
+var mapFieldset = map.querySelector('.map__features');
+var adFieldset  = map.querySelector('.ad-form-header');
+var adFormElementFieldset = map.querySelector('.ad-form__element');
+// var mapPinMain = mapPins.querySelector('.map__pin--main');
 // Удаляем неактивный класс у метки
-document.querySelector('.map').classList.remove('map--faded');
+// document.querySelector('.map').classList.remove('map--faded');
 
 // Функция, возвращающая случайное число в диапазоне
 var getRandomValue = function (min, max) {
@@ -105,7 +110,7 @@ var getMark = function (index) {
         address: '600, 350', // строка, адрес предложения
         price: getRandomValue(PriseLimit.MIN, PriseLimit.MAX),
         rooms: getRandomValue(RoomLimit.MIN, RoomLimit.MAX),
-        type: getRandomItem(Types),
+        type: TYPES,
         guests: getRandomValue(GuestLimit.MIN, GuestLimit.MAX),
         checkin: getRandomItem(TIMES),
         checkout: getRandomItem(TIMES),
@@ -158,7 +163,7 @@ var renderMapPopup = function (mark) {
   ad.querySelector('.popup__title').textContent = mark.offer.title;
   ad.querySelector('.popup__text--address').textContent = mark.offer.address;
   ad.querySelector('.popup__text--price').textContent = mark.offer.price + ' ₽/ночь';
-  ad.querySelector('.popup__type').textContent = mark.offer.type;
+  ad.querySelector('.popup__type').textContent = TYPES[mark.offer.type];
   ad.querySelector('.popup__text--capacity').textContent = mark.offer.rooms + ' комнаты для ' + mark.offer.guests + ' гостей';
   ad.querySelector('.popup__text--time').textContent = 'Заезд после ' + mark.offer.checkin + ', выезд до ' + mark.offer.checkout;
   ad.querySelector('.popup__features').textContent = mark.offer.description;
@@ -191,6 +196,18 @@ var renderPhotos = function (popupPhotos, photos) {
   popupPhotos.appendChild(fragment);
 };
 
+// Функция для перевода страницы в активное состояние
+var agetActivePage = function (marks) {
+  map.classList.remove('map--faded');// Активируем карту
+  renderMarks(marks);// Показываем все метки на странице
+};
+// Навешивание обработчиков событий
+var initEvents = function () {
+  mapPinButton.addEventListener('click', function () {
+    agetActivePage(marks);// При клике на кнопку автивируем метки
+  });
+};
+
+initEvents(marks);
 var marks = getMarks(8);
-renderMarks(marks);
-renderMapPopup(marks[0]);
+// renderMapPopup(marks[0]);
