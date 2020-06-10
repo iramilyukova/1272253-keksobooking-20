@@ -225,6 +225,7 @@ var initEvents = function () {
     document.addEventListener('keydown', onMapEscPress);
   });
   agetActivePage(marks);
+  agetActiveForm();
 };
 
 // Удаляем со страницы marks
@@ -234,7 +235,7 @@ var removeMarks = function () {
     it.remove();
   });
 };
-// Удаляем со страницы
+// Удаляем со страницы попап
 var removeMapCard = function () {
   var mapCard = document.querySelector('.map__card');
   if (mapCard) {
