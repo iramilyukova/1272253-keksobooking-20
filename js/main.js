@@ -243,7 +243,7 @@ var removeMapCard = function () {
   }
 };
 
-// Функция для перевода страницы в неактивное состояние
+// Функция для перевода страницы в неактивное состояние!
 var agetClosePage = function () {
   map.classList.add('map--faded');
   removeMarks();
