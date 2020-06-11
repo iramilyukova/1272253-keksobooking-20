@@ -8,10 +8,10 @@ var PriseLimit = {
 };
 
 var TYPES = {
-  PALACE: 'Дворец',
-  FLAT: 'Квартира',
-  HOUSE: 'Дом',
-  BUNGALO: 'Бунгало'
+  PALACE: 'palace',
+  FLAT: 'flat',
+  HOUSE: 'house',
+  BUNGALO: 'bungalo'
 };
 
 var RoomLimit = {
@@ -44,16 +44,33 @@ var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.g
 var DESCRIPTION = ['Маленькая чистая квартира на краю города', 'Большая квартира из трех комнат в центре города', 'Однушка у парка'];
 var mapPins = document.querySelector('.map__pins');
 var map = document.querySelector('.map');
-var mapPinButton = document.querySelector('.map__pin');
+// var mapPinButton = document.querySelector('.map__pin');
 var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var mapFiltersContainer = document.querySelector('.map__filters-container');
 var adTemplate = document.querySelector('#card').content.querySelector('.map__card.popup');
 var fieldsets = document.querySelectorAll('fieldset');
-var mapPinMain = document.querySelector('.map__pin—main');
-var activePage = false;
-// Удаляем неактивный класс у метки
-// document.querySelector('.map').classList.remove('map--faded');
+var selects = document.querySelectorAll('select');
+var inputs = document.querySelectorAll('input');
+var mapPinMain = document.querySelector('.map__pin--main');
+// var activePage = false;
+var mapCard = document.querySelector('.map__card');
+// var mapCard = null;
 
+// Переводим название типов жилья на русский
+function translateType(type) {
+  switch (type) {
+    case 'palace':
+      return 'Дворец';
+    case 'flat':
+      return 'Квартира';
+    case 'bungalo':
+      return 'Бунгало';
+    case 'house':
+      return 'Дом';
+    default:
+      return type;
+  }
+}
 // Функция, возвращающая случайное число в диапазоне
 var getRandomValue = function (min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
@@ -96,7 +113,7 @@ var generateAvatar = function (index) {
   return 'img/avatars/user0' + (index + 1) + '.png';
 };
 
-// Функция, возвращающаая массив объектов объявлений
+// Функция, возвращающая массив объектов объявлений
 var getMark = function (index) {
 
   for (var i = 0; i < COUNT_USERS; i++) {
@@ -109,7 +126,7 @@ var getMark = function (index) {
         address: '600, 350', // строка, адрес предложения
         price: getRandomValue(PriseLimit.MIN, PriseLimit.MAX),
         rooms: getRandomValue(RoomLimit.MIN, RoomLimit.MAX),
-        type: TYPES,
+        type: translateType(TYPES),
         guests: getRandomValue(GuestLimit.MIN, GuestLimit.MAX),
         checkin: getRandomItem(TIMES),
         checkout: getRandomItem(TIMES),
@@ -157,19 +174,20 @@ var renderMarks = function (marks) {
 };
 
 // Заполняем объявление на карте. Клонирование
-// var renderMapPopup = function (mark) {
-// var ad = adTemplate.cloneNode(true);
-// ad.querySelector('.popup__title').textContent = mark.offer.title;
-// ad.querySelector('.popup__text--address').textContent = mark.offer.address;
-// ad.querySelector('.popup__text--price').textContent = mark.offer.price + ' ₽/ночь';
-// ad.querySelector('.popup__type').textContent = TYPES[mark.offer.type];
-// ad.querySelector('.popup__text--capacity').textContent = mark.offer.rooms + ' комнаты для ' + mark.offer.guests + ' гостей';
-// ad.querySelector('.popup__text--time').textContent = 'Заезд после ' + mark.offer.checkin + ', выезд до ' + mark.offer.checkout;
-// ad.querySelector('.popup__features').textContent = mark.offer.description;
-// ad.querySelector('.popup__avatar').src = mark.author.avatar;
-// renderPhotoContainer(ad, mark.offer.photos);
-// mapFiltersContainer.insertAdjacentElement('beforebegin', ad);
-// };
+var renderMapPopup = function (mark) {
+  removeMapCard();
+  mapCard = adTemplate.cloneNode(true);
+  mapCard.querySelector('.popup__title').textContent = mark.offer.title;
+  mapCard.querySelector('.popup__text--address').textContent = mark.offer.address;
+  mapCard.querySelector('.popup__text--price').textContent = mark.offer.price + ' ₽/ночь';
+  mapCard.querySelector('.popup__type').textContent = translateType[mark.offer.type];
+  mapCard.querySelector('.popup__text--capacity').textContent = mark.offer.rooms + ' комнаты для ' + mark.offer.guests + ' гостей';
+  mapCard.querySelector('.popup__text--time').textContent = 'Заезд после ' + mark.offer.checkin + ', выезд до ' + mark.offer.checkout;
+  mapCard.querySelector('.popup__features').textContent = mark.offer.description;
+  mapCard.querySelector('.popup__avatar').src = mark.author.avatar;
+  renderPhotoContainer(mapCard, mark.offer.photos);
+  mapFiltersContainer.insertAdjacentElement('beforebegin', mapCard);
+};
 
 // Функция проверки конейнера с фотографиями на наличие фото
 var renderPhotoContainer = function (ad, imgs) {
@@ -194,13 +212,16 @@ var renderPhotos = function (popupPhotos, photos) {
   }
   popupPhotos.appendChild(fragment);
 };
-
-var onMapEscPress = function (evt) {
-  if (evt.key === 'Escape') {
-    evt.preventDefault();
-    agetActivePage();
-  }
-};
+// Функция для создания обработчика закрытия окна по нажатию на Enter 
+// var onMapEscPress = function (evt) {
+//   if (mapCard !== null && evt.key === 'Enter') {
+//     evt.preventDefault();
+//     // скрыть попап
+//     // agetActivePage();
+//     // removeMapCard();// удаляем попап
+//     agetClosePage();
+//   }
+// };
 
 // Функция для перевода страницы в активное состояние
 var agetActivePage = function (marks) {
@@ -209,49 +230,55 @@ var agetActivePage = function (marks) {
 };
 
 // Функция для проверки состояния активации формы (fieldset)
-var agetActiveForm = function () {
-  if (!activePage) {
-    agetActivePage();
-    window.form.activate();
-    activePage = true;
-  }
-  fieldsets.disabled = false;
+var agetActiveForm = function (active) {
+  Array.from(fieldsets).forEach(function (fieldset) {
+    fieldset.disabled = !active; // Если страница не активная то fieldset выключен.
+  });
+  Array.from(selects).forEach(function (select) {
+    select.disabled = !active;
+  });
+  Array.from(inputs).forEach(function (input) {
+    input.disabled = !active;
+  });
 };
 
 // Навешивание обработчиков событий
-var initEvents = function () {
-  mapPinButton.addEventListener('click', function () {
+var initEvents = function (marks) {
+  mapPinMain.addEventListener('click', function () {
     agetActivePage(marks);// При клике на кнопку автивируем метки
-    document.addEventListener('keydown', onMapEscPress);
+    agetActiveForm(true);
+    // document.addEventListener('keydown', onMapEscPress);
   });
-  agetActivePage(marks);
-  agetActiveForm();
+  // agetActivePage(marks);
+  // agetActiveForm();
 };
 
 // Удаляем со страницы marks
-var removeMarks = function () {
-  var mapMarksItems = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-  mapMarksItems.forEach(function (it) {
-    it.remove();
-  });
-};
+// var removeMarks = function () {
+//   var mapMarksItems = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+//   mapMarksItems.forEach(function (it) {
+//     it.remove();
+//   });
+// };
+
 // Удаляем со страницы попап
-var removeMapCard = function () {
-  var mapCard = document.querySelector('.map__card');
-  if (mapCard) {
-    mapCard.remove();
-  }
-};
+// var removeMapCard = function () {
+// if (mapCard !== null) {
+//  mapCard.remove();
+// }
+// };
 
 // Функция для перевода страницы в неактивное состояние!
-var agetClosePage = function () {
-  map.classList.add('map--faded');
-  removeMarks();
-  removeMapCard();
-  document.removeEventListener('keydown', onMapEscPress);
-};
+// var agetClosePage = function () {
+//   // map.classList.add('map--faded');
+//   // removeMarks();
+//   removeMapCard();
+//   // document.removeEventListener('keydown', onMapEscPress);
+// };
 
-initEvents(marks);
+agetActiveForm(false);
 var marks = getMarks(8);
-agetActiveForm();
+initEvents(marks);
+// agetActiveForm();
 // renderMapPopup(marks[0]);
+
