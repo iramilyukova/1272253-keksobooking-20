@@ -36,13 +36,20 @@ var PinLimit = {
   MAX_Y: 600,
 };
 
-var MAIN_PIN_LEFT = 600;
-var MAIN_PIN_TOP = 439;
+var TAIL_HEIGHT = 16;
 
-var MainPinPosition = {
-  x: MAIN_PIN_LEFT,
-  y: MAIN_PIN_TOP
+var coordinates = {
+  x: mapPinButtonMain.offsetLeft,
+  y: mapPinButtonMain.offsetTop
 };
+
+// var MAIN_PIN_LEFT = 600;
+// var MAIN_PIN_TOP = 439;
+
+// var MainPinPosition = {
+//  x: MAIN_PIN_LEFT,
+// y: MAIN_PIN_TOP
+// };
 
 // var PIN_HEIGHT = 75;
 // var PIN_WIDTH = 56;
@@ -54,6 +61,7 @@ var mapPins = document.querySelector('.map__pins');
 var map = document.querySelector('.map');
 var form = document.querySelector('.ad-form');
 var mapPinButton = document.querySelector('.map__pin');
+var mapPinButtonMain = document.querySelector('.map__pin.map__pin--main');
 var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var mapFiltersContainer = document.querySelector('.map__filters-container');
 var adTemplate = document.querySelector('#card').content.querySelector('.map__card.popup');
@@ -133,7 +141,7 @@ var getMark = function (index) {
       },
       offer: {
         title: getRandomItem(TITLE),
-        address: '600, 350', // строка, адрес предложения
+        address: putMainPinPositionToAddress(coordinates), // '600, 350', // строка, адрес предложения
         price: getRandomValue(PriseLimit.MIN, PriseLimit.MAX),
         rooms: getRandomValue(RoomLimit.MIN, RoomLimit.MAX),
         type: translateType(TYPES),
@@ -238,6 +246,7 @@ var activePage = function (marks) {
   map.classList.remove('map--faded');// Активируем карту
   form.classList.remove('ad-form--disabled');// Активируем форму
   renderMarks(marks);// Показываем все метки на странице
+  startMainPinPosition();
 };
 
 // Функция для проверки состояния активации формы (fieldset)
@@ -257,6 +266,7 @@ var agetActiveForm = function () {
 var initEvents = function (marks) {
   mapPinMain.addEventListener('mousedown', function () {
     activePage(marks);// При клике на кнопку автивируем метки
+    startMainPinPosition(); // Указываем стортовые координаты главной метки-кнопки
     agetActiveForm(true);
     // document.addEventListener('keydown', onMapEscPress);
   });
@@ -267,19 +277,18 @@ var initEvents = function (marks) {
 // Стартовые координаты главной метки
 var startMainPinPosition = function () {
   if (activePage(!isActive)) {
-    mapPinButton.style.left = MainPinPosition.x - (PinSize.WIDTH / 2) + 'px';
-    mapPinButton.style.top = (MainPinPosition.y - PinSize.HEIGHT) + 'px';
+    mapPinButton.style.left = coordinates.x + (PinSize.WIDTH / 2) + 'px';
+    mapPinButton.style.top = (coordinates.y + PinSize.HEIGHT) + 'px';
   } else {
-    mapPinButton.style.left = MainPinPosition.x + PinSize.WIDTH + 'px';
-    mapPinButton.style.top = MainPinPosition.y + PinSize.HEIGHT + 'px';
+    mapPinButton.style.left = (PinSize.HEIGHT / 2) + 'px';
+    mapPinButton.style.top = coordinates.y + (PinSize.HEIGHT / 2) + TAIL_HEIGHT + 'px';
   }
-  putMainPinPositionToAddress(MainPinPosition);
+  putMainPinPositionToAddress(coordinates);
 };
 
 // Поставили стартовые координаты в поле с именем address
-var putMainPinPositionToAddress = function (coordinates) {
+var putMainPinPositionToAddress = function () {
   addressInput.value = coordinates.x + ', ' + coordinates.y;
-  return putMainPinPositionToAddress;
 };
 
 // Удаляем со страницы marks
@@ -306,6 +315,7 @@ var putMainPinPositionToAddress = function (coordinates) {
 // };
 
 agetActiveForm(false);
+startMainPinPosition();
 var marks = getMarks(8);
 initEvents(marks);
 // agetActiveForm();
