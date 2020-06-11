@@ -25,8 +25,8 @@ var GuestLimit = {
 };
 
 var PinSize = {
-  WIDTH: 65,
-  HEIGHT: 65,
+  WIDTH: 66,
+  HEIGHT: 66,
 };
 
 var PinLimit = {
@@ -34,6 +34,14 @@ var PinLimit = {
   MAX_X: 900,
   MIN_Y: 130,
   MAX_Y: 600,
+};
+
+var MAIN_PIN_LEFT = 600;
+var MAIN_PIN_TOP = 439;
+
+var MainPinPosition = {
+  x: MAIN_PIN_LEFT,
+  y: MAIN_PIN_TOP
 };
 
 // var PIN_HEIGHT = 75;
@@ -44,7 +52,8 @@ var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.g
 var DESCRIPTION = ['Маленькая чистая квартира на краю города', 'Большая квартира из трех комнат в центре города', 'Однушка у парка'];
 var mapPins = document.querySelector('.map__pins');
 var map = document.querySelector('.map');
-// var mapPinButton = document.querySelector('.map__pin');
+var form = document.querySelector('.ad-form');
+var mapPinButton = document.querySelector('.map__pin');
 var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var mapFiltersContainer = document.querySelector('.map__filters-container');
 var adTemplate = document.querySelector('#card').content.querySelector('.map__card.popup');
@@ -52,8 +61,9 @@ var fieldsets = document.querySelectorAll('fieldset');
 var selects = document.querySelectorAll('select');
 var inputs = document.querySelectorAll('input');
 var mapPinMain = document.querySelector('.map__pin--main');
-// var activePage = false;
+var addressInput = document.querySelector('input[name="address"]');
 var mapCard = document.querySelector('.map__card');
+var isActive = false;
 // var mapCard = null;
 
 // Переводим название типов жилья на русский
@@ -217,40 +227,59 @@ var renderPhotos = function (popupPhotos, photos) {
 //   if (mapCard !== null && evt.key === 'Enter') {
 //     evt.preventDefault();
 //     // скрыть попап
-//     // agetActivePage();
+//     // activePage();
 //     // removeMapCard();// удаляем попап
 //     agetClosePage();
 //   }
 // };
 
 // Функция для перевода страницы в активное состояние
-var agetActivePage = function (marks) {
+var activePage = function (marks) {
   map.classList.remove('map--faded');// Активируем карту
+  form.classList.remove('ad-form--disabled');// Активируем форму
   renderMarks(marks);// Показываем все метки на странице
 };
 
 // Функция для проверки состояния активации формы (fieldset)
-var agetActiveForm = function (active) {
+var agetActiveForm = function () {
   Array.from(fieldsets).forEach(function (fieldset) {
-    fieldset.disabled = !active; // Если страница не активная то fieldset выключен.
+    fieldset.disabled = !isActive; // Если страница не активная то fieldset выключен.
   });
   Array.from(selects).forEach(function (select) {
-    select.disabled = !active;
+    select.disabled = !isActive;
   });
   Array.from(inputs).forEach(function (input) {
-    input.disabled = !active;
+    input.disabled = !isActive;
   });
 };
 
 // Навешивание обработчиков событий
 var initEvents = function (marks) {
-  mapPinMain.addEventListener('click', function () {
-    agetActivePage(marks);// При клике на кнопку автивируем метки
+  mapPinMain.addEventListener('mousedown', function () {
+    activePage(marks);// При клике на кнопку автивируем метки
     agetActiveForm(true);
     // document.addEventListener('keydown', onMapEscPress);
   });
-  // agetActivePage(marks);
+  // activePage(marks);
   // agetActiveForm();
+};
+
+// Стартовые координаты главной метки
+var startMainPinPosition = function () {
+  if (activePage(!isActive)) {
+    mapPinButton.style.left = MainPinPosition.x - (PinSize.WIDTH / 2) + 'px';
+    mapPinButton.style.top = (MainPinPosition.y - PinSize.HEIGHT) + 'px';
+  } else {
+    mapPinButton.style.left = MainPinPosition.x + PinSize.WIDTH + 'px';
+    mapPinButton.style.top = MainPinPosition.y + PinSize.HEIGHT + 'px';
+  }
+  putMainPinPositionToAddress(MainPinPosition);
+};
+
+// Поставили стартовые координаты в поле с именем address
+var putMainPinPositionToAddress = function (coordinates) {
+  addressInput.value = coordinates.x + ', ' + coordinates.y;
+  return putMainPinPositionToAddress;
 };
 
 // Удаляем со страницы marks
