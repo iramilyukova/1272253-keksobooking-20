@@ -4,7 +4,7 @@ var COUNT_USERS = 8;
 var TITLE = ['Уютное гнездышко для молодоженов', 'Милая, уютная квартирка в центре Токио', 'Большая уютная квартира'];
 var PriseLimit = {
   MIN: 1000,
-  MAX: 10000
+  MAX: 1000000
 };
 
 var TYPES = {
@@ -38,21 +38,6 @@ var PinLimit = {
 
 var TAIL_HEIGHT = 16;
 
-var coordinates = {
-  x: mapPinButtonMain.offsetLeft,
-  y: mapPinButtonMain.offsetTop
-};
-
-// var MAIN_PIN_LEFT = 600;
-// var MAIN_PIN_TOP = 439;
-
-// var MainPinPosition = {
-//  x: MAIN_PIN_LEFT,
-// y: MAIN_PIN_TOP
-// };
-
-// var PIN_HEIGHT = 75;
-// var PIN_WIDTH = 56;
 var TIMES = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'elevator', 'conditioner'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
@@ -73,6 +58,13 @@ var addressInput = document.querySelector('input[name="address"]');
 var mapCard = document.querySelector('.map__card');
 var isActive = false;
 // var mapCard = null;
+// Переменные, связанные с формами
+var offerTitle = form.querySelector('#title');
+var offerPrice = form.querySelectorAll('#price');
+var offerRoomNumber = form.querySelector('#room_number');
+var offerCapacity = form.querySelector('#capacity');
+var offerDeparture = form.querySelector('#timeout');
+var offerArrival = form.querySelector('#time');
 
 // Переводим название типов жилья на русский
 function translateType(type) {
@@ -141,7 +133,7 @@ var getMark = function (index) {
       },
       offer: {
         title: getRandomItem(TITLE),
-        address: putMainPinPositionToAddress(coordinates), // '600, 350', // строка, адрес предложения
+        address: '600, 350', // строка, адрес предложения
         price: getRandomValue(PriseLimit.MIN, PriseLimit.MAX),
         rooms: getRandomValue(RoomLimit.MIN, RoomLimit.MAX),
         type: translateType(TYPES),
@@ -230,9 +222,17 @@ var renderPhotos = function (popupPhotos, photos) {
   }
   popupPhotos.appendChild(fragment);
 };
-// Функция для создания обработчика закрытия окна по нажатию на Enter 
+
+// Обработчик события при нажатаии на клавишу ENTER на метке
+// var onMapEnterPress = function (evt) {
+//  if (evt.key === 'Enter') {
+//   evt.preventDefault();
+//  activePage();
+// };
+
+// Обработчик закрытия окна по нажатию на ESC 
 // var onMapEscPress = function (evt) {
-//   if (mapCard !== null && evt.key === 'Enter') {
+//   if (mapCard !== null && evt.key === 'Esc') {
 //     evt.preventDefault();
 //     // скрыть попап
 //     // activePage();
@@ -265,30 +265,33 @@ var agetActiveForm = function () {
 // Навешивание обработчиков событий
 var initEvents = function (marks) {
   mapPinMain.addEventListener('mousedown', function () {
+    isActive = true;
     activePage(marks);// При клике на кнопку автивируем метки
     startMainPinPosition(); // Указываем стортовые координаты главной метки-кнопки
-    agetActiveForm(true);
+    agetActiveForm();
+    // document.addEventListener('keydown', onMapEnterPress);
     // document.addEventListener('keydown', onMapEscPress);
   });
-  // activePage(marks);
-  // agetActiveForm();
 };
 
 // Стартовые координаты главной метки
 var startMainPinPosition = function () {
-  if (activePage(!isActive)) {
-    mapPinButton.style.left = coordinates.x + (PinSize.WIDTH / 2) + 'px';
-    mapPinButton.style.top = (coordinates.y + PinSize.HEIGHT) + 'px';
+  var x = 0;
+  var y = 0;
+
+  if (isActive) {
+    x = mapPinButtonMain.offsetLeft + (PinSize.HEIGHT / 2);
+    y = mapPinButtonMain.offsetTop + (PinSize.HEIGHT / 2) + TAIL_HEIGHT;
   } else {
-    mapPinButton.style.left = (PinSize.HEIGHT / 2) + 'px';
-    mapPinButton.style.top = coordinates.y + (PinSize.HEIGHT / 2) + TAIL_HEIGHT + 'px';
+    x = mapPinButtonMain.offsetLeft + (PinSize.WIDTH / 2);
+    y = mapPinButtonMain.offsetTop + PinSize.HEIGHT / 2;
   }
-  putMainPinPositionToAddress(coordinates);
+  putMainPinPositionToAddress(x, y);
 };
 
 // Поставили стартовые координаты в поле с именем address
-var putMainPinPositionToAddress = function () {
-  addressInput.value = coordinates.x + ', ' + coordinates.y;
+var putMainPinPositionToAddress = function (x, y) {
+  addressInput.value = x + ', ' + y;
 };
 
 // Удаляем со страницы marks
@@ -313,6 +316,112 @@ var putMainPinPositionToAddress = function () {
 //   removeMapCard();
 //   // document.removeEventListener('keydown', onMapEscPress);
 // };
+
+// Функция связывает поле «Тип жилья» со значением минимальной цены из поля «Цена за ночь»
+// offerPropertyType.addEventListener('change', function (evt) {
+//  switch (evt.target.value) {
+//    case 'palace':
+//     changePrice(10000);
+//     break;
+//    case 'flat':
+//     changePrice(1000);
+//     break;
+//  case 'bungalo':
+//    changePrice(0);
+//    break;
+//  case 'house':
+//    changePrice(5000);
+//    break;
+//  default:
+//   changePrice(1000);
+//   break;
+// }
+// });
+
+// Вместе с минимальным значением цены меняем и плейсхолдер
+// var changePrice = function (price) {
+//  offerPrice.placeholder = price.toString();
+//  offerPrice.setAttribute('min', price); // устанавливаем с помощью метода setAttribute новое значение для атрибута
+// };
+
+// Добавление обработчиков валидации формы
+offerTitle.addEventListener('invalid', validationTitle);
+offerPrice.addEventListener('invalid', validationPrice);
+
+// Прописываем условия для правильного заполнения заголовка
+var validationTitle = function () {
+  if (offerTitle.validity.tooShort) {
+    offerTitle.setCustomValidity('Заголовок должно состоять минимум из 30 символов');
+    offerTitle.setAttribute('style', 'border-color: red');
+  } else if (offerTitle.validity.tooLong) {
+    offerTitle.setCustomValidity('Заголовок не должен превышать 100 символов');
+    offerTitle.setAttribute('style', 'border-color: red');
+  } else if (offerTitle.validity.valueMissing) {
+    offerTitle.setCustomValidity('Введите, пожалуйста, заголовок объявления. Это обязательно поле для заполнения');
+    offerTitle.setAttribute('style', 'border-color: red');
+  } else {
+    offerTitle.setCustomValidity(''); // не забыть сбросить значение поля, если это значение стало корректно.
+    offerTitle.removeAttribute('style');
+  }
+};
+
+// Прописываем условия для правильного заполнения поля с ценой жилья
+var validationPrice = function () {
+  if (offerPrice.value.length === 0) {
+    offerPrice.setCustomValidity('Введите, пожалуйста, цену. Это обязательно поле для заполнения');
+    offerPrice.setAttribute('style', 'border-color: red');
+  } else if (offerPrice.value < 1000) {
+    offerPrice.setCustomValidity('Цена должна быть не менее 1000 руб.');
+    offerPrice.setAttribute('style', 'border-color: red');
+  } else if (offerPrice.value > 1000000) {
+    offerPrice.setCustomValidity('Цена должна быть не более 1 000 000 руб.');
+    offerPrice.setAttribute('style', 'border-color: red');
+  } else {
+    offerPrice.setCustomValidity('');
+    offerPrice.removeAttribute('style');
+};
+
+// Добавление обработчиков синхронизации полей формы
+offerArrival.addEventListener('change', function (evt) {
+  offerDeparture.value = evt.target.value;
+});
+
+offerDeparture.addEventListener('change', function (evt) {
+  offerArrival.value = evt.target.value;
+});
+
+// Вешаем "слушателей" на поля изменения количества комнат и связываем это число с количеством мест
+offerRoomNumber.addEventListener('change', function (evt) {
+  switch (evt.target.value) {
+    case '1':
+      syncFields(offerCapacity, 1);
+      break;
+    case '0':
+      syncFields(offerCapacity, 0);
+      break;
+    default:
+      syncFields(offerCapacity, 0);
+      break;
+  }
+});
+// Вешаем "слушателей" на поля изменения количества мест и связываем это число с количеством комнат
+offerCapacity.addEventListener('change', function (evt) {
+  switch (evt.target.value) {
+    case '1':
+      syncFields(offerRoomNumber, 1);
+      break;
+    case '0':
+      syncFields(offerRoomNumber, 0);
+      break;
+    default:
+      syncFields(offerRoomNumber, 0);
+      break;
+  }
+});
+// Синхронизируем поля, чтобы при изменении значения одного поля, во втором выделяется соответствующее ему
+function syncFields(field, syncField) {
+  field.value = syncField.toString();// значение поля приравниваем к другому полю («Время заезда» и «Время выезда»)
+}
 
 agetActiveForm(false);
 startMainPinPosition();
