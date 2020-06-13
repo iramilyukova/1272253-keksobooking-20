@@ -37,6 +37,7 @@ var PinLimit = {
 };
 
 var TAIL_HEIGHT = 16;
+var ENTER_KEY;
 
 var RoomtType = {
   ONE: 1,
@@ -66,6 +67,7 @@ var mapFiltersContainer = document.querySelector('.map__filters-container');
 var adTemplate = document.querySelector('#card').content.querySelector('.map__card.popup');
 var fieldsets = document.querySelectorAll('fieldset');
 var selects = document.querySelectorAll('select');
+var valueSelects = document.querySelectorAll('select');
 var inputs = document.querySelectorAll('input');
 var mapPinMain = document.querySelector('.map__pin--main');
 var addressInput = document.querySelector('input[name="address"]');
@@ -77,6 +79,7 @@ var errorPopup = document.querySelector('#error').content.querySelector('main');
 var main = document.querySelector('main');
 // var mapCard = null;
 // Переменные, связанные с формой
+
 var offerTitle = form.querySelector('#title');
 var offerPrice = form.querySelectorAll('#price');
 var offerRoomNumber = form.querySelector('#room_number');
@@ -241,14 +244,6 @@ var renderPhotos = function (popupPhotos, photos) {
   popupPhotos.appendChild(fragment);
 };
 
-// Обработчик события при нажатаии на клавишу ENTER на метке
-var onMapEnterPress = function (evt) {
-  if (evt.keyCode === 13) {
-    evt.preventDefault();
-    activityPage();
-  }
-};
-
 // Обработчик закрытия окна по нажатию на ESC
 // var onMapEscPress = function (evt) {
 //   if (mapCard !== null && evt.key === 'Esc') {
@@ -298,7 +293,7 @@ var initEvents = function (marks) {
     // activityForm();
   });
   mapPinMain.addEventListener('keydown', function (evt) {
-    if (onMapEnterPress()) {
+    if (evt.keyCode == ENTER_KEY) {
       evt.preventDefault();
       activityPage(marks);// При клике на кнопку автивируем метки
     }
@@ -306,8 +301,8 @@ var initEvents = function (marks) {
 };
 
 var validateaCapacity = function () {
-  var capacityValue = 0; // взять значение c DOM элемента
-  var roomNumber = 0; // взять значение c DOM элемента
+  var capacityValue = valueSelects.value; // взять значение c DOM элемента
+  var roomNumber = valueSelects.value; // взять значение c DOM элемента
 
   var message = '';
 
@@ -317,14 +312,14 @@ var validateaCapacity = function () {
     }
   } else if (roomNumber == RoomtType.TWO) { // если выбраны 2 комнаты
     if (capacityValue != GuestType.ONE || capacityValue != GuestType.TWO) { // значение 2 комнат не равно значению 1 или 2 гостей
-      message = 'Выберите не более 1 гостя или 2 гостей'
+      message = 'Выберите не более 1 гостя или 2 гостей';
     }
   } else if (roomNumber == RoomtType.THREE) { // если выбраны 3 комнаты
     if (capacityValue != GuestType.ONE || capacityValue != GuestType.TWO || capacityValue != GuestType.THREE) {
-      message = 'Выберите 3 гостей или 2 гостей или 1 гостя'
+      message = 'Выберите 3 гостей или 2 гостей или 1 гостя';
     } else if (roomNumber == RoomtType.TNOT_FOR_GUEST) {
       if (capacityValue == GuestType.TNOT_FOR_GUEST) {
-        message = 'Не предназначены для гостей'
+        message = 'Не предназначены для гостей';
       }
     }
   }
