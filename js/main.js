@@ -330,25 +330,25 @@ var putMainPinPositionToAddress = function (x, y) {
 // };
 
 // Функция связывает поле «Тип жилья» со значением минимальной цены из поля «Цена за ночь»
-offerPropertyType.addEventListener('change', function (evt) {
-  switch (evt.target.value) {
-    case 'palace':
-      changePrice(10000);
-     break;
-    case 'flat':
-     changePrice(1000);
-     break;
-     case 'bungalo':
-       changePrice(0);
-       break;
-      case 'house':
-        changePrice(5000);
-        break;
-      default:
-        changePrice(1000);
-        break;
-      }
-    });
+// offerPropertyType.addEventListener('change', function (evt) {
+//  switch (evt.target.value) {
+//    case 'palace':
+//     changePrice(10000);
+//     break;
+//    case 'flat':
+//     changePrice(1000);
+//     break;
+//  case 'bungalo':
+//    changePrice(0);
+//    break;
+//  case 'house':
+//    changePrice(5000);
+//    break;
+//  default:
+//   changePrice(1000);
+//   break;
+// }
+// });
 
 // Прописываем условия для правильного заполнения заголовка
 var validationTitle = function () {
@@ -426,11 +426,11 @@ function syncFields(field, syncField) {
   field.value = syncField.toString();// значение поля приравниваем к другому полю («Время заезда» и «Время выезда»)
 }
 
-  var onError = function () {
-    main.insertAdjacentElement('afterbegin', errorPopup);
-    var closeButtonError = document.querySelector('.error__button');
-    closeButtonError.addEventListener('click', );
-  };
+// var onError = function () {
+//   main.insertAdjacentElement('afterbegin', errorPopup);
+//   var closeButtonError = document.querySelector('.error__button');
+//  closeButtonError.addEventListener('click', );
+// };
 
 agetActiveForm(false);
 startMainPinPosition();
