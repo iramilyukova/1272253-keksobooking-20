@@ -57,8 +57,12 @@ var mapPinMain = document.querySelector('.map__pin--main');
 var addressInput = document.querySelector('input[name="address"]');
 var mapCard = document.querySelector('.map__card');
 var isActive = false;
+
+// var successPopup = document.querySelector('#success').content.querySelector('main');
+var errorPopup = document.querySelector('#error').content.querySelector('main');
+var main = document.querySelector('main');
 // var mapCard = null;
-// Переменные, связанные с формами
+// Переменные, связанные с формой
 var offerTitle = form.querySelector('#title');
 var offerPrice = form.querySelectorAll('#price');
 var offerRoomNumber = form.querySelector('#room_number');
@@ -225,28 +229,31 @@ var renderPhotos = function (popupPhotos, photos) {
 
 // Обработчик события при нажатаии на клавишу ENTER на метке
 // var onMapEnterPress = function (evt) {
-//  if (evt.key === 'Enter') {
-//   evt.preventDefault();
-//  activePage();
+//   if (evt.key === 'Enter') {
+//     evt.preventDefault();
+//     activatePage();
+//   }
 // };
 
-// Обработчик закрытия окна по нажатию на ESC 
+// Обработчик закрытия окна по нажатию на ESC
 // var onMapEscPress = function (evt) {
 //   if (mapCard !== null && evt.key === 'Esc') {
 //     evt.preventDefault();
 //     // скрыть попап
-//     // activePage();
+//     // activatePage();
 //     // removeMapCard();// удаляем попап
 //     agetClosePage();
 //   }
 // };
 
 // Функция для перевода страницы в активное состояние
-var activePage = function (marks) {
+var activatePage = function (marks) {
+  isActive = true;
   map.classList.remove('map--faded');// Активируем карту
   form.classList.remove('ad-form--disabled');// Активируем форму
   renderMarks(marks);// Показываем все метки на странице
   startMainPinPosition();
+  agetActiveForm();
 };
 
 // Функция для проверки состояния активации формы (fieldset)
@@ -264,13 +271,18 @@ var agetActiveForm = function () {
 
 // Навешивание обработчиков событий
 var initEvents = function (marks) {
-  mapPinMain.addEventListener('mousedown', function () {
-    isActive = true;
-    activePage(marks);// При клике на кнопку автивируем метки
-    startMainPinPosition(); // Указываем стортовые координаты главной метки-кнопки
-    agetActiveForm();
-    // document.addEventListener('keydown', onMapEnterPress);
-    // document.addEventListener('keydown', onMapEscPress);
+  mapPinMain.tabIndex = 1;
+  mapPinMain.addEventListener('mousedown', function (evt) {
+    evt.preventDefault();
+    // isActive = true;
+    activatePage(marks);// При клике на кнопку автивируем метки
+    // startMainPinPosition(); // Указываем стортовые координаты главной метки-кнопки
+    //  agetActiveForm();
+    // window.addEventListener('keydown', onMapEscPress);
+  });
+  mapPinMain.addEventListener('keydown', function (evt) {
+    evt.preventDefault();
+    activatePage(marks);// При клике на кнопку автивируем метки
   });
 };
 
@@ -318,35 +330,25 @@ var putMainPinPositionToAddress = function (x, y) {
 // };
 
 // Функция связывает поле «Тип жилья» со значением минимальной цены из поля «Цена за ночь»
-// offerPropertyType.addEventListener('change', function (evt) {
-//  switch (evt.target.value) {
-//    case 'palace':
-//     changePrice(10000);
-//     break;
-//    case 'flat':
-//     changePrice(1000);
-//     break;
-//  case 'bungalo':
-//    changePrice(0);
-//    break;
-//  case 'house':
-//    changePrice(5000);
-//    break;
-//  default:
-//   changePrice(1000);
-//   break;
-// }
-// });
-
-// Вместе с минимальным значением цены меняем и плейсхолдер
-// var changePrice = function (price) {
-//  offerPrice.placeholder = price.toString();
-//  offerPrice.setAttribute('min', price); // устанавливаем с помощью метода setAttribute новое значение для атрибута
-// };
-
-// Добавление обработчиков валидации формы
-offerTitle.addEventListener('invalid', validationTitle);
-offerPrice.addEventListener('invalid', validationPrice);
+offerPropertyType.addEventListener('change', function (evt) {
+  switch (evt.target.value) {
+    case 'palace':
+      changePrice(10000);
+     break;
+    case 'flat':
+     changePrice(1000);
+     break;
+     case 'bungalo':
+       changePrice(0);
+       break;
+      case 'house':
+        changePrice(5000);
+        break;
+      default:
+        changePrice(1000);
+        break;
+      }
+    });
 
 // Прописываем условия для правильного заполнения заголовка
 var validationTitle = function () {
@@ -379,16 +381,17 @@ var validationPrice = function () {
   } else {
     offerPrice.setCustomValidity('');
     offerPrice.removeAttribute('style');
+  }
 };
 
 // Добавление обработчиков синхронизации полей формы
-offerArrival.addEventListener('change', function (evt) {
-  offerDeparture.value = evt.target.value;
-});
+// offerArrival.addEventListener('change', function (evt) {
+//   offerDeparture.value = evt.target.value;
+// });
 
-offerDeparture.addEventListener('change', function (evt) {
-  offerArrival.value = evt.target.value;
-});
+// offerDeparture.addEventListener('change', function (evt) {
+//   offerArrival.value = evt.target.value;
+// });
 
 // Вешаем "слушателей" на поля изменения количества комнат и связываем это число с количеством мест
 offerRoomNumber.addEventListener('change', function (evt) {
@@ -423,10 +426,15 @@ function syncFields(field, syncField) {
   field.value = syncField.toString();// значение поля приравниваем к другому полю («Время заезда» и «Время выезда»)
 }
 
+  var onError = function () {
+    main.insertAdjacentElement('afterbegin', errorPopup);
+    var closeButtonError = document.querySelector('.error__button');
+    closeButtonError.addEventListener('click', );
+  };
+
 agetActiveForm(false);
 startMainPinPosition();
 var marks = getMarks(8);
 initEvents(marks);
 // agetActiveForm();
 // renderMapPopup(marks[0]);
-
