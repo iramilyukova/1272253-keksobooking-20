@@ -305,25 +305,29 @@ var validateaCapacity = function () {
 
   var message = '';
 
-  if (roomNumber == RoomtType.ONE) { // если выбраная 1 комната
-    if (capacityValue != GuestType.ONE) { // проверяем, что введенное значение 1 комнаты не равно одному гостю
+  if (roomNumber === RoomtType.ONE) { // если выбраная 1 комната
+    if (capacityValue !== GuestType.ONE) { // проверяем, что введенное значение 1 комнаты не равно одному гостю
       message = 'Выберите не более 1 гостя';
     }
-  } else if (roomNumber == RoomtType.TWO) { // если выбраны 2 комнаты
-    if (capacityValue != GuestType.ONE || capacityValue != GuestType.TWO) { // значение 2 комнат не равно значению 1 или 2 гостей
+  } else if (roomNumber === RoomtType.TWO) { // если выбраны 2 комнаты
+    if (capacityValue !== GuestType.ONE && capacityValue !== GuestType.TWO) { // значение 2 комнат не равно значению 1 или 2 гостей
       message = 'Выберите не более 1 гостя или 2 гостей';
     }
-  } else if (roomNumber == RoomtType.THREE) { // если выбраны 3 комнаты
-    if (capacityValue != GuestType.ONE || capacityValue != GuestType.TWO || capacityValue != GuestType.THREE) {
+  } else if (roomNumber === RoomtType.THREE) { // если выбраны 3 комнаты
+    if (capacityValue !== GuestType.ONE && capacityValue !== GuestType.TWO && capacityValue !== GuestType.THREE) {
       message = 'Выберите 3 гостей или 2 гостей или 1 гостя';
-    } else if (roomNumber == RoomtType.TNOT_FOR_GUEST) {
-      if (capacityValue !== GuestType.TNOT_FOR_GUEST) {
+    } else if (roomNumber === RoomtType.HUNDERT) {
+      if (capacityValue !== GuestType.NOT_FOR_GUEST) {
         message = 'Не предназначены для гостей';
       }
     }
   }
-  capacityValue.setCustomValidity(message); // назначить DOM элементу
+  offerCapacity.setCustomValidity(message); // назначить DOM элементу
 };
+
+form.addEventListener('change', function (evt) {
+  validateaCapacity();
+});
 
 // Стартовые координаты главной метки
 var startMainPinPosition = function () {
