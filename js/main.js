@@ -38,6 +38,20 @@ var PinLimit = {
 
 var TAIL_HEIGHT = 16;
 
+var RoomtType = {
+  ONE: 1,
+  TWO: 2,
+  THREE: 3,
+  HUNDERT: 100
+};
+
+var GuestType = {
+  ONE: 1,
+  TWO: 2,
+  THREE: 3,
+  NOT_FOR_GUEST: 100
+};
+
 var TIMES = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'elevator', 'conditioner'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
@@ -228,36 +242,36 @@ var renderPhotos = function (popupPhotos, photos) {
 };
 
 // Обработчик события при нажатаии на клавишу ENTER на метке
-// var onMapEnterPress = function (evt) {
-//   if (evt.key === 'Enter') {
-//     evt.preventDefault();
-//     activatePage();
-//   }
-// };
+var onMapEnterPress = function (evt) {
+  if (evt.keyCode === 13) {
+    evt.preventDefault();
+    activityPage();
+  }
+};
 
 // Обработчик закрытия окна по нажатию на ESC
 // var onMapEscPress = function (evt) {
 //   if (mapCard !== null && evt.key === 'Esc') {
 //     evt.preventDefault();
 //     // скрыть попап
-//     // activatePage();
+//     // activityPage();
 //     // removeMapCard();// удаляем попап
 //     agetClosePage();
 //   }
 // };
 
 // Функция для перевода страницы в активное состояние
-var activatePage = function (marks) {
+var activityPage = function (marks) {
   isActive = true;
   map.classList.remove('map--faded');// Активируем карту
   form.classList.remove('ad-form--disabled');// Активируем форму
   renderMarks(marks);// Показываем все метки на странице
   startMainPinPosition();
-  agetActiveForm();
+  activityForm();
 };
 
 // Функция для проверки состояния активации формы (fieldset)
-var agetActiveForm = function () {
+var activityForm = function () {
   Array.from(fieldsets).forEach(function (fieldset) {
     fieldset.disabled = !isActive; // Если страница не активная то fieldset выключен.
   });
@@ -269,21 +283,52 @@ var agetActiveForm = function () {
   });
 };
 
+var startingPage = function () {
+  activityForm(false);
+  startMainPinPosition();
+  // validateaCapacity();
+};
+
 // Навешивание обработчиков событий
 var initEvents = function (marks) {
   mapPinMain.tabIndex = 1;
   mapPinMain.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
-    // isActive = true;
-    activatePage(marks);// При клике на кнопку автивируем метки
-    // startMainPinPosition(); // Указываем стортовые координаты главной метки-кнопки
-    //  agetActiveForm();
-    // window.addEventListener('keydown', onMapEscPress);
+    activityPage(marks);// При клике на кнопку автивируем метки
+    // activityForm();
   });
   mapPinMain.addEventListener('keydown', function (evt) {
-    evt.preventDefault();
-    activatePage(marks);// При клике на кнопку автивируем метки
+    if (onMapEnterPress()) {
+      evt.preventDefault();
+      activityPage(marks);// При клике на кнопку автивируем метки
+    }
   });
+};
+
+var validateaCapacity = function () {
+  var capacityValue = 0; // взять значение c DOM элемента
+  var roomNumber = 0; // взять значение c DOM элемента
+
+  var message = '';
+
+  if (roomNumber == RoomtType.ONE) { // если выбраная 1 комната
+    if (capacityValue != GuestType.ONE) { // проверяем, что введенное значение 1 комнаты не равно одному гостю
+      message = 'Выберите не более 1 гостя';
+    }
+  } else if (roomNumber == RoomtType.TWO) { // если выбраны 2 комнаты
+    if (capacityValue != GuestType.ONE || capacityValue != GuestType.TWO) { // значение 2 комнат не равно значению 1 или 2 гостей
+      message = 'Выберите не более 1 гостя или 2 гостей'
+    }
+  } else if (roomNumber == RoomtType.THREE) { // если выбраны 3 комнаты
+    if (capacityValue != GuestType.ONE || capacityValue != GuestType.TWO || capacityValue != GuestType.THREE) {
+      message = 'Выберите 3 гостей или 2 гостей или 1 гостя'
+    } else if (roomNumber == RoomtType.TNOT_FOR_GUEST) {
+      if (capacityValue == GuestType.TNOT_FOR_GUEST) {
+        message = 'Не предназначены для гостей'
+      }
+    }
+  }
+  capacityValue.setCustomValidity(message); // назначить DOM элементу
 };
 
 // Стартовые координаты главной метки
@@ -393,48 +438,14 @@ var validationPrice = function () {
 //   offerArrival.value = evt.target.value;
 // });
 
-// Вешаем "слушателей" на поля изменения количества комнат и связываем это число с количеством мест
-offerRoomNumber.addEventListener('change', function (evt) {
-  switch (evt.target.value) {
-    case '1':
-      syncFields(offerCapacity, 1);
-      break;
-    case '0':
-      syncFields(offerCapacity, 0);
-      break;
-    default:
-      syncFields(offerCapacity, 0);
-      break;
-  }
-});
-// Вешаем "слушателей" на поля изменения количества мест и связываем это число с количеством комнат
-offerCapacity.addEventListener('change', function (evt) {
-  switch (evt.target.value) {
-    case '1':
-      syncFields(offerRoomNumber, 1);
-      break;
-    case '0':
-      syncFields(offerRoomNumber, 0);
-      break;
-    default:
-      syncFields(offerRoomNumber, 0);
-      break;
-  }
-});
-// Синхронизируем поля, чтобы при изменении значения одного поля, во втором выделяется соответствующее ему
-function syncFields(field, syncField) {
-  field.value = syncField.toString();// значение поля приравниваем к другому полю («Время заезда» и «Время выезда»)
-}
-
 // var onError = function () {
 //   main.insertAdjacentElement('afterbegin', errorPopup);
 //   var closeButtonError = document.querySelector('.error__button');
 //  closeButtonError.addEventListener('click', );
 // };
 
-agetActiveForm(false);
-startMainPinPosition();
+startingPage();
 var marks = getMarks(8);
 initEvents(marks);
-// agetActiveForm();
+// activityForm();
 // renderMapPopup(marks[0]);
