@@ -37,7 +37,7 @@ var PinLimit = {
 };
 
 var TAIL_HEIGHT = 16;
-var ENTER_KEY;
+var ENTER_KEY = 13;
 
 var RoomtType = {
   ONE: 1,
@@ -67,7 +67,6 @@ var mapFiltersContainer = document.querySelector('.map__filters-container');
 var adTemplate = document.querySelector('#card').content.querySelector('.map__card.popup');
 var fieldsets = document.querySelectorAll('fieldset');
 var selects = document.querySelectorAll('select');
-var valueSelects = document.querySelectorAll('select');
 var inputs = document.querySelectorAll('input');
 var mapPinMain = document.querySelector('.map__pin--main');
 var addressInput = document.querySelector('input[name="address"]');
@@ -75,8 +74,8 @@ var mapCard = document.querySelector('.map__card');
 var isActive = false;
 
 // var successPopup = document.querySelector('#success').content.querySelector('main');
-var errorPopup = document.querySelector('#error').content.querySelector('main');
-var main = document.querySelector('main');
+// var errorPopup = document.querySelector('#error').content.querySelector('main');
+// var main = document.querySelector('main');
 // var mapCard = null;
 // Переменные, связанные с формой
 
@@ -84,8 +83,8 @@ var offerTitle = form.querySelector('#title');
 var offerPrice = form.querySelectorAll('#price');
 var offerRoomNumber = form.querySelector('#room_number');
 var offerCapacity = form.querySelector('#capacity');
-var offerDeparture = form.querySelector('#timeout');
-var offerArrival = form.querySelector('#time');
+// var offerDeparture = form.querySelector('#timeout');
+// var offerArrival = form.querySelector('#time');
 
 // Переводим название типов жилья на русский
 function translateType(type) {
@@ -301,8 +300,8 @@ var initEvents = function (marks) {
 };
 
 var validateaCapacity = function () {
-  var capacityValue = valueSelects.value; // взять значение c DOM элемента
-  var roomNumber = valueSelects.value; // взять значение c DOM элемента
+  var capacityValue = offerCapacity.value; // взять значение c DOM элемента
+  var roomNumber = offerRoomNumber.value; // взять значение c DOM элемента
 
   var message = '';
 
@@ -318,7 +317,7 @@ var validateaCapacity = function () {
     if (capacityValue != GuestType.ONE || capacityValue != GuestType.TWO || capacityValue != GuestType.THREE) {
       message = 'Выберите 3 гостей или 2 гостей или 1 гостя';
     } else if (roomNumber == RoomtType.TNOT_FOR_GUEST) {
-      if (capacityValue == GuestType.TNOT_FOR_GUEST) {
+      if (capacityValue !== GuestType.TNOT_FOR_GUEST) {
         message = 'Не предназначены для гостей';
       }
     }
