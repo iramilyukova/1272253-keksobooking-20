@@ -320,10 +320,10 @@ var validateaCapacity = function () {
   } else if (roomNumber === RoomtType.THREE) { // если выбраны 3 комнаты
     if (capacityValue !== GuestType.ONE && capacityValue !== GuestType.TWO && capacityValue !== GuestType.THREE) {
       message = 'Выберите 3 гостей или 2 гостей или 1 гостя';
-    } else if (roomNumber === RoomtType.HUNDERT) {
-      if (capacityValue !== GuestType.NOT_FOR_GUEST) {
-        message = 'Не предназначены для гостей';
-      }
+    }
+  } else if (roomNumber === RoomtType.HUNDERT) {
+    if (capacityValue !== GuestType.NOT_FOR_GUEST) {
+      message = 'Не предназначены для гостей';
     }
   }
   offerCapacity.setCustomValidity(message); // назначить DOM элементу
