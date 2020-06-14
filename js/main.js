@@ -45,7 +45,7 @@ var PinLimit = {
 
 var TAIL_HEIGHT = 16;
 var ENTER_KEY = 13;
-var MOUSE_LEFT = 0;
+var MOUSE_LEFT = 1;
 
 var RoomtType = {
   ONE: '1',
@@ -88,11 +88,12 @@ var isActive = false;
 // Переменные, связанные с формой
 
 var offerTitle = form.querySelector('#title');
-var offerPrice = form.querySelectorAll('#price');
+var offerPrice = form.querySelector('#price');
 var offerRoomNumber = form.querySelector('#room_number');
 var offerCapacity = form.querySelector('#capacity');
 var offerType = form.querySelector('#type');
-// var offerDeparture = form.querySelector('#timeout');
+var timeinValue = document.querySelector('#timein').value;
+var timeoutValue = form.querySelector('#timeout').value;
 // var offerArrival = form.querySelector('#time');
 
 // Переводим название типов жилья на русский
@@ -297,11 +298,11 @@ var startingPage = function () {
 // Навешивание обработчиков событий
 var initEvents = function (marks) {
   mapPinMain.addEventListener('mousedown', function (evt) {
-  //  if (evt.which === MOUSE_LEFT) { // проверка на нажатие левой кнопки мышки, обратились к свойству which этого объекта
-    evt.preventDefault();
-    activityPage(marks);// При клике на кнопку автивируем метки
-    // activityForm();
-  //  }
+    if (evt.which === MOUSE_LEFT) { // проверка на нажатие левой кнопки мышки, обратились к свойству which этого объекта
+      evt.preventDefault();
+      activityPage(marks);// При клике на кнопку автивируем метки
+      // activityForm();
+    }
   });
 
   mapPinMain.addEventListener('keydown', function (evt) {
@@ -311,18 +312,47 @@ var initEvents = function (marks) {
     }
   });
   form.addEventListener('change', function (evt) {
-    if (evt.target.id === offerRoomNumber.id || evt.target.id === offerCapacity.id) { // Метод валидации должен вызываться только при инициализации события change от одного из 2 select
-      validateaCapacity();
-    }
-    if (evt.target.id === offerTitle.id) {
-      validateaTitle();
-    }
-    if (evt.target.id === offerPrice.id || evt.target.id === offerType.id) {
-      validateaPrice();
+    var targetId = evt.target.id;
+    switch (targetId) {
+      case offerRoomNumber.id:
+      case offerCapacity.id: // Метод валидации должен вызываться только при инициализации события change от одного из 2 select
+        validateaCapacity();
+        break;
+      case offerTitle.id:
+        validateaTitle();
+        break;
+      case offerPrice.id:
+        validateaPrice();
+        break;
+      case offerType.id:
+        updatePriceLmit();
+        validateaPrice();
+        break;
+      case timeinValue.id:
+        updateTimeout();
+        break;
+      case timeoutValue.id:
+        updateTimein();
+        break;
+      default: break;
     }
   });
 };
 
+// Прописываем условия для правильного заполнения заголовка
+var validateaTitle = function () {
+  if (offerTitle.validity.tooShort) {
+    offerTitle.setCustomValidity('Заголовок должно состоять минимум из 30 символов');
+  } else if (offerTitle.validity.tooLong) {
+    offerTitle.setCustomValidity('Заголовок не должен превышать 100 символов');
+  } else if (offerTitle.validity.valueMissing) {
+    offerTitle.setCustomValidity('Введите, пожалуйста, заголовок объявления. Это обязательно поле для заполнения');
+  } else {
+    offerTitle.setCustomValidity(''); // не забыть сбросить значение поля, если это значение стало корректно.
+  }
+};
+
+// Проверяем соотвествие колличества гостей и комнат
 var validateaCapacity = function () {
   var capacityValue = offerCapacity.value; // взять значение c DOM элемента
   var roomNumber = offerRoomNumber.value; // взять значение c DOM элемента
@@ -348,46 +378,72 @@ var validateaCapacity = function () {
   }
   offerCapacity.setCustomValidity(message); // назначить DOM элементу
 };
-// Прописываем условия для правильного заполнения заголовка
-var validateaTitle = function () {
-  if (offerTitle.validity.tooShort) {
-    offerTitle.setCustomValidity('Заголовок должно состоять минимум из 30 символов');
-  } else if (offerTitle.validity.tooLong) {
-    offerTitle.setCustomValidity('Заголовок не должен превышать 100 символов');
-  } else if (offerTitle.validity.valueMissing) {
-    offerTitle.setCustomValidity('Введите, пожалуйста, заголовок объявления. Это обязательно поле для заполнения');
-  } else {
-    offerTitle.setCustomValidity(''); // не забыть сбросить значение поля, если это значение стало корректно.
+
+// Функция для обновления плейсхолдера и нижней границы стоимости проживания
+var updatePriceLmit = function () {
+  var housingTypeValue = offerType.value;
+  switch (housingTypeValue) {
+    case TYPES.BUNGALO:
+      offerPrice.placeholder = PriceNight.ZERO; // указываем, что placeholder  = 0, минимальная цена = 0
+      offerPrice.min = PriceNight.ZERO;
+      break;
+    case TYPES.FLAT:
+      offerPrice.placeholder = PriceNight.ONE_THOUSAND; // в размерке меняем placeholder  = 1000, минимальная цена = 1000
+      offerPrice.min = PriceNight.ONE_THOUSAND; // связываем плейсхолдер с минимальным значением
+      break;
+    case TYPES.HOUSE:
+      offerPrice.placeholder = PriceNight.FIVE_THOUSAND;
+      offerPrice.min = PriceNight.FIVE_THOUSAND;
+      break;
+    case TYPES.PALACE:
+      offerPrice.placeholder = PriceNight.TEN_THOUSAND;
+      offerPrice.min = PriceNight.TEN_THOUSAND;
+      break;
+    default: break;
   }
 };
 
 // Прописываем условия для правильного заполнения поля с ценой жилья
 var validateaPrice = function () {
-  var price = offerPrice.placeholder; // взять значение c DOM элемента
   var housingTypeValue = offerType.value; // взять значение c DOM элемента
 
   var message = '';
 
-  if (housingTypeValue === TYPES.BUNGALO) { // если выбран тип жилья "бунгало"
-    if (price !== PriceNight.ZERO) { // проверяем, что введенное значение не равно "0"
-      message = 'Цена должна быть не менее 1000 руб.';
+  if (offerPrice.validity.rangeUnderflow) { // проверка нижней границы стоимости жилья
+    switch (housingTypeValue) { // если housingTypeValue == TYPES.BUNGALO, то...
+      case TYPES.BUNGALO: message = 'Цена должна быть не менее 0 руб.'; break; // если выбран тип жилья "бунгало"
+      case TYPES.FLAT: message = 'Цена должна быть не менее 1000 руб.'; break; // если выбрана квартира
+      case TYPES.HOUSE: message = 'Цена должна быть не менее 5000 руб.'; break; // если выбран "дом"
+      case TYPES.PALACE: message = 'Цена должна быть не менее 10000 руб.'; break;
+      default: message = ''; break; // если пользователь ничего не ввел в поле
     }
-  } else if (housingTypeValue === TYPES.FLAT) { // если выбрана квартира
-    if (price !== PriceNight.ONE_THOUSAND) { // проверяем, что цена не равна 1000 рублей
-      message = 'Цена должна быть не менее 1000 руб.';
-    }
-  } else if (housingTypeValue === TYPES.HOUSE) { // если выбран "дом"
-    if (price !== PriceNight.FIVE_THOUSAND) { // проверяем, что цена не равна 5000 рублей
-      message = 'Цена должна быть не менее 5000 руб.';
-    }
-  } else if (housingTypeValue === TYPES.PALACE) {
-    if (price !== PriceNight.TEN_THOUSAND) {
-      message = 'Цена должна быть не более 1 000 000 руб.';
-    } else {
-      offerPrice.setCustomValidity(''); // не забыть сбросить значение поля, если это значение стало корректно.
-    }
-    offerPrice.setCustomValidity(message); // назначить DOM элементу
+  } else if (offerPrice.validity.rangeOverflow) { // проверка максимальной стоимости жилья
+    message = 'Цена должна быть не более 1 000 000 руб.';
   }
+};
+
+// функция валидации поля выезда. При изменении значения поля заезда, во втором выделяется соответствующее ему
+var updateTimeout = function () {
+  var timeoutOptions = document.querySelectorAll('#timeout option'); // нашли все select с таким id и атрибутом option
+  Array.from(timeoutOptions).forEach(function (option) { // проходимся массивом по '#timeout option'
+    if (option.value === timeinValue) { // если значение option = времени заезда,
+      option.setAttribute('selected', 'true'); // то добавляем в разметку аналогичное время методом setAttribute атрибуты selected
+    } else {
+      option.removeAttribute('selected'); // если нет, то удаляем атрибуты selected из разметки
+    }
+  });
+};
+
+// функция валидации поля заезда. При изменении значения поля выезда, во втором выделяется соответствующее ему
+var updateTimein = function () {
+  var timeinOptions = document.querySelectorAll('#timein option'); // нашли все select с таким id и атрибутом option
+  Array.from(timeinOptions).forEach(function (option) {
+    if (option.value === timeoutValue) { // если значение option = времени выезда,
+      option.setAttribute('selected', 'true'); // то, добавляем в разметку аналогичное время методом setAttribute
+    } else {
+      option.removeAttribute('selected'); // удаляем атрибуты selected из разметки
+    }
+  });
 };
 
 // Стартовые координаты главной метки
@@ -433,33 +489,12 @@ var putMainPinPositionToAddress = function (x, y) {
 //   // document.removeEventListener('keydown', onMapEscPress);
 // };
 
-// Функция связывает поле «Тип жилья» со значением минимальной цены из поля «Цена за ночь»
-// offerPropertyType.addEventListener('change', function (evt) {
-//  switch (evt.target.value) {
-//    case 'palace':
-//     changePrice(10000);
-//     break;
-//    case 'flat':
-//     changePrice(1000);
-//     break;
-//  case 'bungalo':
-//    changePrice(0);
-//    break;
-//  case 'house':
-//    changePrice(5000);
-//    break;
-//  default:
-//   changePrice(1000);
-//   break;
-// }
-// });
-
 // Добавление обработчиков синхронизации полей формы
 // offerArrival.addEventListener('change', function (evt) {
-//   offerDeparture.value = evt.target.value;
+//   timeoutValue.value = evt.target.value;
 // });
 
-// offerDeparture.addEventListener('change', function (evt) {
+// timeoutValue.addEventListener('change', function (evt) {
 //   offerArrival.value = evt.target.value;
 // });
 
