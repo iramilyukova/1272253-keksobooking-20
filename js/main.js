@@ -14,6 +14,13 @@ var TYPES = {
   BUNGALO: 'bungalo'
 };
 
+var PriceNight = {
+  ZERO: '0',
+  ONE_THOUSAND: '1000',
+  FIVE_THOUSAND: '5000',
+  TEN_THOUSAND: '10000'
+};
+
 var RoomLimit = {
   MIN: 1,
   MAX: 100
@@ -38,6 +45,7 @@ var PinLimit = {
 
 var TAIL_HEIGHT = 16;
 var ENTER_KEY = 13;
+var MOUSE_LEFT = 0;
 
 var RoomtType = {
   ONE: '1',
@@ -48,7 +56,7 @@ var RoomtType = {
 
 var GuestType = {
   ONE: '1',
-  TWO:'2',
+  TWO: '2',
   THREE: '3',
   NOT_FOR_GUEST: '100'
 };
@@ -83,6 +91,7 @@ var offerTitle = form.querySelector('#title');
 var offerPrice = form.querySelectorAll('#price');
 var offerRoomNumber = form.querySelector('#room_number');
 var offerCapacity = form.querySelector('#capacity');
+var offerType = form.querySelector('#type');
 // var offerDeparture = form.querySelector('#timeout');
 // var offerArrival = form.querySelector('#time');
 
@@ -280,25 +289,36 @@ var activityForm = function () {
 var startingPage = function () {
   activityForm(false);
   startMainPinPosition();
+  validateaTitle();
+  validateaPrice();
   validateaCapacity();
 };
 
 // Навешивание обработчиков событий
 var initEvents = function (marks) {
   mapPinMain.addEventListener('mousedown', function (evt) {
+  //  if (evt.which === MOUSE_LEFT) { // проверка на нажатие левой кнопки мышки, обратились к свойству which этого объекта
     evt.preventDefault();
     activityPage(marks);// При клике на кнопку автивируем метки
     // activityForm();
+  //  }
   });
+
   mapPinMain.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === ENTER_KEY) {
+    if (evt.key === ENTER_KEY) {
       evt.preventDefault();
       activityPage(marks);// При клике на кнопку автивируем метки
     }
   });
   form.addEventListener('change', function (evt) {
-    if (evt.target.id === offerRoomNumber.id || evt.target.id === offerCapacity.id) {//Метод валидации должен вызываться только при инициализации события change от одного из 2 select
+    if (evt.target.id === offerRoomNumber.id || evt.target.id === offerCapacity.id) { // Метод валидации должен вызываться только при инициализации события change от одного из 2 select
       validateaCapacity();
+    }
+    if (evt.target.id === offerTitle.id) {
+      validateaTitle();
+    }
+    if (evt.target.id === offerPrice.id || evt.target.id === offerType.id) {
+      validateaPrice();
     }
   });
 };
@@ -327,6 +347,47 @@ var validateaCapacity = function () {
     }
   }
   offerCapacity.setCustomValidity(message); // назначить DOM элементу
+};
+// Прописываем условия для правильного заполнения заголовка
+var validateaTitle = function () {
+  if (offerTitle.validity.tooShort) {
+    offerTitle.setCustomValidity('Заголовок должно состоять минимум из 30 символов');
+  } else if (offerTitle.validity.tooLong) {
+    offerTitle.setCustomValidity('Заголовок не должен превышать 100 символов');
+  } else if (offerTitle.validity.valueMissing) {
+    offerTitle.setCustomValidity('Введите, пожалуйста, заголовок объявления. Это обязательно поле для заполнения');
+  } else {
+    offerTitle.setCustomValidity(''); // не забыть сбросить значение поля, если это значение стало корректно.
+  }
+};
+
+// Прописываем условия для правильного заполнения поля с ценой жилья
+var validateaPrice = function () {
+  var price = offerPrice.placeholder; // взять значение c DOM элемента
+  var housingTypeValue = offerType.value; // взять значение c DOM элемента
+
+  var message = '';
+
+  if (housingTypeValue === TYPES.BUNGALO) { // если выбран тип жилья "бунгало"
+    if (price !== PriceNight.ZERO) { // проверяем, что введенное значение не равно "0"
+      message = 'Цена должна быть не менее 1000 руб.';
+    }
+  } else if (housingTypeValue === TYPES.FLAT) { // если выбрана квартира
+    if (price !== PriceNight.ONE_THOUSAND) { // проверяем, что цена не равна 1000 рублей
+      message = 'Цена должна быть не менее 1000 руб.';
+    }
+  } else if (housingTypeValue === TYPES.HOUSE) { // если выбран "дом"
+    if (price !== PriceNight.FIVE_THOUSAND) { // проверяем, что цена не равна 5000 рублей
+      message = 'Цена должна быть не менее 5000 руб.';
+    }
+  } else if (housingTypeValue === TYPES.PALACE) {
+    if (price !== PriceNight.TEN_THOUSAND) {
+      message = 'Цена должна быть не более 1 000 000 руб.';
+    } else {
+      offerPrice.setCustomValidity(''); // не забыть сбросить значение поля, если это значение стало корректно.
+    }
+    offerPrice.setCustomValidity(message); // назначить DOM элементу
+  }
 };
 
 // Стартовые координаты главной метки
@@ -392,40 +453,6 @@ var putMainPinPositionToAddress = function (x, y) {
 //   break;
 // }
 // });
-
-// Прописываем условия для правильного заполнения заголовка
-var validationTitle = function () {
-  if (offerTitle.validity.tooShort) {
-    offerTitle.setCustomValidity('Заголовок должно состоять минимум из 30 символов');
-    offerTitle.setAttribute('style', 'border-color: red');
-  } else if (offerTitle.validity.tooLong) {
-    offerTitle.setCustomValidity('Заголовок не должен превышать 100 символов');
-    offerTitle.setAttribute('style', 'border-color: red');
-  } else if (offerTitle.validity.valueMissing) {
-    offerTitle.setCustomValidity('Введите, пожалуйста, заголовок объявления. Это обязательно поле для заполнения');
-    offerTitle.setAttribute('style', 'border-color: red');
-  } else {
-    offerTitle.setCustomValidity(''); // не забыть сбросить значение поля, если это значение стало корректно.
-    offerTitle.removeAttribute('style');
-  }
-};
-
-// Прописываем условия для правильного заполнения поля с ценой жилья
-var validationPrice = function () {
-  if (offerPrice.value.length === 0) {
-    offerPrice.setCustomValidity('Введите, пожалуйста, цену. Это обязательно поле для заполнения');
-    offerPrice.setAttribute('style', 'border-color: red');
-  } else if (offerPrice.value < 1000) {
-    offerPrice.setCustomValidity('Цена должна быть не менее 1000 руб.');
-    offerPrice.setAttribute('style', 'border-color: red');
-  } else if (offerPrice.value > 1000000) {
-    offerPrice.setCustomValidity('Цена должна быть не более 1 000 000 руб.');
-    offerPrice.setAttribute('style', 'border-color: red');
-  } else {
-    offerPrice.setCustomValidity('');
-    offerPrice.removeAttribute('style');
-  }
-};
 
 // Добавление обработчиков синхронизации полей формы
 // offerArrival.addEventListener('change', function (evt) {
