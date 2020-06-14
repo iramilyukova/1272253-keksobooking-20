@@ -40,17 +40,17 @@ var TAIL_HEIGHT = 16;
 var ENTER_KEY = 13;
 
 var RoomtType = {
-  ONE: 1,
-  TWO: 2,
-  THREE: 3,
-  HUNDERT: 100
+  ONE: '1',
+  TWO: '2',
+  THREE: '3',
+  HUNDERT: '100'
 };
 
 var GuestType = {
-  ONE: 1,
-  TWO: 2,
-  THREE: 3,
-  NOT_FOR_GUEST: 100
+  ONE: '1',
+  TWO:'2',
+  THREE: '3',
+  NOT_FOR_GUEST: '100'
 };
 
 var TIMES = ['12:00', '13:00', '14:00'];
@@ -280,21 +280,25 @@ var activityForm = function () {
 var startingPage = function () {
   activityForm(false);
   startMainPinPosition();
-  // validateaCapacity();
+  validateaCapacity();
 };
 
 // Навешивание обработчиков событий
 var initEvents = function (marks) {
-  mapPinMain.tabIndex = 1;
   mapPinMain.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
     activityPage(marks);// При клике на кнопку автивируем метки
     // activityForm();
   });
   mapPinMain.addEventListener('keydown', function (evt) {
-    if (evt.keyCode == ENTER_KEY) {
+    if (evt.keyCode === ENTER_KEY) {
       evt.preventDefault();
       activityPage(marks);// При клике на кнопку автивируем метки
+    }
+  });
+  form.addEventListener('change', function (evt) {
+    if (evt.target.id === offerRoomNumber.id || evt.target.id === offerCapacity.id) {//Метод валидации должен вызываться только при инициализации события change от одного из 2 select
+      validateaCapacity();
     }
   });
 };
@@ -324,10 +328,6 @@ var validateaCapacity = function () {
   }
   offerCapacity.setCustomValidity(message); // назначить DOM элементу
 };
-
-form.addEventListener('change', function (evt) {
-  validateaCapacity();
-});
 
 // Стартовые координаты главной метки
 var startMainPinPosition = function () {
