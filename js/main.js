@@ -45,6 +45,7 @@ var PinLimit = {
 
 var TAIL_HEIGHT = 16;
 var ENTER_KEY = 13;
+var ESC_KEY = 27;
 var MOUSE_LEFT = 1;
 
 var RoomtType = {
@@ -78,13 +79,14 @@ var selects = document.querySelectorAll('select');
 var inputs = document.querySelectorAll('input');
 var mapPinMain = document.querySelector('.map__pin--main');
 var addressInput = document.querySelector('input[name="address"]');
-var mapCard = document.querySelector('.map__card');
+var popup = map.querySelector('.map__card.popup');
 var isActive = false;
 
 // var successPopup = document.querySelector('#success').content.querySelector('main');
 // var errorPopup = document.querySelector('#error').content.querySelector('main');
 // var main = document.querySelector('main');
-// var mapCard = null;
+var mapCard = null;
+
 // Переменные, связанные с формой
 
 var offerTitle = form.querySelector('#title');
@@ -186,6 +188,7 @@ var getMark = function (index) {
 // Создаем массив маркеров
 var getMarks = function (count) {
   var marks = [];
+  getEventOneMark();
 
   for (var i = 0; i < count; i++) {
     var mark = getMark(i);
@@ -212,7 +215,12 @@ var renderMarks = function (marks) {
   }
   mapPins.appendChild(fragment);
 };
-
+// функцию добавления для одной метки событие и вызывать функцию для рисования попапа.
+var getEventOneMark = function (mark) {
+  mapPinButton.addEventListener('click', function () {
+    renderMapPopup(mark);
+  });
+};
 // Заполняем объявление на карте. Клонирование
 var renderMapPopup = function (mark) {
   removeMapCard();
@@ -253,17 +261,6 @@ var renderPhotos = function (popupPhotos, photos) {
   popupPhotos.appendChild(fragment);
 };
 
-// Обработчик закрытия окна по нажатию на ESC
-// var onMapEscPress = function (evt) {
-//   if (mapCard !== null && evt.key === 'Esc') {
-//     evt.preventDefault();
-//     // скрыть попап
-//     // activityPage();
-//     // removeMapCard();// удаляем попап
-//     agetClosePage();
-//   }
-// };
-
 // Функция для перевода страницы в активное состояние
 var activityPage = function (marks) {
   isActive = true;
@@ -293,6 +290,7 @@ var startingPage = function () {
   validateaTitle();
   validateaPrice();
   validateaCapacity();
+// removeMapCard();
 };
 
 // Навешивание обработчиков событий
@@ -301,7 +299,7 @@ var initEvents = function (marks) {
     if (evt.which === MOUSE_LEFT) { // проверка на нажатие левой кнопки мышки, обратились к свойству which этого объекта
       evt.preventDefault();
       activityPage(marks);// При клике на кнопку автивируем метки
-      // activityForm();
+      activityForm();
     }
   });
 
@@ -409,16 +407,16 @@ var validateaPrice = function () {
 
   var message = '';
 
-  if (offerPrice.validity.rangeUnderflow) { // проверка нижней границы стоимости жилья
+  if (offerPrice.validity.rangeUnderflow) { // проверка нижней границы стоимости жилья (Если число в поле ввода меньше min атрибут ввода)
     switch (housingTypeValue) { // если housingTypeValue == TYPES.BUNGALO, то...
       case TYPES.BUNGALO: message = 'Цена должна быть не менее 0 руб.'; break; // если выбран тип жилья "бунгало"
       case TYPES.FLAT: message = 'Цена должна быть не менее 1000 руб.'; break; // если выбрана квартира
       case TYPES.HOUSE: message = 'Цена должна быть не менее 5000 руб.'; break; // если выбран "дом"
       case TYPES.PALACE: message = 'Цена должна быть не менее 10000 руб.'; break;
       default: message = ''; break; // если пользователь ничего не ввел в поле
-    }
+    } validateaPrice.setCustomValidity(message); // назначить DOM элементу
   } else if (offerPrice.validity.rangeOverflow) { // проверка максимальной стоимости жилья
-    message = 'Цена должна быть не более 1 000 000 руб.';
+    message = 'Цена должна быть не более 1 000 000 руб.'; // (rangeOverflow)Если число в поле ввода больше max атрибут ввода
   }
 };
 
@@ -475,11 +473,38 @@ var putMainPinPositionToAddress = function (x, y) {
 // };
 
 // Удаляем со страницы попап
-// var removeMapCard = function () {
-// if (mapCard !== null) {
-//  mapCard.remove();
-// }
-// };
+var removeMapCard = function () {
+  if (mapCard !== null) {
+    mapCard.remove();
+  }
+};
+
+// Закрываем объявление по нажатию на крестик или по нажатию на Esc
+var popupCloseHandlers = function () {
+  var popup = map.querySelector('.popup');
+  var closePopupButton = popup.querySelector('.popup__close');
+
+  closePopupButton.addEventListener('keydown', onMapEscPress);
+  closePopupButton.addEventListener('click', closePopup);
+};
+
+// Обработчик закрытия окна по нажатию на ESC
+var onMapEscPress = function (evt) {
+  if (mapCard !== null && evt.key === ESC_KEY) {
+    evt.preventDefault();
+    closePopup();
+    activityPage();
+    removeMapCard();// удаляем попап
+    // agetClosePage();
+  }
+};
+
+// Функция которая скрывает объявление при клике на крестик
+var closePopup = function () {
+  var card = map.querySelector('.map__card');
+  card.classList.add('hidden');
+  document.removeEventListener('keydown', onMapEscPress);
+};
 
 // Функция для перевода страницы в неактивное состояние!
 // var agetClosePage = function () {
@@ -488,15 +513,6 @@ var putMainPinPositionToAddress = function (x, y) {
 //   removeMapCard();
 //   // document.removeEventListener('keydown', onMapEscPress);
 // };
-
-// Добавление обработчиков синхронизации полей формы
-// offerArrival.addEventListener('change', function (evt) {
-//   timeoutValue.value = evt.target.value;
-// });
-
-// timeoutValue.addEventListener('change', function (evt) {
-//   offerArrival.value = evt.target.value;
-// });
 
 // var onError = function () {
 //   main.insertAdjacentElement('afterbegin', errorPopup);
@@ -507,5 +523,6 @@ var putMainPinPositionToAddress = function (x, y) {
 startingPage();
 var marks = getMarks(8);
 initEvents(marks);
-// activityForm();
-// renderMapPopup(marks[0]);
+activityForm();
+renderMapPopup(marks[0]);
+
