@@ -66,18 +66,18 @@ var TIMES = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'elevator', 'conditioner'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 var DESCRIPTION = ['Маленькая чистая квартира на краю города', 'Большая квартира из трех комнат в центре города', 'Однушка у парка'];
-var mapPins = document.querySelector('.map__pins');
+var mapPins = document.querySelector('.map__pins'); // метки объявлений
+// var mapPin = document.querySelector('.map__pin'); // меткa объявлений
 var map = document.querySelector('.map');
 var form = document.querySelector('.ad-form');
-var mapPinButton = document.querySelector('.map__pin');
+var mapPinMain = document.querySelector('.map__pin--main');
 var mapPinButtonMain = document.querySelector('.map__pin.map__pin--main');
 var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var mapFiltersContainer = document.querySelector('.map__filters-container');
-var adTemplate = document.querySelector('#card').content.querySelector('.map__card.popup');
+var mapCardPopupTemplate = document.querySelector('#card').content.querySelector('.map__card.popup');
 var fieldsets = document.querySelectorAll('fieldset');
 var selects = document.querySelectorAll('select');
 var inputs = document.querySelectorAll('input');
-var mapPinMain = document.querySelector('.map__pin--main');
 var addressInput = document.querySelector('input[name="address"]');
 var popup = map.querySelector('.map__card.popup');
 var isActive = false;
@@ -155,7 +155,7 @@ var generateAvatar = function (index) {
   return 'img/avatars/user0' + (index + 1) + '.png';
 };
 
-// Функция, возвращающая массив объектов объявлений
+// Функция, возвращающая одну метки объявлений, заполенной данными
 var getMark = function (index) {
 
   for (var i = 0; i < COUNT_USERS; i++) {
@@ -185,21 +185,20 @@ var getMark = function (index) {
   return mark;
 };
 
-// Создаем массив маркеров
+// Создаем массив заполненных данными маркеров
 var getMarks = function (count) {
-  var marks = [];
-  getEventOneMark();
+  var marks = []; // записываем каждую заполненную метку в массив
 
   for (var i = 0; i < count; i++) {
-    var mark = getMark(i);
-    marks.push(mark);
+    var mark = getMark(i); // одна конкретная заполненная метка
+    marks.push(mark); // отправляем каждую метку в массив
   }
   return marks;
 };
 
-// Отрисовываем метки на карте
+// Отрисовываем метки на карте, клонирование
 var getMarkFragment = function (mark) {
-  var mapPoint = mapPinTemplate.cloneNode(true);
+  var mapPoint = mapPinTemplate.cloneNode(true); // клонируем метку со всем ее содержимым
   mapPoint.style.top = (mark.location.y - PinSize.HEIGHT) + 'px';
   mapPoint.style.left = mark.location.x - (PinSize.WIDTH / 2) + 'px';
   mapPoint.querySelector('img').src = mark.author.avatar;
@@ -208,23 +207,58 @@ var getMarkFragment = function (mark) {
 };
 
 // Записываем все метки во fragment
-var renderMarks = function (marks) {
+var renderMarks = function (marks) { // указали параметр со всеми заполенными данными марками
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < marks.length; i++) {
-    fragment.appendChild(getMarkFragment(marks[i]));
+    var mark = marks[i]; // записали в переменную конкретного марка из массива с заполенными данными марками
+    var pin = getMarkFragment(mark); // ссылаемся на функцию отрисовки метки и отрисовываем каждого текущего марка на карте
+    fragment.appendChild(pin);
+
+    addMarkEventHeandlers(pin, mark);
   }
-  mapPins.appendChild(fragment);
+  mapPins.appendChild(fragment); // добавили фрагмент в блок с метками объявлений
 };
-// функцию добавления для одной метки событие и вызывать функцию для рисования попапа.
-var getEventOneMark = function (mark) {
-  mapPinButton.addEventListener('click', function () {
-    renderMapPopup(mark);
+
+// функцию добавления для одной метки обработчика события.
+var addMarkEventHeandlers = function (pin, mark) { // параметры: фрагмент отрисовки марка на карте и текущая марка
+  pin.addEventListener('click', function () { // на отрисованного марка на карте вешаем обработчик клика
+    renderMapPopup(mark); // при нажатии вызывать функцию для рисования попапа
+    popupCloseHandlers(); // закрытие на крестик
+  });
+  pin.addEventListener('keydown', function (evt) {
+    if (evt.key === ENTER_KEY) {
+      evt.preventDefault();
+      renderMapPopup(mark);// При клике на "энер" появится попап
+    }
   });
 };
+
+// Обработчик закрытия окна по нажатию на ESC
+var onPopupEscPress = function (evt) {
+  if (mapCard !== null) {
+    evt.preventDefault();
+    removePopup();// удаляем попап
+    // agetClosePage();
+  }
+};
+// Удаляем со страницы попап
+var removePopup = function () {
+  if (mapCard !== null) { // если ссылка на дом-элемент не пустая
+    mapCard.remove(); // удалить
+  }
+};
+
+// Закрываем объявление по нажатию на крестик или по нажатию на Esc
+var popupCloseHandlers = function () {
+  var closePopupButton = document.querySelector('.popup__close');
+  document.addEventListener('keydown', onPopupEscPress);
+  closePopupButton.addEventListener('click', removePopup);
+};
+
 // Заполняем объявление на карте. Клонирование
 var renderMapPopup = function (mark) {
-  removeMapCard();
-  mapCard = adTemplate.cloneNode(true);
+  removePopup();
+  mapCard = mapCardPopupTemplate.cloneNode(true);
   mapCard.querySelector('.popup__title').textContent = mark.offer.title;
   mapCard.querySelector('.popup__text--address').textContent = mark.offer.address;
   mapCard.querySelector('.popup__text--price').textContent = mark.offer.price + ' ₽/ночь';
@@ -262,17 +296,17 @@ var renderPhotos = function (popupPhotos, photos) {
 };
 
 // Функция для перевода страницы в активное состояние
-var activityPage = function (marks) {
+var activateMap = function (marks) {
   isActive = true;
   map.classList.remove('map--faded');// Активируем карту
   form.classList.remove('ad-form--disabled');// Активируем форму
   renderMarks(marks);// Показываем все метки на странице
   startMainPinPosition();
-  activityForm();
+  checkActivationStatus();
 };
 
 // Функция для проверки состояния активации формы (fieldset)
-var activityForm = function () {
+var checkActivationStatus = function () {
   Array.from(fieldsets).forEach(function (fieldset) {
     fieldset.disabled = !isActive; // Если страница не активная то fieldset выключен.
   });
@@ -285,12 +319,11 @@ var activityForm = function () {
 };
 
 var startingPage = function () {
-  activityForm(false);
+  checkActivationStatus();
   startMainPinPosition();
   validateaTitle();
   validateaPrice();
   validateaCapacity();
-// removeMapCard();
 };
 
 // Навешивание обработчиков событий
@@ -298,15 +331,15 @@ var initEvents = function (marks) {
   mapPinMain.addEventListener('mousedown', function (evt) {
     if (evt.which === MOUSE_LEFT) { // проверка на нажатие левой кнопки мышки, обратились к свойству which этого объекта
       evt.preventDefault();
-      activityPage(marks);// При клике на кнопку автивируем метки
-      activityForm();
+      activateMap(marks);// При клике на кнопку автивируем метки
+      checkActivationStatus();
     }
   });
 
   mapPinMain.addEventListener('keydown', function (evt) {
     if (evt.key === ENTER_KEY) {
       evt.preventDefault();
-      activityPage(marks);// При клике на кнопку автивируем метки
+      activateMap(marks);// При клике на кнопку автивируем метки
     }
   });
   form.addEventListener('change', function (evt) {
@@ -414,10 +447,11 @@ var validateaPrice = function () {
       case TYPES.HOUSE: message = 'Цена должна быть не менее 5000 руб.'; break; // если выбран "дом"
       case TYPES.PALACE: message = 'Цена должна быть не менее 10000 руб.'; break;
       default: message = ''; break; // если пользователь ничего не ввел в поле
-    } validateaPrice.setCustomValidity(message); // назначить DOM элементу
+    }
   } else if (offerPrice.validity.rangeOverflow) { // проверка максимальной стоимости жилья
     message = 'Цена должна быть не более 1 000 000 руб.'; // (rangeOverflow)Если число в поле ввода больше max атрибут ввода
   }
+  offerPrice.setCustomValidity(message); // назначить DOM элементу
 };
 
 // функция валидации поля выезда. При изменении значения поля заезда, во втором выделяется соответствующее ему
@@ -472,46 +506,12 @@ var putMainPinPositionToAddress = function (x, y) {
 //   });
 // };
 
-// Удаляем со страницы попап
-var removeMapCard = function () {
-  if (mapCard !== null) {
-    mapCard.remove();
-  }
-};
-
-// Закрываем объявление по нажатию на крестик или по нажатию на Esc
-var popupCloseHandlers = function () {
-  var popup = map.querySelector('.popup');
-  var closePopupButton = popup.querySelector('.popup__close');
-
-  closePopupButton.addEventListener('keydown', onMapEscPress);
-  closePopupButton.addEventListener('click', closePopup);
-};
-
-// Обработчик закрытия окна по нажатию на ESC
-var onMapEscPress = function (evt) {
-  if (mapCard !== null && evt.key === ESC_KEY) {
-    evt.preventDefault();
-    closePopup();
-    activityPage();
-    removeMapCard();// удаляем попап
-    // agetClosePage();
-  }
-};
-
-// Функция которая скрывает объявление при клике на крестик
-var closePopup = function () {
-  var card = map.querySelector('.map__card');
-  card.classList.add('hidden');
-  document.removeEventListener('keydown', onMapEscPress);
-};
-
 // Функция для перевода страницы в неактивное состояние!
 // var agetClosePage = function () {
 //   // map.classList.add('map--faded');
 //   // removeMarks();
-//   removeMapCard();
-//   // document.removeEventListener('keydown', onMapEscPress);
+//   removePopup();
+//   // document.removeEventListener('keydown', onPopupEscPress);
 // };
 
 // var onError = function () {
@@ -523,6 +523,3 @@ var closePopup = function () {
 startingPage();
 var marks = getMarks(8);
 initEvents(marks);
-activityForm();
-renderMapPopup(marks[0]);
-
