@@ -245,6 +245,7 @@ var onPopupEscPress = function (evt) {
 var removePopup = function () {
   if (mapCard !== null) { // если ссылка на дом-элемент не пустая
     mapCard.remove(); // удалить
+    document.removeEventListener('keydown', onPopupEscPress);
   }
 };
 
