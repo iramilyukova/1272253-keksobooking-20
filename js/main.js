@@ -67,10 +67,8 @@ var FEATURES = ['wifi', 'dishwasher', 'parking', 'elevator', 'conditioner'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 var DESCRIPTION = ['Маленькая чистая квартира на краю города', 'Большая квартира из трех комнат в центре города', 'Однушка у парка'];
 var mapPins = document.querySelector('.map__pins'); // метки объявлений
-// var mapPin = document.querySelector('.map__pin'); // меткa объявлений
 var map = document.querySelector('.map');
 var form = document.querySelector('.ad-form');
-var mapPinMain = document.querySelector('.map__pin--main');
 var mapPinButtonMain = document.querySelector('.map__pin.map__pin--main');
 var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var mapFiltersContainer = document.querySelector('.map__filters-container');
@@ -79,7 +77,6 @@ var fieldsets = document.querySelectorAll('fieldset');
 var selects = document.querySelectorAll('select');
 var inputs = document.querySelectorAll('input');
 var addressInput = document.querySelector('input[name="address"]');
-var popup = map.querySelector('.map__card.popup');
 var isActive = false;
 
 // var successPopup = document.querySelector('#success').content.querySelector('main');
@@ -251,7 +248,8 @@ var removePopup = function () {
 
 // Закрываем объявление по нажатию на крестик или по нажатию на Esc
 var popupCloseHandlers = function () {
-  var closePopupButton = document.querySelector('.popup__close');
+  var popup = map.querySelector('.map__card.popup');
+  var closePopupButton = popup.querySelector('.popup__close');
   document.addEventListener('keydown', onPopupEscPress);
   closePopupButton.addEventListener('click', removePopup);
 };
@@ -329,7 +327,7 @@ var startingPage = function () {
 
 // Навешивание обработчиков событий
 var initEvents = function (marks) {
-  mapPinMain.addEventListener('mousedown', function (evt) {
+  mapPinButtonMain.addEventListener('mousedown', function (evt) {
     if (evt.which === MOUSE_LEFT) { // проверка на нажатие левой кнопки мышки, обратились к свойству which этого объекта
       evt.preventDefault();
       activateMap(marks);// При клике на кнопку автивируем метки
@@ -337,7 +335,7 @@ var initEvents = function (marks) {
     }
   });
 
-  mapPinMain.addEventListener('keydown', function (evt) {
+  mapPinButtonMain.addEventListener('keydown', function (evt) {
     if (evt.key === ENTER_KEY) {
       evt.preventDefault();
       activateMap(marks);// При клике на кнопку автивируем метки
