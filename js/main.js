@@ -34,6 +34,7 @@ var GuestLimit = {
 var PinSize = {
   WIDTH: 66,
   HEIGHT: 66,
+  TAIL_HEIGHT: 16
 };
 
 var PinLimit = {
@@ -43,10 +44,11 @@ var PinLimit = {
   MAX_Y: 600,
 };
 
-var TAIL_HEIGHT = 16;
-var ENTER_KEY = 13;
-var ESC_KEY = 27;
-var MOUSE_LEFT = 1;
+var keyPad = {
+  ENTER_KEY: 13,
+  ESC_KEY: 27,
+  MOUSE_LEFT: 1
+};
 
 var RoomtType = {
   ONE: '1',
@@ -91,8 +93,6 @@ var offerPrice = form.querySelector('#price');
 var offerRoomNumber = form.querySelector('#room_number');
 var offerCapacity = form.querySelector('#capacity');
 var offerType = form.querySelector('#type');
-var timeinValue = document.querySelector('#timein').value;
-var timeoutValue = form.querySelector('#timeout').value;
 // var offerArrival = form.querySelector('#time');
 
 // Переводим название типов жилья на русский
@@ -220,13 +220,6 @@ var renderMarks = function (marks) { // указали параметр со в�
 var addMarkEventHeandlers = function (pin, mark) { // параметры: фрагмент отрисовки марка на карте и текущая марка
   pin.addEventListener('click', function () { // на отрисованного марка на карте вешаем обработчик клика
     renderMapPopup(mark); // при нажатии вызывать функцию для рисования попапа
-    popupCloseHandlers(); // закрытие на крестик
-  });
-  pin.addEventListener('keydown', function (evt) {
-    if (evt.key === ENTER_KEY) {
-      evt.preventDefault();
-      renderMapPopup(mark);// При клике на "энер" появится попап
-    }
   });
 };
 
@@ -246,18 +239,10 @@ var removePopup = function () {
   }
 };
 
-// Закрываем объявление по нажатию на крестик или по нажатию на Esc
-var popupCloseHandlers = function () {
-  var popup = map.querySelector('.map__card.popup');
-  var closePopupButton = popup.querySelector('.popup__close');
-  document.addEventListener('keydown', onPopupEscPress);
-  closePopupButton.addEventListener('click', removePopup);
-};
-
 // Заполняем объявление на карте. Клонирование
 var renderMapPopup = function (mark) {
   removePopup();
-  mapCard = mapCardPopupTemplate.cloneNode(true);
+  mapCard = mapCardPopupTemplate.cloneNode(true); // склонированный попап
   mapCard.querySelector('.popup__title').textContent = mark.offer.title;
   mapCard.querySelector('.popup__text--address').textContent = mark.offer.address;
   mapCard.querySelector('.popup__text--price').textContent = mark.offer.price + ' ₽/ночь';
@@ -268,6 +253,10 @@ var renderMapPopup = function (mark) {
   mapCard.querySelector('.popup__avatar').src = mark.author.avatar;
   renderPhotoContainer(mapCard, mark.offer.photos);
   mapFiltersContainer.insertAdjacentElement('beforebegin', mapCard);
+
+  var closePopupButton = mapCard.querySelector('.popup__close');// Закрываем объявление по нажатию на крестик или по нажатию на Esc
+  document.addEventListener('keydown', onPopupEscPress);
+  closePopupButton.addEventListener('click', removePopup);
 };
 
 // Функция проверки конейнера с фотографиями на наличие фото
@@ -320,15 +309,15 @@ var checkActivationStatus = function () {
 var startingPage = function () {
   checkActivationStatus();
   startMainPinPosition();
-  validateaTitle();
-  validateaPrice();
-  validateaCapacity();
+  validateTitle();
+  validatePrice();
+  validateCapacity();
 };
 
 // Навешивание обработчиков событий
 var initEvents = function (marks) {
   mapPinButtonMain.addEventListener('mousedown', function (evt) {
-    if (evt.which === MOUSE_LEFT) { // проверка на нажатие левой кнопки мышки, обратились к свойству which этого объекта
+    if (evt.which === keyPad.MOUSE_LEFT) { // проверка на нажатие левой кнопки мышки, обратились к свойству which этого объекта
       evt.preventDefault();
       activateMap(marks);// При клике на кнопку автивируем метки
       checkActivationStatus();
@@ -336,7 +325,7 @@ var initEvents = function (marks) {
   });
 
   mapPinButtonMain.addEventListener('keydown', function (evt) {
-    if (evt.key === ENTER_KEY) {
+    if (evt.key === keyPad.ENTER_KEY) {
       evt.preventDefault();
       activateMap(marks);// При клике на кнопку автивируем метки
     }
@@ -346,17 +335,17 @@ var initEvents = function (marks) {
     switch (targetId) {
       case offerRoomNumber.id:
       case offerCapacity.id: // Метод валидации должен вызываться только при инициализации события change от одного из 2 select
-        validateaCapacity();
+        validateCapacity();
         break;
       case offerTitle.id:
-        validateaTitle();
+        validateTitle();
         break;
       case offerPrice.id:
-        validateaPrice();
+        validatePrice();
         break;
       case offerType.id:
         updatePriceLmit();
-        validateaPrice();
+        validatePrice();
         break;
       case timeinValue.id:
         updateTimeout();
@@ -370,7 +359,7 @@ var initEvents = function (marks) {
 };
 
 // Прописываем условия для правильного заполнения заголовка
-var validateaTitle = function () {
+var validateTitle = function () {
   if (offerTitle.validity.tooShort) {
     offerTitle.setCustomValidity('Заголовок должно состоять минимум из 30 символов');
   } else if (offerTitle.validity.tooLong) {
@@ -383,7 +372,7 @@ var validateaTitle = function () {
 };
 
 // Проверяем соотвествие колличества гостей и комнат
-var validateaCapacity = function () {
+var validateCapacity = function () {
   var capacityValue = offerCapacity.value; // взять значение c DOM элемента
   var roomNumber = offerRoomNumber.value; // взять значение c DOM элемента
 
@@ -434,7 +423,7 @@ var updatePriceLmit = function () {
 };
 
 // Прописываем условия для правильного заполнения поля с ценой жилья
-var validateaPrice = function () {
+var validatePrice = function () {
   var housingTypeValue = offerType.value; // взять значение c DOM элемента
 
   var message = '';
@@ -455,9 +444,10 @@ var validateaPrice = function () {
 
 // функция валидации поля выезда. При изменении значения поля заезда, во втором выделяется соответствующее ему
 var updateTimeout = function () {
+  var timeoutValue = form.querySelector('#timeout');
   var timeoutOptions = document.querySelectorAll('#timeout option'); // нашли все select с таким id и атрибутом option
   Array.from(timeoutOptions).forEach(function (option) { // проходимся массивом по '#timeout option'
-    if (option.value === timeinValue) { // если значение option = времени заезда,
+    if (option.value === timeoutValue) { // если значение option = времени заезда,
       option.setAttribute('selected', 'true'); // то добавляем в разметку аналогичное время методом setAttribute атрибуты selected
     } else {
       option.removeAttribute('selected'); // если нет, то удаляем атрибуты selected из разметки
@@ -467,9 +457,10 @@ var updateTimeout = function () {
 
 // функция валидации поля заезда. При изменении значения поля выезда, во втором выделяется соответствующее ему
 var updateTimein = function () {
+  var timeinValue = document.querySelector('#timein');
   var timeinOptions = document.querySelectorAll('#timein option'); // нашли все select с таким id и атрибутом option
   Array.from(timeinOptions).forEach(function (option) {
-    if (option.value === timeoutValue) { // если значение option = времени выезда,
+    if (option.value === timeinValue) { // если значение option = времени выезда,
       option.setAttribute('selected', 'true'); // то, добавляем в разметку аналогичное время методом setAttribute
     } else {
       option.removeAttribute('selected'); // удаляем атрибуты selected из разметки
@@ -484,7 +475,7 @@ var startMainPinPosition = function () {
 
   if (isActive) {
     x = mapPinButtonMain.offsetLeft + (PinSize.HEIGHT / 2);
-    y = mapPinButtonMain.offsetTop + (PinSize.HEIGHT / 2) + TAIL_HEIGHT;
+    y = mapPinButtonMain.offsetTop + (PinSize.HEIGHT / 2) + PinSize.TAIL_HEIGHT;
   } else {
     x = mapPinButtonMain.offsetLeft + (PinSize.WIDTH / 2);
     y = mapPinButtonMain.offsetTop + PinSize.HEIGHT / 2;
