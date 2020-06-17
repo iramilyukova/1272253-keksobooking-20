@@ -44,9 +44,10 @@ var PinLimit = {
   MAX_Y: 600,
 };
 
-var keyPad = {
-  ENTER_KEY: 13,
-  ESC_KEY: 27,
+// Код клавиш для обработки событий
+var KEY_CODE = {
+  ENTER: 13,
+  ESC: 27,
   MOUSE_LEFT: 1
 };
 
@@ -92,6 +93,8 @@ var offerTitle = form.querySelector('#title');
 var offerPrice = form.querySelector('#price');
 var offerRoomNumber = form.querySelector('#room_number');
 var offerCapacity = form.querySelector('#capacity');
+var timeOut = form.querySelector('#timeout');
+var timeIn = document.querySelector('#timein');
 var offerType = form.querySelector('#type');
 // var offerArrival = form.querySelector('#time');
 
@@ -224,18 +227,19 @@ var addMarkEventHeandlers = function (pin, mark) { // параметры: фра
 };
 
 // Обработчик закрытия окна по нажатию на ESC
-var onPopupEscPress = function (evt) {
-  if (mapCard !== null) {
+var onPopupPress = function (evt) {
+  if (mapCard !== null && evt.keyCode === KEY_CODE.ESC) {
     evt.preventDefault();
     removePopup();// удаляем попап
     // agetClosePage();
   }
 };
+
 // Удаляем со страницы попап
 var removePopup = function () {
-  if (mapCard !== null) { // если ссылка на дом-элемент не пустая
-    mapCard.remove(); // удалить
-    document.removeEventListener('keydown', onPopupEscPress);
+  if (mapCard !== null) { // если ссылка на дом-элемент не пустая, т.е уже открыто одно объявление
+    mapCard.remove(); // то удалить, чтобы на странице было показано только одно
+    document.removeEventListener('keydown', onPopupPress);
   }
 };
 
@@ -255,8 +259,8 @@ var renderMapPopup = function (mark) {
   mapFiltersContainer.insertAdjacentElement('beforebegin', mapCard);
 
   var closePopupButton = mapCard.querySelector('.popup__close');// Закрываем объявление по нажатию на крестик или по нажатию на Esc
-  document.addEventListener('keydown', onPopupEscPress);
-  closePopupButton.addEventListener('click', removePopup);
+  document.addEventListener('keydown', onPopupPress); // Закрываем объявление по нажатию на Esc
+  closePopupButton.addEventListener('click', removePopup); // Закрываем объявление по нажатию на крестик
 };
 
 // Функция проверки конейнера с фотографиями на наличие фото
@@ -317,7 +321,7 @@ var startingPage = function () {
 // Навешивание обработчиков событий
 var initEvents = function (marks) {
   mapPinButtonMain.addEventListener('mousedown', function (evt) {
-    if (evt.which === keyPad.MOUSE_LEFT) { // проверка на нажатие левой кнопки мышки, обратились к свойству which этого объекта
+    if (evt.which === KEY_CODE.MOUSE_LEFT) { // проверка на нажатие левой кнопки мышки, обратились к свойству which этого объекта
       evt.preventDefault();
       activateMap(marks);// При клике на кнопку автивируем метки
       checkActivationStatus();
@@ -325,7 +329,7 @@ var initEvents = function (marks) {
   });
 
   mapPinButtonMain.addEventListener('keydown', function (evt) {
-    if (evt.key === keyPad.ENTER_KEY) {
+    if (evt.keyCode === KEY_CODE.ENTER) {
       evt.preventDefault();
       activateMap(marks);// При клике на кнопку автивируем метки
     }
@@ -347,10 +351,10 @@ var initEvents = function (marks) {
         updatePriceLmit();
         validatePrice();
         break;
-      case timeinValue.id:
+      case timeIn.id:
         updateTimeout();
         break;
-      case timeoutValue.id:
+      case timeOut.id:
         updateTimein();
         break;
       default: break;
@@ -444,10 +448,9 @@ var validatePrice = function () {
 
 // функция валидации поля выезда. При изменении значения поля заезда, во втором выделяется соответствующее ему
 var updateTimeout = function () {
-  var timeoutValue = form.querySelector('#timeout');
   var timeoutOptions = document.querySelectorAll('#timeout option'); // нашли все select с таким id и атрибутом option
   Array.from(timeoutOptions).forEach(function (option) { // проходимся массивом по '#timeout option'
-    if (option.value === timeoutValue) { // если значение option = времени заезда,
+    if (option.value === timeOut.value) { // если значение option = времени выезда,
       option.setAttribute('selected', 'true'); // то добавляем в разметку аналогичное время методом setAttribute атрибуты selected
     } else {
       option.removeAttribute('selected'); // если нет, то удаляем атрибуты selected из разметки
@@ -457,10 +460,9 @@ var updateTimeout = function () {
 
 // функция валидации поля заезда. При изменении значения поля выезда, во втором выделяется соответствующее ему
 var updateTimein = function () {
-  var timeinValue = document.querySelector('#timein');
   var timeinOptions = document.querySelectorAll('#timein option'); // нашли все select с таким id и атрибутом option
   Array.from(timeinOptions).forEach(function (option) {
-    if (option.value === timeinValue) { // если значение option = времени выезда,
+    if (option.value === timeIn.value) { // если значение option = времени заезда,
       option.setAttribute('selected', 'true'); // то, добавляем в разметку аналогичное время методом setAttribute
     } else {
       option.removeAttribute('selected'); // удаляем атрибуты selected из разметки
@@ -501,7 +503,7 @@ var putMainPinPositionToAddress = function (x, y) {
 //   // map.classList.add('map--faded');
 //   // removeMarks();
 //   removePopup();
-//   // document.removeEventListener('keydown', onPopupEscPress);
+//   // document.removeEventListener('keydown', onPopupPress);
 // };
 
 // var onError = function () {
