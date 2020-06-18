@@ -198,28 +198,26 @@ var getMarks = function (count) {
 
 // Отрисовываем метки на карте, клонирование
 var getMarkFragment = function (mark) {
-  var mapPoint = mapPinTemplate.cloneNode(true); // клонируем метку со всем ее содержимым
+  var mapPoint = mapPinTemplate.cloneNode(true); // клонируем метку со всем ее содержимым, создается копия дом-элемента
   mapPoint.style.top = (mark.location.y - PinSize.HEIGHT) + 'px';
   mapPoint.style.left = mark.location.x - (PinSize.WIDTH / 2) + 'px';
   mapPoint.querySelector('img').src = mark.author.avatar;
   mapPoint.querySelector('img').alt = mark.offer.title;
-  return mapPoint;
+  return mapPoint; // вернули из функции переменную со ссылкой на получившийся дом-элемент
 };
 
 // Записываем все метки во fragment
-var renderMarks = function (marks) { // указали параметр со всеми заполенными данными марками
-  var fragment = document.createDocumentFragment();
+var renderMarks = function (marks) { // указали параметр со всеми заполенными данными, которые должны быть представлены на странице в виде HTML разметки. Это объекту, которые лежат в массиве
+  var fragment = document.createDocumentFragment(); // клонируется темплейт
   for (var i = 0; i < marks.length; i++) {
     var mark = marks[i]; // записали в переменную конкретного марка из массива с заполенными данными марками
-    var pin = getMarkFragment(mark); // ссылаемся на функцию отрисовки метки и отрисовываем каждого текущего марка на карте
-    fragment.appendChild(pin);
-
-    addMarkEventHeandlers(pin, mark);
+    var pin = getMarkFragment(mark); // ссылаемся на функцию отрисовки метки (на дом-элемент, который мы склонировали с помощью темплейта) и отрисовываем каждого текущего марка на карте
+    fragment.appendChild(pin); // сложили все во фрагмент
+    addMarkEventHeandlers(pin, mark); // навесили обработчики событий
   }
-  mapPins.appendChild(fragment); // добавили фрагмент в блок с метками объявлений
+  mapPins.appendChild(fragment); // добавили фрагмент в блок с метками объявлений(в дом-дерево)
 };
-
-// функцию добавления для одной метки обработчика события.
+// функция добавления для одной метки обработчика события.
 var addMarkEventHeandlers = function (pin, mark) { // параметры: фрагмент отрисовки марка на карте и текущая марка
   pin.addEventListener('click', function () { // на отрисованного марка на карте вешаем обработчик клика
     renderMapPopup(mark); // при нажатии вызывать функцию для рисования попапа
@@ -316,6 +314,7 @@ var startingPage = function () {
   validateTitle();
   validatePrice();
   validateCapacity();
+  updateTimes(timeIn.Id); // передаем параметром время заезда
 };
 
 // Навешивание обработчиков событий
@@ -324,7 +323,6 @@ var initEvents = function (marks) {
     if (evt.which === KEY_CODE.MOUSE_LEFT) { // проверка на нажатие левой кнопки мышки, обратились к свойству which этого объекта
       evt.preventDefault();
       activateMap(marks);// При клике на кнопку автивируем метки
-      checkActivationStatus();
     }
   });
 
@@ -351,14 +349,9 @@ var initEvents = function (marks) {
         updatePriceLmit();
         validatePrice();
         break;
-      case timeIn.id:
-        updateTimeout();
-        break;
-      case timeOut.id:
-        updateTimein();
-        break;
       default: break;
     }
+    updateTimes(targetId);
   });
 };
 
@@ -400,6 +393,17 @@ var validateCapacity = function () {
     }
   }
   offerCapacity.setCustomValidity(message); // назначить DOM элементу
+};
+
+var updateTimes = function (elementId) {
+  switch (elementId) {
+    case timeIn.id:
+      timeOut.value = timeIn.value;
+      break;
+    case timeOut.id:
+      timeIn.value = timeOut.value;
+      break;
+  }
 };
 
 // Функция для обновления плейсхолдера и нижней границы стоимости проживания
@@ -444,30 +448,6 @@ var validatePrice = function () {
     message = 'Цена должна быть не более 1 000 000 руб.'; // (rangeOverflow)Если число в поле ввода больше max атрибут ввода
   }
   offerPrice.setCustomValidity(message); // назначить DOM элементу
-};
-
-// функция валидации поля выезда. При изменении значения поля заезда, во втором выделяется соответствующее ему
-var updateTimeout = function () {
-  var timeoutOptions = document.querySelectorAll('#timeout option'); // нашли все select с таким id и атрибутом option
-  Array.from(timeoutOptions).forEach(function (option) { // проходимся массивом по '#timeout option'
-    if (option.value === timeOut.value) { // если значение option = времени выезда,
-      option.setAttribute('selected', 'true'); // то добавляем в разметку аналогичное время методом setAttribute атрибуты selected
-    } else {
-      option.removeAttribute('selected'); // если нет, то удаляем атрибуты selected из разметки
-    }
-  });
-};
-
-// функция валидации поля заезда. При изменении значения поля выезда, во втором выделяется соответствующее ему
-var updateTimein = function () {
-  var timeinOptions = document.querySelectorAll('#timein option'); // нашли все select с таким id и атрибутом option
-  Array.from(timeinOptions).forEach(function (option) {
-    if (option.value === timeIn.value) { // если значение option = времени заезда,
-      option.setAttribute('selected', 'true'); // то, добавляем в разметку аналогичное время методом setAttribute
-    } else {
-      option.removeAttribute('selected'); // удаляем атрибуты selected из разметки
-    }
-  });
 };
 
 // Стартовые координаты главной метки
