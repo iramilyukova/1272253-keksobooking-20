@@ -2,6 +2,6 @@
 
 (function () {
   window.form.startingPage();
-  var marks = window.map.getMarks(8);
-  window.map.initEvents(marks);
+  var marks = window.data.getMarks(8);
+  window.map.initMainPinEvents(marks);
 })();

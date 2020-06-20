@@ -1,24 +1,34 @@
 'use strict';
 
 (function () {
-  var ESC_KEYCODE = 27;
-  var ENTER_KEYCODE = 13;
-  var MOUSE_LEFT = 1;
+  var KEY_CODE = {
+    ESC: 27,
+    ENTER: 13,
+    MOUSE_LEFT: 1
+  };
 
-  window.util = {
-    isEscEvent: function (evt, action) {
-      if (evt.keyCode === ESC_KEYCODE) {
-        action();
-      }
-    },
-    isEnterEvent: function (evt, action) {
-      if (evt.keyCode === ENTER_KEYCODE) {
-        action();
-      }
-    },
-    isMouseLeftEvent: function (evt) {
-      if (evt.which === MOUSE_LEFT) { // проверка на нажатие левой кнопки мышки, обратились к свойству which этого объекта
-      }
-    },
+  var isEscEvent = function (evt, action) {
+    if (evt.keyCode === KEY_CODE.ESC) {
+      action();
+    }
+  };
+
+  var isEnterEvent = function (evt, action) {
+    if (evt.keyCode === KEY_CODE.ENTER) {
+      action();
+    }
+  };
+
+  var isMouseLeftEvent = function (evt, action) {
+    if (evt.which === KEY_CODE.MOUSE_LEFT) { // проверка на нажатие левой кнопки мышки, обратились к свойству which этого объекта
+      action();
+    }
+  };
+
+  window.utils = {
+    isEscEvent: isEscEvent,
+    isEnterEvent: isEnterEvent,
+    isMouseLeftEvent: isMouseLeftEvent
   };
 })();
+

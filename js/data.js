@@ -1,7 +1,27 @@
 'use strict';
 
 (function () {
-// Переводим название типов жилья на русский
+  var COUNT_USERS = 8;
+
+  var PinLimit = {
+    MIN_X: 300,
+    MAX_X: 900,
+    MIN_Y: 130,
+    MAX_Y: 600,
+  };
+
+  var TITLE = ['Уютное гнездышко для молодоженов', 'Милая, уютная квартирка в центре Токио', 'Большая уютная квартира'];
+  var PriseLimit = {
+    MIN: 1000,
+    MAX: 1000000
+  };
+
+  var DESCRIPTION = ['Маленькая чистая квартира на краю города', 'Большая квартира из трех комнат в центре города', 'Однушка у парка'];
+  var FEATURES = ['wifi', 'dishwasher', 'parking', 'elevator', 'conditioner'];
+  var TIMES = ['12:00', '13:00', '14:00'];
+  var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
+
+  // Переводим название типов жилья на русский
   var translateType = function (type) {
     switch (type) {
       case 'palace':
@@ -54,11 +74,57 @@
     return randomItems;
   };
 
+  // Работаем с массивом аватарок
+  var generateAvatar = function (index) {
+    return 'img/avatars/user0' + (index + 1) + '.png';
+  };
+
+  // Функция, возвращающая одну метку объявлений, заполенной данными
+  var getMark = function (index) {
+
+    for (var i = 0; i < COUNT_USERS; i++) {
+      var mark = {
+        author: {
+          avatar: generateAvatar(index),
+        },
+        offer: {
+          title: window.data.getRandomItem(TITLE),
+          address: '600, 350', // строка, адрес предложения
+          price: window.data.getRandomValue(PriseLimit.MIN, PriseLimit.MAX),
+          rooms: window.data.getRandomValue(window.form.RoomLimit.MIN, window.form.RoomLimit.MAX),
+          type: window.data.translateType(window.form.TYPES),
+          guests: window.data.getRandomValue(window.form.GuestLimit.MIN, window.form.GuestLimit.MAX),
+          checkin: window.data.getRandomItem(TIMES),
+          checkout: window.data.getRandomItem(TIMES),
+          features: window.data.getRandomFeatures(4, FEATURES), // массив строк случайной длины из ниже предложенных
+          description: window.data.getRandomItem(DESCRIPTION), // строка с описанием
+          photos: window.data.getRandomItems(4, PHOTOS) // массив строк случайной длины, содержащий адреса фотографий
+        },
+        location: {
+          y: window.data.getRandomValue(PinLimit.MIN_Y, PinLimit.MAX_Y),
+          x: window.data.getRandomValue(PinLimit.MIN_X, PinLimit.MAX_X)
+        }
+      };
+    }
+    return mark;
+  };
+  // Создаем массив заполненных данными маркеров
+  var getMarks = function (count) {
+    var marks = []; // записываем каждую заполненную метку в массив
+
+    for (var i = 0; i < count; i++) {
+      var mark = getMark(i); // одна конкретная заполненная метка
+      marks.push(mark); // отправляем каждую метку в массив
+    }
+    return marks;
+  };
+
   window.data = {
     translateType: translateType,
     getRandomValue: getRandomValue,
     getRandomItems: getRandomItems,
     getRandomItem: getRandomItem,
-    getRandomFeatures: getRandomFeatures
+    getRandomFeatures: getRandomFeatures,
+    getMarks: getMarks
   };
 })();
