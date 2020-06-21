@@ -48,22 +48,30 @@
   // Навешивание обработчиков событий
   var initMainPinEvents = function (marks) {
     mapPinButtonMain.addEventListener('mousedown', function (evt) {
-      window.utils.isMouseLeftEvent(evt, activateMap(marks)); // При клике на кнопку автивируем метки
+      if (window.utils.isMouseLeftEvent(evt)) {
+        activateMap(marks);
+      } // При клике на кнопку автивируем метки
     });
 
     // Обработчикоткрытия закрытия окна по нажатию на Enter
     mapPinButtonMain.addEventListener('keydown', function (evt) {
-      window.util.isEnterEvent(evt, activateMap(marks)); // При клике на кнопку автивируем метки
+      if (window.utils.isEnterEvent(evt)) {
+        activateMap(marks);
+      } // При клике на левую кнопку мыши автивируем метки
     });
+  };
+
+  // функцию внутри этого модуля для соблюдения принципа инкапсуляции для DOM элемента map.
+  var addMarksFragment = function (fragment) {
+    mapPins.appendChild(fragment);
   };
 
   window.map = {
     mapPins: mapPins,
-    mainPinButton: mapPinButtonMain,
     startMainPinPosition: startMainPinPosition,
+    addMarksFragment: addMarksFragment,
     initMainPinEvents: initMainPinEvents,
     addMarkEventHeandlers: addMarkEventHeandlers
   };
 })();
-
 

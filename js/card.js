@@ -7,7 +7,9 @@
 
   // Обработчик закрытия окна по нажатию на ESC
   var onPopupPress = function (evt) {
-    window.util.isEscEvent(evt, removePopup);
+    if (window.utils.isEscEvent(evt)) {
+      removePopup();
+    } // При клике на кнопку автивируем метки
   };
 
   // Удаляем со страницы попап

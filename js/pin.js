@@ -28,7 +28,7 @@
       fragment.appendChild(pin); // сложили все во фрагмент
       window.map.addMarkEventHeandlers(pin, mark); // навесили обработчики событий
     }
-    window.map.mapPins.appendChild(fragment); // добавили фрагмент в блок с метками объявлений(в дом-дерево)
+    window.map.addMarksFragment(fragment); // добавили фрагмент в блок с метками объявлений(в дом-дерево)
   };
 
   window.pin = {
