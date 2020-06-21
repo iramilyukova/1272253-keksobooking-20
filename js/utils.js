@@ -1,26 +1,26 @@
 'use strict';
 
 (function () {
-  var KEY_CODE = {
+  var KeyCode = {
     ESC: 27,
     ENTER: 13,
     MOUSE_LEFT: 1
   };
 
   var isEscEvent = function (evt, action) {
-    if (evt.keyCode === KEY_CODE.ESC) {
+    if (evt.keyCode === KeyCode.ESC) {
       action();
     }
   };
 
   var isEnterEvent = function (evt, action) {
-    if (evt.keyCode === KEY_CODE.ENTER) {
+    if (evt.keyCode === KeyCode.ENTER) {
       action();
     }
   };
 
   var isMouseLeftEvent = function (evt, action) {
-    if (evt.which === KEY_CODE.MOUSE_LEFT) { // проверка на нажатие левой кнопки мышки, обратились к свойству which этого объекта
+    if (evt.which === KeyCode.MOUSE_LEFT) { // проверка на нажатие левой кнопки мышки, обратились к свойству which этого объекта
       action();
     }
   };

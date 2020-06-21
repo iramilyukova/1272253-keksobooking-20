@@ -1,4 +1,5 @@
 'use strict';
+
 (function () {
   var mapCardPopupTemplate = document.querySelector('#card').content.querySelector('.map__card.popup');
   var mapFiltersContainer = document.querySelector('.map__filters-container');
@@ -63,7 +64,6 @@
 
   // EXPORT
   window.card = {
-    renderPopup: renderMapPopup,
-    remove: removePopup()
+    renderPopup: renderMapPopup
   };
 })();

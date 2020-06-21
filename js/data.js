@@ -88,21 +88,21 @@
           avatar: generateAvatar(index),
         },
         offer: {
-          title: window.data.getRandomItem(TITLE),
+          title: getRandomItem(TITLE),
           address: '600, 350', // строка, адрес предложения
-          price: window.data.getRandomValue(PriseLimit.MIN, PriseLimit.MAX),
-          rooms: window.data.getRandomValue(window.form.RoomLimit.MIN, window.form.RoomLimit.MAX),
-          type: window.data.translateType(window.form.TYPES),
-          guests: window.data.getRandomValue(window.form.GuestLimit.MIN, window.form.GuestLimit.MAX),
-          checkin: window.data.getRandomItem(TIMES),
-          checkout: window.data.getRandomItem(TIMES),
-          features: window.data.getRandomFeatures(4, FEATURES), // массив строк случайной длины из ниже предложенных
-          description: window.data.getRandomItem(DESCRIPTION), // строка с описанием
-          photos: window.data.getRandomItems(4, PHOTOS) // массив строк случайной длины, содержащий адреса фотографий
+          price: getRandomValue(PriseLimit.MIN, PriseLimit.MAX),
+          rooms: getRandomValue(window.form.RoomLimit.MIN, window.form.RoomLimit.MAX),
+          type: translateType(window.form.TYPES),
+          guests: getRandomValue(window.form.GuestLimit.MIN, window.form.GuestLimit.MAX),
+          checkin: getRandomItem(TIMES),
+          checkout: getRandomItem(TIMES),
+          features: getRandomFeatures(4, FEATURES), // массив строк случайной длины из ниже предложенных
+          description: getRandomItem(DESCRIPTION), // строка с описанием
+          photos: getRandomItems(4, PHOTOS) // массив строк случайной длины, содержащий адреса фотографий
         },
         location: {
-          y: window.data.getRandomValue(PinLimit.MIN_Y, PinLimit.MAX_Y),
-          x: window.data.getRandomValue(PinLimit.MIN_X, PinLimit.MAX_X)
+          y: getRandomValue(PinLimit.MIN_Y, PinLimit.MAX_Y),
+          x: getRandomValue(PinLimit.MIN_X, PinLimit.MAX_X)
         }
       };
     }
@@ -121,10 +121,6 @@
 
   window.data = {
     translateType: translateType,
-    getRandomValue: getRandomValue,
-    getRandomItems: getRandomItems,
-    getRandomItem: getRandomItem,
-    getRandomFeatures: getRandomFeatures,
     getMarks: getMarks
   };
 })();

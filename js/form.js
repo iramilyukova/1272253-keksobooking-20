@@ -202,7 +202,6 @@
     form: form,
     TYPES: TYPES,
     RoomLimit: RoomLimit,
-    GuestLimi: GuestLimit,
     GuestLimit: GuestLimit,
     startingPage: startingPage,
     putMainPinPositionToAddress: putMainPinPositionToAddress,

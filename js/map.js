@@ -34,6 +34,7 @@
       window.card.renderPopup(mark); // при нажатии вызывать функцию для рисования попапа
     });
   };
+
   // Функция для перевода страницы в активное состояние
   var activateMap = function (marks) {
     isActive = true;
@@ -57,7 +58,6 @@
   };
 
   window.map = {
-    mapSection: map,
     mapPins: mapPins,
     mainPinButton: mapPinButtonMain,
     startMainPinPosition: startMainPinPosition,
@@ -65,4 +65,5 @@
     addMarkEventHeandlers: addMarkEventHeandlers
   };
 })();
+
 
