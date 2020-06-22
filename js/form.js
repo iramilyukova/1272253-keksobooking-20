@@ -206,7 +206,6 @@
 
 
   window.form = {
-    form: form,
     TYPES: TYPES,
     RoomLimit: RoomLimit,
     GuestLimit: GuestLimit,
