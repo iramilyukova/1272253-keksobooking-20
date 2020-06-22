@@ -189,6 +189,7 @@
   };
 
   var startingPage = function () {
+    isActive = true;
     checkActivationStatus();
     window.map.startMainPinPosition();
     validateTitle();

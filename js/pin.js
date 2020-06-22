@@ -7,6 +7,8 @@
     TAIL_HEIGHT: 16
   };
 
+  var TWO = 2;
+
   var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
   // Отрисовываем метки на карте, клонирование
@@ -25,6 +27,7 @@
     for (var i = 0; i < marks.length; i++) {
       var mark = marks[i]; // записали в переменную конкретного марка из массива с заполенными данными марками
       var pin = getMarkFragment(mark); // ссылаемся на функцию отрисовки метки (на дом-элемент, который мы склонировали с помощью темплейта) и отрисовываем каждого текущего марка на карте
+      pin.tabIndex = (i + TWO);
       fragment.appendChild(pin); // сложили все во фрагмент
       window.map.addMarkEventHeandlers(pin, mark); // навесили обработчики событий
     }

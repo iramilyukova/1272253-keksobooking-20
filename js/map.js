@@ -25,7 +25,6 @@
       y = mapPinButtonMain.offsetTop + PinSize.HEIGHT / 2;
     }
     window.form.putMainPinPositionToAddress(x, y);
-    return startMainPinPosition;
   };
 
   // функция добавления для одной метки обработчика события.
