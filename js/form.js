@@ -54,7 +54,7 @@
   var isActive = false;
 
   // Функция для проверки состояния активации формы (fieldset)
-  var checkActivationStatus = function () {
+  var changeStateForm = function () {
     Array.from(fieldsets).forEach(function (fieldset) {
       fieldset.disabled = !isActive; // Если страница не активная то fieldset выключен.
     });
@@ -64,6 +64,12 @@
     Array.from(inputs).forEach(function (input) {
       input.disabled = !isActive;
     });
+
+    if (isActive) {
+      form.classList.remove('ad-form--disabled');// Активируем форму
+    } else {
+      form.classList.add('ad-form--disabled');// Активируем форму
+    }
   };
 
   form.addEventListener('change', function (evt) {
@@ -190,7 +196,7 @@
 
   var startingPage = function () {
     isActive = true;
-    checkActivationStatus();
+    changeStateForm();
     window.map.startMainPinPosition();
     validateTitle();
     validatePrice();
@@ -206,7 +212,7 @@
     GuestLimit: GuestLimit,
     startingPage: startingPage,
     putMainPinPositionToAddress: putMainPinPositionToAddress,
-    checkActivationStatus: checkActivationStatus,
+    changeStateForm: changeStateForm
   };
 })();
 

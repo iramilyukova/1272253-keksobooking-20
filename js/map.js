@@ -41,7 +41,7 @@
     window.form.form.classList.remove('ad-form--disabled');// Активируем форму
     window.pin.renderMarks(marks);// Показываем все метки на странице
     startMainPinPosition();
-    window.form.checkActivationStatus(); // Функция для проверки состояния активации формы (fieldset)
+    window.form.changeStateForm(); // Функция для проверки состояния активации формы (fieldset)
   };
 
   // Навешивание обработчиков событий
@@ -66,7 +66,6 @@
   };
 
   window.map = {
-    mapPins: mapPins,
     startMainPinPosition: startMainPinPosition,
     addMarksFragment: addMarksFragment,
     initMainPinEvents: initMainPinEvents,
