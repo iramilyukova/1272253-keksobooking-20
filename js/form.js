@@ -1,12 +1,6 @@
 'use strict';
 
 (function () {
-  var TYPES = {
-    PALACE: 'palace',
-    FLAT: 'flat',
-    HOUSE: 'house',
-    BUNGALO: 'bungalo'
-  };
 
   var PriceNight = {
     ZERO: '0',
@@ -149,19 +143,19 @@
   var updatePriceLmit = function () {
     var housingTypeValue = offerType.value;
     switch (housingTypeValue) {
-      case TYPES.BUNGALO:
+      case window.data.TYPES.BUNGALO:
         offerPrice.placeholder = PriceNight.ZERO; // указываем, что placeholder  = 0, минимальная цена = 0
         offerPrice.min = PriceNight.ZERO;
         break;
-      case TYPES.FLAT:
+      case window.data.TYPES.FLAT:
         offerPrice.placeholder = PriceNight.ONE_THOUSAND; // в размерке меняем placeholder  = 1000, минимальная цена = 1000
         offerPrice.min = PriceNight.ONE_THOUSAND; // связываем плейсхолдер с минимальным значением
         break;
-      case TYPES.HOUSE:
+      case window.data.TYPES.HOUSE:
         offerPrice.placeholder = PriceNight.FIVE_THOUSAND;
         offerPrice.min = PriceNight.FIVE_THOUSAND;
         break;
-      case TYPES.PALACE:
+      case window.data.TYPES.PALACE:
         offerPrice.placeholder = PriceNight.TEN_THOUSAND;
         offerPrice.min = PriceNight.TEN_THOUSAND;
         break;
@@ -177,10 +171,10 @@
 
     if (offerPrice.validity.rangeUnderflow) { // проверка нижней границы стоимости жилья (Если число в поле ввода меньше min атрибут ввода)
       switch (housingTypeValue) { // если housingTypeValue == TYPES.BUNGALO, то...
-        case TYPES.BUNGALO: message = 'Цена должна быть не менее 0 руб.'; break; // если выбран тип жилья "бунгало"
-        case TYPES.FLAT: message = 'Цена должна быть не менее 1000 руб.'; break; // если выбрана квартира
-        case TYPES.HOUSE: message = 'Цена должна быть не менее 5000 руб.'; break; // если выбран "дом"
-        case TYPES.PALACE: message = 'Цена должна быть не менее 10000 руб.'; break;
+        case window.data.TYPES.BUNGALO: message = 'Цена должна быть не менее 0 руб.'; break; // если выбран тип жилья "бунгало"
+        case window.data.TYPES.FLAT: message = 'Цена должна быть не менее 1000 руб.'; break; // если выбрана квартира
+        case window.data.TYPES.HOUSE: message = 'Цена должна быть не менее 5000 руб.'; break; // если выбран "дом"
+        case window.data.TYPES.PALACE: message = 'Цена должна быть не менее 10000 руб.'; break;
         default: message = ''; break; // если пользователь ничего не ввел в поле
       }
     } else if (offerPrice.validity.rangeOverflow) { // проверка максимальной стоимости жилья
@@ -206,7 +200,6 @@
 
 
   window.form = {
-    TYPES: TYPES,
     RoomLimit: RoomLimit,
     GuestLimit: GuestLimit,
     startingPage: startingPage,
