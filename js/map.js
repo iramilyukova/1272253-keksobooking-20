@@ -9,18 +9,19 @@
 
   // Границы доступной области для перемещения метки
   var MIN_COORD = {
-    X: 300 - PinHalfSize.WIDTH,
-    Y: 100 - PinHalfSize.HEIGHT
+    X: 267 - PinHalfSize.WIDTH,
+    Y: 67 - PinHalfSize.HEIGHT
   };
 
   var MAX_COORD = {
-    X: 1000 - PinHalfSize.WIDTH,
-    Y: 600 - PinHalfSize.HEIGHT
+    X: 967 - PinHalfSize.WIDTH,
+    Y: 567 - PinHalfSize.HEIGHT
   };
 
   var map = document.querySelector('.map');
   var mapPins = map.querySelector('.map__pins'); // метки объявлений
   var mapPinButtonMain = document.querySelector('.map__pin--main');
+  var rect = document.querySelector('.map__overlay').getBoundingClientRect();
   var isActive = false;
 
   // Стартовые координаты главной метки
@@ -118,7 +119,7 @@
       mapPinButtonMain.style.top = coordinates.y + 'px'; // получаем новые координаты после смещения
       mapPinButtonMain.style.left = coordinates.x + 'px';
 
-      window.form.putMainPinPositionToAddress(coordinates.x, coordinates.y);
+      startMainPinPosition(coordinates.x, coordinates.y);
     };
 
     // Удаление обработчиков событий с mousemove, mouseup
@@ -141,4 +142,3 @@
     addMarkEventHeandlers: addMarkEventHeandlers
   };
 })();
-
