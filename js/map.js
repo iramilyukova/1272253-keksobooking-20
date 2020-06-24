@@ -1,9 +1,10 @@
 'use strict';
 
 (function () {
-  var PinHalfSize = {
-    WIDTH: 33,
-    HEIGHT: 33,
+  var PinSetting = {
+    HEIGHT: 75,
+    HALF_WIDTH: 33,
+    HALF_HEIGHT: 33,
     TAIL_HEIGHT: 16
   };
 
@@ -11,13 +12,13 @@
 
   // Границы доступной области для перемещения метки
   var MIN_COORD = {
-    X: rect.left - PinHalfSize.HEIGHT,
-    Y: 130 - PinHalfSize.HEIGHT
+    X: rect.left - PinSetting.HEIGHT - PinSetting.HALF_HEIGHT,
+    Y: 130 - PinSetting.HALF_HEIGHT - PinSetting.TAIL_HEIGHT
   };
 
   var MAX_COORD = {
-    X: rect.left + rect.width - PinHalfSize.HEIGHT,
-    Y: 630 - PinHalfSize.HEIGHT
+    X: rect.width - PinSetting.HALF_HEIGHT,
+    Y: 630 - PinSetting.HALF_HEIGHT - PinSetting.TAIL_HEIGHT
   };
 
   var map = document.querySelector('.map');
@@ -31,11 +32,11 @@
     var y = 0;
 
     if (isActive) {
-      x = mapPinButtonMain.offsetLeft + PinHalfSize.HEIGHT;
-      y = mapPinButtonMain.offsetTop + PinHalfSize.HEIGHT + PinHalfSize.TAIL_HEIGHT;
+      x = mapPinButtonMain.offsetLeft + PinSetting.HALF_HEIGHT;
+      y = mapPinButtonMain.offsetTop + PinSetting.HALF_HEIGHT + PinSetting.TAIL_HEIGHT;
     } else {
-      x = mapPinButtonMain.offsetLeft + PinHalfSize.WIDTH;
-      y = mapPinButtonMain.offsetTop + PinHalfSize.HEIGHT;
+      x = mapPinButtonMain.offsetLeft + PinSetting.HALF_WIDTH;
+      y = mapPinButtonMain.offsetTop + PinSetting.HALF_HEIGHT;
     }
     window.form.putMainPinPositionToAddress(x, y);
   };
