@@ -12,12 +12,12 @@
   // Границы доступной области для перемещения метки
   var MIN_COORD = {
     X: rect.left - PinHalfSize.HEIGHT,
-    Y: 67 - PinHalfSize.HEIGHT
+    Y: 130 - PinHalfSize.HEIGHT
   };
 
   var MAX_COORD = {
     X: rect.left + rect.width - PinHalfSize.HEIGHT,
-    Y: 567 - PinHalfSize.HEIGHT
+    Y: 630 - PinHalfSize.HEIGHT
   };
 
   var map = document.querySelector('.map');
