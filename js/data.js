@@ -10,6 +10,13 @@
     MAX_Y: 600,
   };
 
+  var TYPES = {
+    PALACE: 'palace',
+    FLAT: 'flat',
+    HOUSE: 'house',
+    BUNGALO: 'bungalo'
+  };
+
   var TITLE = ['Уютное гнездышко для молодоженов', 'Милая, уютная квартирка в центре Токио', 'Большая уютная квартира'];
   var PriseLimit = {
     MIN: 1000,
@@ -92,7 +99,7 @@
           address: '600, 350', // строка, адрес предложения
           price: getRandomValue(PriseLimit.MIN, PriseLimit.MAX),
           rooms: getRandomValue(window.form.RoomLimit.MIN, window.form.RoomLimit.MAX),
-          type: translateType(window.form.TYPES),
+          type: translateType(TYPES),
           guests: getRandomValue(window.form.GuestLimit.MIN, window.form.GuestLimit.MAX),
           checkin: getRandomItem(TIMES),
           checkout: getRandomItem(TIMES),
@@ -120,6 +127,7 @@
   };
 
   window.data = {
+    TYPES: TYPES,
     translateType: translateType,
     getMarks: getMarks
   };

@@ -3,8 +3,7 @@
 (function () {
   var PinSize = {
     WIDTH: 66,
-    HEIGHT: 66,
-    TAIL_HEIGHT: 16
+    HEIGHT: 66
   };
 
   var TWO = 2;
