@@ -7,21 +7,22 @@
     TAIL_HEIGHT: 16
   };
 
+  var rect = document.querySelector('.map__overlay').getBoundingClientRect();
+
   // Границы доступной области для перемещения метки
   var MIN_COORD = {
-    X: 267 - PinHalfSize.WIDTH,
+    X: rect.left - PinHalfSize.HEIGHT,
     Y: 67 - PinHalfSize.HEIGHT
   };
 
   var MAX_COORD = {
-    X: 967 - PinHalfSize.WIDTH,
+    X: rect.left + rect.width - PinHalfSize.HEIGHT,
     Y: 567 - PinHalfSize.HEIGHT
   };
 
   var map = document.querySelector('.map');
   var mapPins = map.querySelector('.map__pins'); // метки объявлений
   var mapPinButtonMain = document.querySelector('.map__pin--main');
-  var rect = document.querySelector('.map__overlay').getBoundingClientRect();
   var isActive = false;
 
   // Стартовые координаты главной метки
