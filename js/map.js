@@ -67,17 +67,17 @@
   };
 
   // Навешивание обработчиков событий
-  var initMainPinEvents = function (marks) {
+  var initMainPinEvents = function () {
     mapPinButtonMain.addEventListener('mousedown', function (evt) {
       if (window.utils.isMouseLeftEvent(evt)) {
-        activateMap(marks);
-      } // При клике на кнопку автивируем метки
+        window.backend.load(activateMap); // При клике на кнопку автивируем метки
+      }
     });
 
     // Обработчикоткрытия закрытия окна по нажатию на Enter
     mapPinButtonMain.addEventListener('keydown', function (evt) {
       if (window.utils.isEnterEvent(evt)) {
-        activateMap(marks);
+        window.backend.load(activateMap);
       } // При клике на левую кнопку мыши автивируем метки
     });
   };

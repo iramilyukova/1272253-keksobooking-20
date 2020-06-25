@@ -21,7 +21,7 @@
   };
 
   // Записываем все метки во fragment
-  window.load(function (marks) { // указали параметр со всеми заполенными данными, которые должны быть представлены на странице в виде HTML разметки. Это объекту, которые лежат в массиве
+  var renderMarks = function (marks) { // указали параметр со всеми заполенными данными, которые должны быть представлены на странице в виде HTML разметки. Это объекту, которые лежат в массиве
     var fragment = document.createDocumentFragment(); // клонируется темплейт
     for (var i = 0; i < marks.length; i++) {
       var mark = marks[i]; // записали в переменную конкретного марка из массива с заполенными данными марками
@@ -31,7 +31,7 @@
       window.map.addMarkEventHeandlers(pin, mark); // навесили обработчики событий
     }
     window.map.addMarksFragment(fragment); // добавили фрагмент в блок с метками объявлений(в дом-дерево)
-  }, function () {});
+  };
 
   window.pin = {
     renderMarks: renderMarks
