@@ -48,6 +48,14 @@
     });
   };
 
+  var onError = function (message) {
+    console.error (message);
+  };
+
+  var onSuccess = function (data) {
+    console.log (data);
+  };
+
   // Функция для перевода страницы в активное состояние
   var activateMap = function (marks) {
     isActive = true;
@@ -55,6 +63,7 @@
     window.pin.renderMarks(marks);// Показываем все метки на странице
     startMainPinPosition();
     window.form.changeStateForm(); // Функция для проверки состояния активации формы (fieldset)
+    window.backend.load(onSuccess, onError); // функция для получения данных от сервера
   };
 
   // Навешивание обработчиков событий
