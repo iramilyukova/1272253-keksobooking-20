@@ -63,20 +63,19 @@
     window.pin.renderMarks(marks);// Показываем все метки на странице
     startMainPinPosition();
     window.form.changeStateForm(); // Функция для проверки состояния активации формы (fieldset)
-    window.backend.load(onSuccess, onError); // функция для получения данных от сервера
   };
 
   // Навешивание обработчиков событий
-  var initMainPinEvents = function () {
+  var initMainPinEvents = function () { // При клике на кнопку автивируем метки
     mapPinButtonMain.addEventListener('mousedown', function (evt) {
-      if (window.utils.isMouseLeftEvent(evt)) {
-        window.backend.load(activateMap); // При клике на кнопку автивируем метки
+      if (!isActive && window.utils.isMouseLeftEvent(evt)) {
+        window.backend.load(activateMap); // функция для получения данных от сервера
       }
     });
 
     // Обработчикоткрытия закрытия окна по нажатию на Enter
     mapPinButtonMain.addEventListener('keydown', function (evt) {
-      if (window.utils.isEnterEvent(evt)) {
+      if (!isActive && window.utils.isEnterEvent(evt)) {
         window.backend.load(activateMap);
       } // При клике на левую кнопку мыши автивируем метки
     });
