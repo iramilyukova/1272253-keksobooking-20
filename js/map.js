@@ -48,6 +48,14 @@
     });
   };
 
+  var onError = function (message) {
+    console.error (message);
+  };
+
+  var onSuccess = function (data) {
+    console.log (data);
+  };
+
   // Функция для перевода страницы в активное состояние
   var activateMap = function (marks) {
     isActive = true;
@@ -58,17 +66,17 @@
   };
 
   // Навешивание обработчиков событий
-  var initMainPinEvents = function (marks) {
+  var initMainPinEvents = function () { // При клике на кнопку автивируем метки
     mapPinButtonMain.addEventListener('mousedown', function (evt) {
-      if (window.utils.isMouseLeftEvent(evt)) {
-        activateMap(marks);
-      } // При клике на кнопку автивируем метки
+      if (!isActive && window.utils.isMouseLeftEvent(evt)) {
+        window.backend.load(activateMap); // функция для получения данных от сервера
+      }
     });
 
     // Обработчикоткрытия закрытия окна по нажатию на Enter
     mapPinButtonMain.addEventListener('keydown', function (evt) {
-      if (window.utils.isEnterEvent(evt)) {
-        activateMap(marks);
+      if (!isActive && window.utils.isEnterEvent(evt)) {
+        window.backend.load(activateMap);
       } // При клике на левую кнопку мыши автивируем метки
     });
   };
