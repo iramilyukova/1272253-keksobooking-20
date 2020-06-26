@@ -139,10 +139,6 @@
     var onMouseUp = function (upEvt) { // При отпускании мыши нужно переставать слушать события движения мыши.
       upEvt.preventDefault();
 
-      if (!isActive) {
-        window.form.activateForm();
-      }
-
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
     };

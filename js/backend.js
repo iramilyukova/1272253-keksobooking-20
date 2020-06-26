@@ -15,7 +15,7 @@
     TIMEOUT_TIME: 10000
   };
 
-  var produceXhr = function (method, url, onSuccessSubmit, onError) {
+  var produceXhr = function (method, url, onSuccess, onError) {
     var xhr = new XMLHttpRequest(); // создаем спецобъект для запроса серверу
     xhr.responseType = 'json'; // воспользуеммся полем responseType, чтобы браузер сам перевел текст в объект
 
@@ -23,7 +23,7 @@
       var error;
       switch (xhr.status) { // Если статус xhr.status равен ...
         case Status.SUCCESS:
-          onSuccessSubmit(xhr.response);
+          onSuccess(xhr.response);
           break;
 
         case Status.INVALID_REQUEST:
@@ -62,12 +62,12 @@
 
   // Загрузка объявлений с сервера
   var load = function (onSuccess, onError) { // указываем колбеки
-    produceXhr('GET', Url.LOAD, window.form.onSuccessSubmit, onError).send(); // прописываем метод, адрес, колбеки успешной и неуспешной отправки
+    produceXhr('GET', Url.LOAD, window.form.onSuccess, onError).send(); // прописываем метод, адрес, колбеки успешной и неуспешной отправки
   };
 
   // Отправка данных на сервер
   var upload = function (onSuccess, onError, data) { // 2 параметра: объект с данными для отправки и колбэки, когда данные отправятся
-    produceXhr('GET', Url.LOAD, window.form.onSuccessSubmit, onError).send(data); // запускаем запрос серверус помощью вызова функции спараметрами и методом send с нашими данными
+    produceXhr('GET', Url.LOAD, window.form.onSuccess, onError).send(data); // запускаем запрос серверус помощью вызова функции спараметрами и методом send с нашими данными
   };
 
   window.backend = {

@@ -297,7 +297,6 @@
   };
 
   var startingPage = function () {
-    isActive = true;
     changeStateForm();
     window.map.startMainPinPosition();
     validateTitle();
@@ -313,7 +312,7 @@
     startingPage: startingPage,
     putMainPinPositionToAddress: putMainPinPositionToAddress,
     changeStateForm: changeStateForm,
-    onSuccessSubmit: onSuccessSubmit,
+    onSuccess: onSuccess,
     activateForm: activateForm
   };
 })();
