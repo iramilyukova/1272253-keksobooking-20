@@ -2,23 +2,25 @@
 
 (function () {
   var PinSetting = {
-    HEIGHT: 75,
     HALF_WIDTH: 33,
     HALF_HEIGHT: 33,
-    TAIL_HEIGHT: 16
+    TAIL_HEIGHT: 16,
+    MIN_X: 0,
+    MIN_Y: 130,
+    MAX_Y: 630
   };
 
   var rect = document.querySelector('.map__overlay').getBoundingClientRect();
 
   // Границы доступной области для перемещения метки
   var MIN_COORD = {
-    X: rect.left - PinSetting.HEIGHT - PinSetting.HALF_HEIGHT,
-    Y: 130 - PinSetting.HALF_HEIGHT - PinSetting.TAIL_HEIGHT
+    X: PinSetting.MIN_X - PinSetting.HALF_WIDTH,
+    Y: PinSetting.MIN_Y - PinSetting.HALF_HEIGHT - PinSetting.TAIL_HEIGHT
   };
 
   var MAX_COORD = {
-    X: rect.width - PinSetting.HALF_HEIGHT,
-    Y: 630 - PinSetting.HALF_HEIGHT - PinSetting.TAIL_HEIGHT
+    X: rect.width - PinSetting.HALF_WIDTH,
+    Y: PinSetting.MAX_Y - PinSetting.HALF_HEIGHT - PinSetting.TAIL_HEIGHT
   };
 
   var map = document.querySelector('.map');
@@ -48,14 +50,6 @@
     });
   };
 
-  var onError = function (message) {
-    console.error (message);
-  };
-
-  var onSuccess = function (data) {
-    console.log (data);
-  };
-
   // Функция для перевода страницы в активное состояние
   var activateMap = function (marks) {
     isActive = true;
@@ -63,6 +57,15 @@
     window.pin.renderMarks(marks);// Показываем все метки на странице
     startMainPinPosition();
     window.form.changeStateForm(); // Функция для проверки состояния активации формы (fieldset)
+  };
+
+  // Функция для перевода страницы в не активное состояние
+  var deactivatePage = function () {
+    map.classList.add('map--faded'); // Деактивируем карт
+    // window.pin.remove();
+    // window.card.remove();
+    startMainPinPosition(); // Возвращаяем метку на первоначальное место
+    activateMap = false;
   };
 
   // Навешивание обработчиков событий
@@ -136,6 +139,10 @@
     var onMouseUp = function (upEvt) { // При отпускании мыши нужно переставать слушать события движения мыши.
       upEvt.preventDefault();
 
+      if (!isActive) {
+        window.form.activateForm();
+      }
+
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
     };
@@ -149,6 +156,7 @@
     startMainPinPosition: startMainPinPosition,
     addMarksFragment: addMarksFragment,
     initMainPinEvents: initMainPinEvents,
-    addMarkEventHeandlers: addMarkEventHeandlers
+    addMarkEventHeandlers: addMarkEventHeandlers,
+    deactivatePage: deactivatePage
   };
 })();

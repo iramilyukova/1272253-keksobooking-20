@@ -34,6 +34,15 @@
   };
 
   var form = document.querySelector('.ad-form');
+  var main = document.querySelector('main');
+  var successPopup = document.querySelector('#success').content.querySelector('.success');
+  var errorPopup = document.querySelector('#error').content.querySelector('.error');
+  var error = document.querySelector('.error');
+  var closeButtonError = document.querySelector('.error__button');
+  var submitBtn = document.querySelector('.ad-form__submit'); // кнопка отправки формы
+  var success = document.querySelector('.success');
+  var formFieldsets = document.querySelectorAll('.ad-form__element');
+  var formHeader = document.querySelector('.ad-form-header'); // fieldset объявления
   var offerTitle = form.querySelector('#title');
   var offerPrice = form.querySelector('#price');
   var offerRoomNumber = form.querySelector('#room_number');
@@ -66,27 +75,29 @@
     }
   };
 
-  form.addEventListener('change', function (evt) {
-    var targetId = evt.target.id;
-    switch (targetId) {
-      case offerRoomNumber.id:
-      case offerCapacity.id: // Метод валидации должен вызываться только при инициализации события change от одного из 2 select
-        validateCapacity();
-        break;
-      case offerTitle.id:
-        validateTitle();
-        break;
-      case offerPrice.id:
-        validatePrice();
-        break;
-      case offerType.id:
-        updatePriceLmit();
-        validatePrice();
-        break;
-      default: break;
-    }
-    updateTimes(targetId);
-  });
+  var updateFormValidation = function () {
+    form.addEventListener('change', function (evt) {
+      var targetId = evt.target.id;
+      switch (targetId) {
+        case offerRoomNumber.id:
+        case offerCapacity.id: // Метод валидации должен вызываться только при инициализации события change от одного из 2 select
+          validateCapacity();
+          break;
+        case offerTitle.id:
+          validateTitle();
+          break;
+        case offerPrice.id:
+          validatePrice();
+          break;
+        case offerType.id:
+          updatePriceLmit();
+          validatePrice();
+          break;
+        default: break;
+      }
+      updateTimes(targetId);
+    });
+  };
 
   // Прописываем условия для правильного заполнения заголовка
   var validateTitle = function () {
@@ -188,6 +199,103 @@
     addressInput.value = x + ', ' + y;
   };
 
+  var closeError = function () {
+    error.remove(); // сообщение об ошибочной отправке удаляется
+    document.removeEventListener('keydown', onErrorEscPress);
+  };
+
+  // Сообщение должно исчезать по клику на произвольную область экрана.
+  var onErrorClick = function () {
+    closeError();
+  };
+
+  // функция по закрытию неуспешного сообщения на Esk
+  var onErrorEscPress = function (evt) {
+    window.util.isEscEvent(evt, closeError);
+  };
+
+  // Описываем неуспешную отправку данных серверу
+  var onError = function () {
+    main.insertAdjacentElement('afterbegin', errorPopup); //  указываем место в разметке, где будет сообщение об неудачной отправке данных
+    closeButtonError.addEventListener('click', onErrorClick); // при клике на кнопку об ошибочной отправке
+    errorPopup.addEventListener('click', onErrorClick);
+    document.addEventListener('keydown', onErrorEscPress);
+  };
+
+  // Сообщение должно исчезать по клику на произвольную область экрана.
+  var onSuccessClick = function () {
+    closeSuccess();
+  };
+
+  // Функция закрытия сообщения по клику мышки и на Esk
+  var closeSuccess = function () {
+    success.classList.add('hidden');
+    success.removeEventListener('click', onSuccessClick);
+    document.removeEventListener('keydown', onSuccessEscPress);
+  };
+
+  // функция по закрытию успешного сообщения на Esk
+  var onSuccessEscPress = function (evt) {
+    window.util.isEscEvent(evt, closeSuccess);
+  };
+
+  // покажем сообщение об успешной отправке
+  var onSuccess = function () {
+  //  success.classList.remove('hidden');
+    main.insertAdjacentElement('afterbegin', successPopup); //  указываем место в разметке, где будет сообщение об отправке данных
+    successPopup.addEventListener('click', onSuccessClick);
+    document.addEventListener('keydown', onSuccessEscPress);
+  };
+
+  // При успешной отправке формы вызываем функции показа сообщения и деактивации формы
+  var onSuccessSubmit = function () {
+    onSuccess();
+    deactivateForm();
+    window.map.deactivatePage();
+  };
+
+  var onFormSubmit = function (evt) {
+    evt.preventDefault();
+    window.backend.upload(new FormData(form), onSuccessSubmit, onError);
+  };
+
+  // колбек для обработчика клика по кнопке оправки формы
+  var onSubmitBtnClick = function (evt) {
+    evt.preventDefault();
+    updateFormValidation(); // вызываем функцию проверки на валидацию
+  };
+
+  // слушатель на кнопку отправки
+  var formListeners = function () {
+    form.addEventListener('submit', onFormSubmit);
+    submitBtn.addEventListener('click', onSubmitBtnClick);
+  };
+
+  // удаляем обработчики
+  var removeFormListeners = function () {
+    submitBtn.removeEventListener('click', onSubmitBtnClick);
+    form.removeEventListener('submit', onFormSubmit);
+  };
+
+  var activateForm = function () {
+    form.classList.remove('ad-form--disabled');
+    formFieldsets.forEach(function (it) {
+      it.disabled = false;
+    });
+    formHeader.disabled = false;
+    formListeners();
+  };
+
+  var deactivateForm = function () {
+    form.reset();
+    formFieldsets.forEach(function (it) {
+      it.disabled = true;
+    });
+    formHeader.disabled = true;
+    form.classList.add('ad-form--disabled');
+    removeFormListeners();
+  };
+
   var startingPage = function () {
     isActive = true;
     changeStateForm();
@@ -204,7 +312,9 @@
     GuestLimit: GuestLimit,
     startingPage: startingPage,
     putMainPinPositionToAddress: putMainPinPositionToAddress,
-    changeStateForm: changeStateForm
+    changeStateForm: changeStateForm,
+    onSuccessSubmit: onSuccessSubmit,
+    activateForm: activateForm
   };
 })();
 
