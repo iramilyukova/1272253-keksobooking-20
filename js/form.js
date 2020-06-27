@@ -41,8 +41,6 @@
   var closeButtonError = document.querySelector('.error__button');
   var submitBtn = document.querySelector('.ad-form__submit'); // кнопка отправки формы
   var success = document.querySelector('.success');
-  var formFieldsets = document.querySelectorAll('.ad-form__element');
-  var formHeader = document.querySelector('.ad-form-header'); // fieldset объявления
   var offerTitle = form.querySelector('#title');
   var offerPrice = form.querySelector('#price');
   var offerRoomNumber = form.querySelector('#room_number');
@@ -56,7 +54,7 @@
   var addressInput = document.querySelector('input[name="address"]');
 
   // Функция для проверки состояния активации формы (fieldset)
-  var changeStateForm = function (isActive) {
+  var changeActivateStateForm = function (isActive) {
     formListeners();
 
     Array.from(fieldsets).forEach(function (fieldset) {
@@ -72,7 +70,29 @@
     if (isActive) {
       form.classList.remove('ad-form--disabled');// Активируем форму
     } else {
-      form.classList.add('ad-form--disabled');// Активируем форму
+      form.classList.add('ad-form--disabled');// деактивируем форму
+    }
+  };
+
+  // Функция для проверки состояния активации формы (fieldset)
+  var deactivateForm = function (isActive) {
+    removeFormListeners();
+    form.reset();
+
+    Array.from(fieldsets).forEach(function (fieldset) {
+      fieldset.disabled = isActive; // Если страница активная то fieldset включен.
+    });
+    Array.from(selects).forEach(function (select) {
+      select.disabled = isActive;
+    });
+    Array.from(inputs).forEach(function (input) {
+      input.disabled = isActive;
+    });
+
+    if (isActive) {
+      form.classList.add('ad-form--disabled');// деактивируем форму
+    } else {
+      form.classList.remove('ad-form--disabled');// Активируем форму
     }
   };
 
@@ -252,7 +272,7 @@
   var onSuccessSubmit = function () {
     onSuccess();
     deactivateForm();
-    window.map.deactivatePage();
+    window.map.deactivateMap();
   };
 
   var onFormSubmit = function (evt) {
@@ -279,7 +299,7 @@
   };
 
   var startingPage = function () {
-    changeStateForm();
+    changeActivateStateForm();
     window.map.startMainPinPosition();
     validateTitle();
     validatePrice();
@@ -287,22 +307,13 @@
     updateTimes(timeIn.id); // передаем параметром время заезда
   };
 
-  var deactivateForm = function () {
-    form.reset();
-    formFieldsets.forEach(function (it) {
-      it.disabled = true;
-    });
-    formHeader.disabled = true;
-    form.classList.add('ad-form--disabled');
-    removeFormListeners();
-  };
-
   window.form = {
     RoomLimit: RoomLimit,
     GuestLimit: GuestLimit,
     startingPage: startingPage,
+    deactivateForm: deactivateForm,
     putMainPinPositionToAddress: putMainPinPositionToAddress,
-    changeStateForm: changeStateForm
+    changeActivateStateForm: changeActivateStateForm
   };
 })();
 

@@ -6,6 +6,7 @@
     HALF_HEIGHT: 33,
     TAIL_HEIGHT: 16,
     MIN_X: 0,
+    MAX_X: 600,
     MIN_Y: 130,
     MAX_Y: 630
   };
@@ -27,7 +28,8 @@
   var mapPins = map.querySelector('.map__pins'); // метки объявлений
   var mapPinButtonMain = document.querySelector('.map__pin--main');
   var isActive = false;
-  // Стартовые координаты главной метки
+
+  // Стартовые координаты главной метки для раных состояний: активном и неактивном
   var startMainPinPosition = function () {
     var x = 0;
     var y = 0;
@@ -49,21 +51,28 @@
     });
   };
 
+  // функция сохранения стартовых координат метки в неактивном состоянии
+  var startPosition = function () {
+    mapPinButtonMain.style.left = mapPinButtonMain.offsetTop + PinSetting.HALF_HEIGHT;
+    mapPinButtonMain.style.top = mapPinButtonMain.offsetTop + PinSetting.HALF_HEIGHT;
+  };
+
   // Функция для перевода страницы в активное состояние
   var activateMap = function (marks) {
     isActive = true;
     map.classList.remove('map--faded');// Активируем карту
     window.pin.renderMarks(marks);// Показываем все метки на странице
     startMainPinPosition();
-    window.form.changeStateForm(isActive); // Функция для проверки состояния активации и активацию формы (fieldset)
+    window.form.changeActivateStateForm(isActive); // Функция для проверки состояния активации и активацию формы (fieldset)
   };
 
   // Функция для перевода страницы в не активное состояние
-  var deactivatePage = function () {
+  var deactivateMap = function () {
     map.classList.add('map--faded'); // Деактивируем карт
+    window.form.deactivateForm();
     // window.pin.remove();
     // window.card.remove();
-    startMainPinPosition(); // Возвращаяем метку на первоначальное место
+    startPosition(); // Возвращаяем метку на первоначальное место
     activateMap = false;
   };
 
@@ -146,9 +155,10 @@
 
   window.map = {
     startMainPinPosition: startMainPinPosition,
+    startPosition: startPosition,
     addMarksFragment: addMarksFragment,
     initMainPinEvents: initMainPinEvents,
     addMarkEventHeandlers: addMarkEventHeandlers,
-    deactivatePage: deactivatePage
+    deactivateMap: deactivateMap
   };
 })();
