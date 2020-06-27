@@ -280,10 +280,19 @@
   var activateForm = function () {
     form.classList.remove('ad-form--disabled');
     formFieldsets.forEach(function (it) {
-      it.disabled = false;
+      it.disabled = true;
     });
     formHeader.disabled = false;
     formListeners();
+  };
+
+  var startingPage = function () {
+    changeStateForm();
+    window.map.startMainPinPosition();
+    validateTitle();
+    validatePrice();
+    validateCapacity();
+    updateTimes(timeIn.id); // передаем параметром время заезда
   };
 
   var deactivateForm = function () {
@@ -296,23 +305,12 @@
     removeFormListeners();
   };
 
-  var startingPage = function () {
-    changeStateForm();
-    window.map.startMainPinPosition();
-    validateTitle();
-    validatePrice();
-    validateCapacity();
-    updateTimes(timeIn.id); // передаем параметром время заезда
-  };
-
-
   window.form = {
     RoomLimit: RoomLimit,
     GuestLimit: GuestLimit,
     startingPage: startingPage,
     putMainPinPositionToAddress: putMainPinPositionToAddress,
     changeStateForm: changeStateForm,
-    onSuccess: onSuccess,
     activateForm: activateForm
   };
 })();

@@ -57,6 +57,7 @@
     window.pin.renderMarks(marks);// Показываем все метки на странице
     startMainPinPosition();
     window.form.changeStateForm(); // Функция для проверки состояния активации формы (fieldset)
+    window.form.activateForm(); // вызываем функцию активации формы
   };
 
   // Функция для перевода страницы в не активное состояние
@@ -66,6 +67,11 @@
     // window.card.remove();
     startMainPinPosition(); // Возвращаяем метку на первоначальное место
     activateMap = false;
+  };
+
+  // функцию внутри этого модуля для соблюдения принципа инкапсуляции для DOM элемента map.
+  var addMarksFragment = function (fragment) {
+    mapPins.appendChild(fragment);
   };
 
   // Навешивание обработчиков событий
@@ -82,11 +88,6 @@
         window.backend.load(activateMap);
       } // При клике на левую кнопку мыши автивируем метки
     });
-  };
-
-  // функцию внутри этого модуля для соблюдения принципа инкапсуляции для DOM элемента map.
-  var addMarksFragment = function (fragment) {
-    mapPins.appendChild(fragment);
   };
 
   // Перетаскиваем метку
