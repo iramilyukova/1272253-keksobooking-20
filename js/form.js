@@ -54,10 +54,11 @@
   var inputs = document.querySelectorAll('input');
   var fieldsets = document.querySelectorAll('fieldset');
   var addressInput = document.querySelector('input[name="address"]');
-  var isActive = false;
 
   // Функция для проверки состояния активации формы (fieldset)
-  var changeStateForm = function () {
+  var changeStateForm = function (isActive) {
+    formListeners();
+
     Array.from(fieldsets).forEach(function (fieldset) {
       fieldset.disabled = !isActive; // Если страница не активная то fieldset выключен.
     });
@@ -277,15 +278,6 @@
     form.removeEventListener('submit', onFormSubmit);
   };
 
-  var activateForm = function () {
-    form.classList.remove('ad-form--disabled');
-    formFieldsets.forEach(function (it) {
-      it.disabled = true;
-    });
-    formHeader.disabled = false;
-    formListeners();
-  };
-
   var startingPage = function () {
     changeStateForm();
     window.map.startMainPinPosition();
@@ -310,8 +302,7 @@
     GuestLimit: GuestLimit,
     startingPage: startingPage,
     putMainPinPositionToAddress: putMainPinPositionToAddress,
-    changeStateForm: changeStateForm,
-    activateForm: activateForm
+    changeStateForm: changeStateForm
   };
 })();
 

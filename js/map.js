@@ -27,7 +27,6 @@
   var mapPins = map.querySelector('.map__pins'); // метки объявлений
   var mapPinButtonMain = document.querySelector('.map__pin--main');
   var isActive = false;
-
   // Стартовые координаты главной метки
   var startMainPinPosition = function () {
     var x = 0;
@@ -56,8 +55,7 @@
     map.classList.remove('map--faded');// Активируем карту
     window.pin.renderMarks(marks);// Показываем все метки на странице
     startMainPinPosition();
-    window.form.changeStateForm(); // Функция для проверки состояния активации формы (fieldset)
-    window.form.activateForm(); // вызываем функцию активации формы
+    window.form.changeStateForm(isActive); // Функция для проверки состояния активации и активацию формы (fieldset)
   };
 
   // Функция для перевода страницы в не активное состояние
@@ -76,10 +74,66 @@
 
   // Навешивание обработчиков событий
   var initMainPinEvents = function () { // При клике на кнопку автивируем метки
-    mapPinButtonMain.addEventListener('mousedown', function (evt) {
+    // Перетаскиваем метку
+    mapPinButtonMain.addEventListener('mousedown', function (evt) { // обработаем событие начала перетаскивания метки mousedown.
+      evt.preventDefault();
+
       if (!isActive && window.utils.isMouseLeftEvent(evt)) {
         window.backend.load(activateMap); // функция для получения данных от сервера
       }
+
+      var startCoords = { // Запомним координаты точки, с которой мы начали перемещать метку.
+        x: evt.clientX,
+        y: evt.clientY
+      };
+
+      // Фнкция для смещения метки относительно стартовой позиции
+      var onMouseMove = function (moveEvt) {
+        moveEvt.preventDefault();
+
+        var shift = { // При каждом движении мыши обновим смещение от старта для смещения на нужную величину.
+          x: startCoords.x - moveEvt.clientX,
+          y: startCoords.y - moveEvt.clientY
+        };
+
+        startCoords = {
+          x: moveEvt.clientX,
+          y: moveEvt.clientY
+        };
+
+        var coordinates = {
+          x: mapPinButtonMain.offsetLeft - shift.x, // обновляем координаты после смещения мыши
+          y: mapPinButtonMain.offsetTop - shift.y
+        };
+
+        if (coordinates.x < MIN_COORD.X) { // Проверяем не заходит ли метка за рамки
+          coordinates.x = MIN_COORD.X;
+        } else if (coordinates.x > MAX_COORD.X) {
+          coordinates.x = MAX_COORD.X;
+        }
+
+        if (coordinates.y < MIN_COORD.Y) {
+          coordinates.y = MIN_COORD.Y;
+        } else if (coordinates.y > MAX_COORD.Y) {
+          coordinates.y = MAX_COORD.Y;
+        }
+
+        mapPinButtonMain.style.top = coordinates.y + 'px'; // получаем новые координаты после смещения
+        mapPinButtonMain.style.left = coordinates.x + 'px';
+
+        startMainPinPosition(coordinates.x, coordinates.y);
+      };
+
+      // Удаление обработчиков событий с mousemove, mouseup
+      var onMouseUp = function (upEvt) { // При отпускании мыши нужно переставать слушать события движения мыши.
+        upEvt.preventDefault();
+
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+      };
+
+      document.addEventListener('mousemove', onMouseMove); // Добавим обработчики события передвижения мыши
+      document.addEventListener('mouseup', onMouseUp); // и отпускания кнопки мыши.
     });
 
     // Обработчикоткрытия закрытия окна по нажатию на Enter
@@ -89,65 +143,6 @@
       } // При клике на левую кнопку мыши автивируем метки
     });
   };
-
-  // Перетаскиваем метку
-  mapPinButtonMain.addEventListener('mousedown', function (evt) { // обработаем событие начала перетаскивания метки mousedown.
-    evt.preventDefault();
-
-    var startCoords = { // Запомним координаты точки, с которой мы начали перемещать метку.
-      x: evt.clientX,
-      y: evt.clientY
-    };
-
-    // Фнкция для смещения метки относительно стартовой позиции
-    var onMouseMove = function (moveEvt) {
-      moveEvt.preventDefault();
-
-      var shift = { // При каждом движении мыши обновим смещение от старта для смещения на нужную величину.
-        x: startCoords.x - moveEvt.clientX,
-        y: startCoords.y - moveEvt.clientY
-      };
-
-      startCoords = {
-        x: moveEvt.clientX,
-        y: moveEvt.clientY
-      };
-
-      var coordinates = {
-        x: mapPinButtonMain.offsetLeft - shift.x, // обновляем координаты после смещения мыши
-        y: mapPinButtonMain.offsetTop - shift.y
-      };
-
-      if (coordinates.x < MIN_COORD.X) { // Проверяем не заходит ли метка за рамки
-        coordinates.x = MIN_COORD.X;
-      } else if (coordinates.x > MAX_COORD.X) {
-        coordinates.x = MAX_COORD.X;
-      }
-
-      if (coordinates.y < MIN_COORD.Y) {
-        coordinates.y = MIN_COORD.Y;
-      } else if (coordinates.y > MAX_COORD.Y) {
-        coordinates.y = MAX_COORD.Y;
-      }
-
-      mapPinButtonMain.style.top = coordinates.y + 'px'; // получаем новые координаты после смещения
-      mapPinButtonMain.style.left = coordinates.x + 'px';
-
-      startMainPinPosition(coordinates.x, coordinates.y);
-    };
-
-    // Удаление обработчиков событий с mousemove, mouseup
-    var onMouseUp = function (upEvt) { // При отпускании мыши нужно переставать слушать события движения мыши.
-      upEvt.preventDefault();
-
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-    };
-
-    document.addEventListener('mousemove', onMouseMove); // Добавим обработчики события передвижения мыши
-    document.addEventListener('mouseup', onMouseUp); // и отпускания кнопки мыши.
-  });
-
 
   window.map = {
     startMainPinPosition: startMainPinPosition,
