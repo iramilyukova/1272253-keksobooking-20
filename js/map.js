@@ -51,7 +51,7 @@
     });
   };
 
-  // функция сохранения стартовых координат метки в неактивном состоянии
+  // объект для сохранения стартовых координат метки в неактивном состоянии
   var defaultMainPinPosition = {
     top: null,
     left: null,
@@ -168,7 +168,6 @@
 
   window.map = {
     startMainPinPosition: startMainPinPosition,
-    defaultMainPinPosition: defaultMainPinPosition,
     addMarksFragment: addMarksFragment,
     initMainPinEvents: initMainPinEvents,
     addMarkEventHeandlers: addMarkEventHeandlers,
