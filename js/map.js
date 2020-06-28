@@ -85,8 +85,7 @@
     window.form.changeActivateStateForm(isActive); // неактивная форма
     // window.pin.remove();
     // window.card.remove();
-    defaultMainPinPosition(); // Возвращаяем метку на первоначальное место
-    loadStartPosition();
+    loadStartPosition(); // Возвращаяем метку на первоначальное место
     activateMap = false;
   };
 
@@ -173,7 +172,6 @@
     initMainPinEvents: initMainPinEvents,
     addMarkEventHeandlers: addMarkEventHeandlers,
     deactivateMap: deactivateMap,
-    saveStartPosition: saveStartPosition,
-    loadStartPosition: loadStartPosition
+    saveStartPosition: saveStartPosition
   };
 })();

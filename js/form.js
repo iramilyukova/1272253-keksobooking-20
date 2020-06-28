@@ -208,7 +208,6 @@
   // Сообщение должно исчезать по клику на произвольную область экрана.
   var onErrorClick = function () {
     closeError();
-    window.map.loadStartPosition();
   };
 
   // функция по закрытию неуспешного сообщения на Esk
