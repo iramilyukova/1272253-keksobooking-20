@@ -6,7 +6,6 @@
     HALF_HEIGHT: 33,
     TAIL_HEIGHT: 16,
     MIN_X: 0,
-    MAX_X: 600,
     MIN_Y: 130,
     MAX_Y: 630
   };
@@ -45,7 +44,7 @@
   };
 
   // функция добавления для одной метки обработчика события.
-  var addMarkEventHeandlers = function (pin, mark) { // параметры: фрагмент отрисовки марка на карте и текущая марка
+  var onPinClick = function (pin, mark) { // параметры: фрагмент отрисовки марка на карте и текущая марка
     pin.addEventListener('click', function () { // на отрисованного марка на карте вешаем обработчик клика
       window.card.renderPopup(mark); // при нажатии вызывать функцию для рисования попапа
     });
@@ -170,7 +169,7 @@
     startMainPinPosition: startMainPinPosition,
     addMarksFragment: addMarksFragment,
     initMainPinEvents: initMainPinEvents,
-    addMarkEventHeandlers: addMarkEventHeandlers,
+    onPinClick: onPinClick,
     deactivateMap: deactivateMap,
     saveStartPosition: saveStartPosition
   };

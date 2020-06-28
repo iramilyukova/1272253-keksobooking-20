@@ -23,6 +23,13 @@
     NOT_FOR_GUEST: '100'
   };
 
+  var TYPES = {
+    PALACE: 'palace',
+    FLAT: 'flat',
+    HOUSE: 'house',
+    BUNGALO: 'bungalo'
+  };
+
   var form = document.querySelector('.ad-form');
   var main = document.querySelector('main');
   var successPopup = document.querySelector('#success').content.querySelector('.success');
@@ -145,19 +152,19 @@
   var updatePriceLmit = function () {
     var housingTypeValue = offerType.value;
     switch (housingTypeValue) {
-      case window.data.TYPES.BUNGALO:
+      case TYPES.BUNGALO:
         offerPrice.placeholder = PriceNight.ZERO; // указываем, что placeholder  = 0, минимальная цена = 0
         offerPrice.min = PriceNight.ZERO;
         break;
-      case window.data.TYPES.FLAT:
+      case TYPES.FLAT:
         offerPrice.placeholder = PriceNight.ONE_THOUSAND; // в размерке меняем placeholder  = 1000, минимальная цена = 1000
         offerPrice.min = PriceNight.ONE_THOUSAND; // связываем плейсхолдер с минимальным значением
         break;
-      case window.data.TYPES.HOUSE:
+      case TYPES.HOUSE:
         offerPrice.placeholder = PriceNight.FIVE_THOUSAND;
         offerPrice.min = PriceNight.FIVE_THOUSAND;
         break;
-      case window.data.TYPES.PALACE:
+      case TYPES.PALACE:
         offerPrice.placeholder = PriceNight.TEN_THOUSAND;
         offerPrice.min = PriceNight.TEN_THOUSAND;
         break;
@@ -173,10 +180,10 @@
 
     if (offerPrice.validity.rangeUnderflow) { // проверка нижней границы стоимости жилья (Если число в поле ввода меньше min атрибут ввода)
       switch (housingTypeValue) { // если housingTypeValue == TYPES.BUNGALO, то...
-        case window.data.TYPES.BUNGALO: message = 'Цена должна быть не менее 0 руб.'; break; // если выбран тип жилья "бунгало"
-        case window.data.TYPES.FLAT: message = 'Цена должна быть не менее 1000 руб.'; break; // если выбрана квартира
-        case window.data.TYPES.HOUSE: message = 'Цена должна быть не менее 5000 руб.'; break; // если выбран "дом"
-        case window.data.TYPES.PALACE: message = 'Цена должна быть не менее 10000 руб.'; break;
+        case TYPES.BUNGALO: message = 'Цена должна быть не менее 0 руб.'; break; // если выбран тип жилья "бунгало"
+        case TYPES.FLAT: message = 'Цена должна быть не менее 1000 руб.'; break; // если выбрана квартира
+        case TYPES.HOUSE: message = 'Цена должна быть не менее 5000 руб.'; break; // если выбран "дом"
+        case TYPES.PALACE: message = 'Цена должна быть не менее 10000 руб.'; break;
         default: message = ''; break; // если пользователь ничего не ввел в поле
       }
     } else if (offerPrice.validity.rangeOverflow) { // проверка максимальной стоимости жилья
@@ -192,7 +199,7 @@
 
   var onDocumentKeyDown = function () {
     error.remove(); // сообщение об ошибочной отправке удаляется
-    document.removeEventListener('keydown', onDocumentKeyDownEscPress);
+    document.removeEventListener('keydown', onDocumentErrorKeyDown);
   };
 
   // Сообщение должно исчезать по клику на произвольную область экрана.
@@ -201,7 +208,7 @@
   };
 
   // функция по закрытию неуспешного сообщения на Esk
-  var onDocumentKeyDownEscPress = function (evt) {
+  var onDocumentErrorKeyDown = function (evt) {
     window.util.isEscEvent(evt, onDocumentKeyDown);
   };
 
@@ -210,7 +217,7 @@
     main.insertAdjacentElement('afterbegin', errorPopup); //  указываем место в разметке, где будет сообщение об неудачной отправке данных
     closeButtonError.addEventListener('click', onErrorPopupClick); // при клике на кнопку об ошибочной отправке
     errorPopup.addEventListener('click', onErrorPopupClick);
-    document.addEventListener('keydown', onDocumentKeyDownEscPress);
+    document.addEventListener('keydown', onDocumentErrorKeyDown);
   };
 
   // Сообщение должно исчезать по клику на произвольную область экрана.
@@ -222,11 +229,11 @@
   var closeSuccess = function () {
     success.classList.add('hidden');
     success.removeEventListener('click', onSuccessClick);
-    document.removeEventListener('keydown', onDocumentKeyDownEscSuccsess);
+    document.removeEventListener('keydown', onDocumentSuccsessKeyDown);
   };
 
   // функция по закрытию успешного сообщения на Esk
-  var onDocumentKeyDownEscSuccsess = function (evt) {
+  var onDocumentSuccsessKeyDown = function (evt) {
     window.util.isEscEvent(evt, closeSuccess);
   };
 
@@ -235,7 +242,7 @@
   //  success.classList.remove('hidden');
     main.insertAdjacentElement('afterbegin', successPopup); //  указываем место в разметке, где будет сообщение об отправке данных
     successPopup.addEventListener('click', onSuccessClick);
-    document.addEventListener('keydown', onDocumentKeyDownEscPress);
+    document.addEventListener('keydown', onDocumentErrorKeyDown);
   };
 
   // При успешной отправке формы вызываем функции показа сообщения и деактивации формы

@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+
   var mapCardPopupTemplate = document.querySelector('#card').content.querySelector('.map__card.popup');
   var mapFiltersContainer = document.querySelector('.map__filters-container');
   var mapCard = null;
@@ -27,7 +28,6 @@
     mapCard.querySelector('.popup__title').textContent = mark.offer.title;
     mapCard.querySelector('.popup__text--address').textContent = mark.offer.address;
     mapCard.querySelector('.popup__text--price').textContent = mark.offer.price + ' ₽/ночь';
-    mapCard.querySelector('.popup__type').textContent = window.data.translateType[mark.offer.type];
     mapCard.querySelector('.popup__text--capacity').textContent = mark.offer.rooms + ' комнаты для ' + mark.offer.guests + ' гостей';
     mapCard.querySelector('.popup__text--time').textContent = 'Заезд после ' + mark.offer.checkin + ', выезд до ' + mark.offer.checkout;
     mapCard.querySelector('.popup__features').textContent = mark.offer.description;

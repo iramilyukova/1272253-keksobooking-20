@@ -28,7 +28,7 @@
       var pin = getMarkFragment(mark); // ссылаемся на функцию отрисовки метки (на дом-элемент, который мы склонировали с помощью темплейта) и отрисовываем каждого текущего марка на карте
       pin.tabIndex = i + TWO;
       fragment.appendChild(pin); // сложили все во фрагмент
-      window.map.addMarkEventHeandlers(pin, mark); // навесили обработчики событий
+      window.map.onPinClick(pin, mark); // навесили обработчики событий
     }
     window.map.addMarksFragment(fragment); // добавили фрагмент в блок с метками объявлений(в дом-дерево)
   };
