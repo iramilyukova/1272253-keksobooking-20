@@ -208,7 +208,7 @@
   // Сообщение должно исчезать по клику на произвольную область экрана.
   var onErrorClick = function () {
     closeError();
-    window.map.defaultMainPinPosition();
+    window.map.loadStartPosition();
   };
 
   // функция по закрытию неуспешного сообщения на Esk
@@ -253,8 +253,7 @@
   var onSuccessSubmit = function () {
     onSuccess();
     window.map.deactivateMap();
-    var isActive = true;
-    changeActivateStateForm(isActive); // форма становится неактивна после смены флага
+    changeActivateStateForm(false); // форма становится неактивна после смены флага
   };
 
   var onFormSubmit = function (evt) {

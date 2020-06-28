@@ -80,8 +80,9 @@
 
   // Функция для перевода страницы в не активное состояние
   var deactivateMap = function () {
+    isActive = false;
     map.classList.add('map--faded'); // Деактивируем карт
-    window.form.changeActivateStateForm(!isActive); // неактивная форма
+    window.form.changeActivateStateForm(isActive); // неактивная форма
     // window.pin.remove();
     // window.card.remove();
     defaultMainPinPosition(); // Возвращаяем метку на первоначальное место
@@ -172,6 +173,7 @@
     initMainPinEvents: initMainPinEvents,
     addMarkEventHeandlers: addMarkEventHeandlers,
     deactivateMap: deactivateMap,
-    saveStartPosition: saveStartPosition
+    saveStartPosition: saveStartPosition,
+    loadStartPosition: loadStartPosition
   };
 })();
