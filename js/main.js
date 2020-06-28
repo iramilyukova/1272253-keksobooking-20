@@ -2,6 +2,6 @@
 
 (function () {
   window.form.startingPage();
-  window.map.startPosition();
+  window.map.saveStartPosition();
   window.map.initMainPinEvents();
 })();

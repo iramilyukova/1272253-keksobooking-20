@@ -55,7 +55,6 @@
 
   // Функция для проверки состояния активации формы (fieldset)
   var changeActivateStateForm = function (isActive) {
-    formListeners();
 
     Array.from(fieldsets).forEach(function (fieldset) {
       fieldset.disabled = !isActive; // Если страница не активная то fieldset выключен.
@@ -68,31 +67,12 @@
     });
 
     if (isActive) {
-      form.classList.remove('ad-form--disabled');// Активируем форму
+      form.classList.remove('ad-form--disabled');
+      formListeners();// Активируем форму
     } else {
-      form.classList.add('ad-form--disabled');// деактивируем форму
-    }
-  };
-
-  // Функция для проверки состояния активации формы (fieldset)
-  var deactivateForm = function (isActive) {
-    removeFormListeners();
-    form.reset();
-
-    Array.from(fieldsets).forEach(function (fieldset) {
-      fieldset.disabled = isActive; // Если страница активная то fieldset включен.
-    });
-    Array.from(selects).forEach(function (select) {
-      select.disabled = isActive;
-    });
-    Array.from(inputs).forEach(function (input) {
-      input.disabled = isActive;
-    });
-
-    if (isActive) {
-      form.classList.add('ad-form--disabled');// деактивируем форму
-    } else {
-      form.classList.remove('ad-form--disabled');// Активируем форму
+      form.classList.add('ad-form--disabled');
+      removeFormListeners();
+      form.reset();// деактивируем форму
     }
   };
 
@@ -228,6 +208,7 @@
   // Сообщение должно исчезать по клику на произвольную область экрана.
   var onErrorClick = function () {
     closeError();
+    window.map.defaultMainPinPosition();
   };
 
   // функция по закрытию неуспешного сообщения на Esk
@@ -271,8 +252,9 @@
   // При успешной отправке формы вызываем функции показа сообщения и деактивации формы
   var onSuccessSubmit = function () {
     onSuccess();
-    deactivateForm();
     window.map.deactivateMap();
+    var isActive = true;
+    changeActivateStateForm(isActive); // форма становится неактивна после смены флага
   };
 
   var onFormSubmit = function (evt) {
@@ -311,7 +293,6 @@
     RoomLimit: RoomLimit,
     GuestLimit: GuestLimit,
     startingPage: startingPage,
-    deactivateForm: deactivateForm,
     putMainPinPositionToAddress: putMainPinPositionToAddress,
     changeActivateStateForm: changeActivateStateForm
   };

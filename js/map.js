@@ -52,9 +52,21 @@
   };
 
   // функция сохранения стартовых координат метки в неактивном состоянии
-  var startPosition = function () {
-    mapPinButtonMain.style.left = mapPinButtonMain.offsetTop + PinSetting.HALF_HEIGHT;
-    mapPinButtonMain.style.top = mapPinButtonMain.offsetTop + PinSetting.HALF_HEIGHT;
+  var defaultMainPinPosition = {
+    top: null,
+    left: null,
+  };
+
+  // Функция для запоминания первоначального состояния
+  var saveStartPosition = function () {
+    defaultMainPinPosition.top = mapPinButtonMain.style.top;
+    defaultMainPinPosition.left = mapPinButtonMain.style.left;
+  };
+
+  // Функция для возвращения метки со сдвинутого состояния на первоначальное
+  var loadStartPosition = function () {
+    mapPinButtonMain.style.top = defaultMainPinPosition.top;
+    mapPinButtonMain.style.left = defaultMainPinPosition.left;
   };
 
   // Функция для перевода страницы в активное состояние
@@ -69,10 +81,11 @@
   // Функция для перевода страницы в не активное состояние
   var deactivateMap = function () {
     map.classList.add('map--faded'); // Деактивируем карт
-    window.form.deactivateForm();
+    window.form.changeActivateStateForm(!isActive); // неактивная форма
     // window.pin.remove();
     // window.card.remove();
-    startPosition(); // Возвращаяем метку на первоначальное место
+    defaultMainPinPosition(); // Возвращаяем метку на первоначальное место
+    loadStartPosition();
     activateMap = false;
   };
 
@@ -155,10 +168,11 @@
 
   window.map = {
     startMainPinPosition: startMainPinPosition,
-    startPosition: startPosition,
+    defaultMainPinPosition: defaultMainPinPosition,
     addMarksFragment: addMarksFragment,
     initMainPinEvents: initMainPinEvents,
     addMarkEventHeandlers: addMarkEventHeandlers,
-    deactivateMap: deactivateMap
+    deactivateMap: deactivateMap,
+    saveStartPosition: saveStartPosition
   };
 })();
