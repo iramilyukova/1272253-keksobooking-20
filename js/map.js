@@ -41,7 +41,7 @@
       x = mapPinButtonMain.offsetLeft + PinSetting.HALF_WIDTH;
       y = mapPinButtonMain.offsetTop + PinSetting.HALF_HEIGHT;
     }
-    window.form.putMainPinPositionToAddress(x, y);
+    window.form.setAddress(x, y);
   };
 
   // функция добавления для одной метки обработчика события.
@@ -75,14 +75,14 @@
     map.classList.remove('map--faded');// Активируем карту
     window.pin.renderMarks(marks);// Показываем все метки на странице
     startMainPinPosition();
-    window.form.changeActivateStateForm(isActive); // Функция для проверки состояния активации и активацию формы (fieldset)
+    window.form.changeFormState(isActive); // Функция для проверки состояния активации и активацию формы (fieldset)
   };
 
   // Функция для перевода страницы в не активное состояние
   var deactivateMap = function () {
     isActive = false;
     map.classList.add('map--faded'); // Деактивируем карт
-    window.form.changeActivateStateForm(isActive); // неактивная форма
+    window.form.changeFormState(isActive); // неактивная форма
     // window.pin.remove();
     // window.card.remove();
     loadStartPosition(); // Возвращаяем метку на первоначальное место

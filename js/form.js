@@ -9,16 +9,6 @@
     TEN_THOUSAND: '10000'
   };
 
-  var RoomLimit = {
-    MIN: 1,
-    MAX: 100
-  };
-
-  var GuestLimit = {
-    MIN: 1,
-    MAX: 20
-  };
-
   var RoomtType = {
     ONE: '1',
     TWO: '2',
@@ -54,7 +44,7 @@
   var addressInput = document.querySelector('input[name="address"]');
 
   // Функция для проверки состояния активации формы (fieldset)
-  var changeActivateStateForm = function (isActive) {
+  var changeFormState = function (isActive) {
 
     Array.from(fieldsets).forEach(function (fieldset) {
       fieldset.disabled = !isActive; // Если страница не активная то fieldset выключен.
@@ -196,31 +186,31 @@
   };
 
   // Поставили стартовые координаты в поле с именем address
-  var putMainPinPositionToAddress = function (x, y) {
+  var setAddress = function (x, y) {
     addressInput.value = x + ', ' + y;
   };
 
-  var closeError = function () {
+  var onDocumentKeyDown = function () {
     error.remove(); // сообщение об ошибочной отправке удаляется
-    document.removeEventListener('keydown', onErrorEscPress);
+    document.removeEventListener('keydown', onDocumentKeyDownEscPress);
   };
 
   // Сообщение должно исчезать по клику на произвольную область экрана.
-  var onErrorClick = function () {
-    closeError();
+  var onErrorPopupClick = function () {
+    onDocumentKeyDown();
   };
 
   // функция по закрытию неуспешного сообщения на Esk
-  var onErrorEscPress = function (evt) {
-    window.util.isEscEvent(evt, closeError);
+  var onDocumentKeyDownEscPress = function (evt) {
+    window.util.isEscEvent(evt, onDocumentKeyDown);
   };
 
   // Описываем неуспешную отправку данных серверу
   var onError = function () {
     main.insertAdjacentElement('afterbegin', errorPopup); //  указываем место в разметке, где будет сообщение об неудачной отправке данных
-    closeButtonError.addEventListener('click', onErrorClick); // при клике на кнопку об ошибочной отправке
-    errorPopup.addEventListener('click', onErrorClick);
-    document.addEventListener('keydown', onErrorEscPress);
+    closeButtonError.addEventListener('click', onErrorPopupClick); // при клике на кнопку об ошибочной отправке
+    errorPopup.addEventListener('click', onErrorPopupClick);
+    document.addEventListener('keydown', onDocumentKeyDownEscPress);
   };
 
   // Сообщение должно исчезать по клику на произвольную область экрана.
@@ -232,11 +222,11 @@
   var closeSuccess = function () {
     success.classList.add('hidden');
     success.removeEventListener('click', onSuccessClick);
-    document.removeEventListener('keydown', onSuccessEscPress);
+    document.removeEventListener('keydown', onDocumentKeyDownEscSuccsess);
   };
 
   // функция по закрытию успешного сообщения на Esk
-  var onSuccessEscPress = function (evt) {
+  var onDocumentKeyDownEscSuccsess = function (evt) {
     window.util.isEscEvent(evt, closeSuccess);
   };
 
@@ -245,14 +235,14 @@
   //  success.classList.remove('hidden');
     main.insertAdjacentElement('afterbegin', successPopup); //  указываем место в разметке, где будет сообщение об отправке данных
     successPopup.addEventListener('click', onSuccessClick);
-    document.addEventListener('keydown', onSuccessEscPress);
+    document.addEventListener('keydown', onDocumentKeyDownEscPress);
   };
 
   // При успешной отправке формы вызываем функции показа сообщения и деактивации формы
   var onSuccessSubmit = function () {
     onSuccess();
     window.map.deactivateMap();
-    changeActivateStateForm(false); // форма становится неактивна после смены флага
+    changeFormState(false); // форма становится неактивна после смены флага
   };
 
   var onFormSubmit = function (evt) {
@@ -279,7 +269,7 @@
   };
 
   var startingPage = function () {
-    changeActivateStateForm();
+    changeFormState();
     window.map.startMainPinPosition();
     validateTitle();
     validatePrice();
@@ -288,11 +278,9 @@
   };
 
   window.form = {
-    RoomLimit: RoomLimit,
-    GuestLimit: GuestLimit,
     startingPage: startingPage,
-    putMainPinPositionToAddress: putMainPinPositionToAddress,
-    changeActivateStateForm: changeActivateStateForm
+    setAddress: setAddress,
+    changeFormState: changeFormState
   };
 })();
 

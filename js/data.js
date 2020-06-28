@@ -10,6 +10,11 @@
     MAX_Y: 600,
   };
 
+  var GuestLimit = {
+    MIN: 1,
+    MAX: 20
+  };
+
   var TYPES = {
     PALACE: 'palace',
     FLAT: 'flat',
@@ -100,7 +105,7 @@
           price: getRandomValue(PriseLimit.MIN, PriseLimit.MAX),
           rooms: getRandomValue(window.form.RoomLimit.MIN, window.form.RoomLimit.MAX),
           type: translateType(TYPES),
-          guests: getRandomValue(window.form.GuestLimit.MIN, window.form.GuestLimit.MAX),
+          guests: getRandomValue(GuestLimit.MIN, GuestLimit.MAX),
           checkin: getRandomItem(TIMES),
           checkout: getRandomItem(TIMES),
           features: getRandomFeatures(4, FEATURES), // массив строк случайной длины из ниже предложенных
