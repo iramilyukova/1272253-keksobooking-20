@@ -36,6 +36,7 @@
   var errorPopup = document.querySelector('#error').content.querySelector('.error');
   var error = document.querySelector('.error');
   var closeButtonError = document.querySelector('.error__button');
+  var resetBtn = document.querySelector('.ad-form__reset'); // кнопка для сброса заполнеения в форме
   var submitBtn = document.querySelector('.ad-form__submit'); // кнопка отправки формы
   var success = document.querySelector('.success');
   var offerTitle = form.querySelector('#title');
@@ -199,7 +200,7 @@
 
   var onDocumentKeyDown = function () {
     error.remove(); // сообщение об ошибочной отправке удаляется
-    document.removeEventListener('keydown', onDocumentErrorKeyDown);
+    document.removeEventListener('keydown', onDocumentKeyDownError);
   };
 
   // Сообщение должно исчезать по клику на произвольную область экрана.
@@ -208,7 +209,7 @@
   };
 
   // функция по закрытию неуспешного сообщения на Esk
-  var onDocumentErrorKeyDown = function (evt) {
+  var onDocumentKeyDownError = function (evt) {
     window.util.isEscEvent(evt, onDocumentKeyDown);
   };
 
@@ -217,7 +218,7 @@
     main.insertAdjacentElement('afterbegin', errorPopup); //  указываем место в разметке, где будет сообщение об неудачной отправке данных
     closeButtonError.addEventListener('click', onErrorPopupClick); // при клике на кнопку об ошибочной отправке
     errorPopup.addEventListener('click', onErrorPopupClick);
-    document.addEventListener('keydown', onDocumentErrorKeyDown);
+    document.addEventListener('keydown', onDocumentKeyDownError);
   };
 
   // Сообщение должно исчезать по клику на произвольную область экрана.
@@ -229,11 +230,11 @@
   var closeSuccess = function () {
     success.classList.add('hidden');
     success.removeEventListener('click', onSuccessClick);
-    document.removeEventListener('keydown', onDocumentSuccsessKeyDown);
+    document.removeEventListener('keydown', onDocumentKeyDownSuccess);
   };
 
   // функция по закрытию успешного сообщения на Esk
-  var onDocumentSuccsessKeyDown = function (evt) {
+  var onDocumentKeyDownSuccess = function (evt) {
     window.util.isEscEvent(evt, closeSuccess);
   };
 
@@ -242,7 +243,7 @@
   //  success.classList.remove('hidden');
     main.insertAdjacentElement('afterbegin', successPopup); //  указываем место в разметке, где будет сообщение об отправке данных
     successPopup.addEventListener('click', onSuccessClick);
-    document.addEventListener('keydown', onDocumentErrorKeyDown);
+    document.addEventListener('keydown', onDocumentKeyDownError);
   };
 
   // При успешной отправке формы вызываем функции показа сообщения и деактивации формы
@@ -263,16 +264,25 @@
     updateFormValidation(); // вызываем функцию проверки на валидацию
   };
 
+  // функция колбека для клика но кнопке сброса данных в форма
+  var onResetBtnClick = function (evt) {
+    evt.preventDefault();
+    window.map.deactivateMap(); // делаем страницу неактивной
+    // сюдаже же добавим дективацию фильтров
+  };
+
   // слушатель на кнопку отправки
   var formListeners = function () {
     form.addEventListener('submit', onFormSubmit);
     submitBtn.addEventListener('click', onSubmitBtnClick);
+    resetBtn.addEventListener('click', onResetBtnClick);
   };
 
   // удаляем обработчики
   var removeFormListeners = function () {
     submitBtn.removeEventListener('click', onSubmitBtnClick);
     form.removeEventListener('submit', onFormSubmit);
+    resetBtn.removeEventListener('click', onResetBtnClick);
   };
 
   var startingPage = function () {

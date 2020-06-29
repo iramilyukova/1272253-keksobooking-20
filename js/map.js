@@ -44,7 +44,7 @@
   };
 
   // функция добавления для одной метки обработчика события.
-  var onPinClick = function (pin, mark) { // параметры: фрагмент отрисовки марка на карте и текущая марка
+  var addPinClick = function (pin, mark) { // параметры: фрагмент отрисовки марка на карте и текущая марка
     pin.addEventListener('click', function () { // на отрисованного марка на карте вешаем обработчик клика
       window.card.renderPopup(mark); // при нажатии вызывать функцию для рисования попапа
     });
@@ -82,10 +82,9 @@
     isActive = false;
     map.classList.add('map--faded'); // Деактивируем карт
     window.form.changeFormState(isActive); // неактивная форма
-    // window.pin.remove();
-    // window.card.remove();
     loadStartPosition(); // Возвращаяем метку на первоначальное место
     activateMap = false;
+    window.pin.removePins();
   };
 
   // функцию внутри этого модуля для соблюдения принципа инкапсуляции для DOM элемента map.
@@ -169,7 +168,7 @@
     startMainPinPosition: startMainPinPosition,
     addMarksFragment: addMarksFragment,
     initMainPinEvents: initMainPinEvents,
-    onPinClick: onPinClick,
+    addPinClick: addPinClick,
     deactivateMap: deactivateMap,
     saveStartPosition: saveStartPosition
   };

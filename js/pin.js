@@ -28,13 +28,25 @@
       var pin = getMarkFragment(mark); // ссылаемся на функцию отрисовки метки (на дом-элемент, который мы склонировали с помощью темплейта) и отрисовываем каждого текущего марка на карте
       pin.tabIndex = i + TWO;
       fragment.appendChild(pin); // сложили все во фрагмент
-      window.map.onPinClick(pin, mark); // навесили обработчики событий
+      window.map.addPinClick(pin, mark); // навесили обработчики событий
     }
     window.map.addMarksFragment(fragment); // добавили фрагмент в блок с метками объявлений(в дом-дерево)
   };
 
+  var removePins = function () {
+    for (var i = 0; i < pins.length; i++) {
+      pins.pop(pins[i]);
+    }
+  };
+
+  var pins = [];
+  for (var i = 0; i < pins.length; i++) {
+    pins.push(pins[i]);
+  }
+
   window.pin = {
-    renderMarks: renderMarks
+    renderMarks: renderMarks,
+    removePins: removePins
   };
 })();
 
