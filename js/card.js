@@ -66,6 +66,7 @@
 
   // EXPORT
   window.card = {
-    renderPopup: renderMapPopup
+    renderPopup: renderMapPopup,
+    removePopup: removePopup
   };
 })();

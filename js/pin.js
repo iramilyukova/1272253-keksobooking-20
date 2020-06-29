@@ -6,6 +6,7 @@
     HEIGHT: 66
   };
 
+  var pins = [];
   var TWO = 2;
 
   var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -27,22 +28,24 @@
       var mark = marks[i]; // записали в переменную конкретного марка из массива с заполенными данными марками
       var pin = getMarkFragment(mark); // ссылаемся на функцию отрисовки метки (на дом-элемент, который мы склонировали с помощью темплейта) и отрисовываем каждого текущего марка на карте
       pin.tabIndex = i + TWO;
+
+      for (i = 0; i < pins.length; i++) {
+        pins.push(pins[i]);
+      }
+
       fragment.appendChild(pin); // сложили все во фрагмент
       window.map.addPinClick(pin, mark); // навесили обработчики событий
     }
     window.map.addMarksFragment(fragment); // добавили фрагмент в блок с метками объявлений(в дом-дерево)
+    pins.appendChild(pin);
   };
 
   var removePins = function () {
     for (var i = 0; i < pins.length; i++) {
-      pins.pop(pins[i]);
+      pins[i].remove();
+      pins = []; // Почистить массив
     }
   };
-
-  var pins = [];
-  for (var i = 0; i < pins.length; i++) {
-    pins.push(pins[i]);
-  }
 
   window.pin = {
     renderMarks: renderMarks,

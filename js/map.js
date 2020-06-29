@@ -85,6 +85,7 @@
     loadStartPosition(); // Возвращаяем метку на первоначальное место
     activateMap = false;
     window.pin.removePins();
+    window.card.removePopup();
   };
 
   // функцию внутри этого модуля для соблюдения принципа инкапсуляции для DOM элемента map.
