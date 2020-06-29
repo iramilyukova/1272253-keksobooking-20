@@ -28,18 +28,15 @@
       var mark = marks[i]; // записали в переменную конкретного марка из массива с заполенными данными марками
       var pin = getMarkFragment(mark); // ссылаемся на функцию отрисовки метки (на дом-элемент, который мы склонировали с помощью темплейта) и отрисовываем каждого текущего марка на карте
       pin.tabIndex = i + TWO;
-
-      for (i = 0; i < pins.length; i++) {
-        pins.push(pins[i]);
-      }
+      pins.push(pin); // записали каждую метку в массив пинов
 
       fragment.appendChild(pin); // сложили все во фрагмент
       window.map.addPinClick(pin, mark); // навесили обработчики событий
     }
     window.map.addMarksFragment(fragment); // добавили фрагмент в блок с метками объявлений(в дом-дерево)
-    pins.appendChild(pin);
   };
 
+  // функция для удаления меток из массива
   var removePins = function () {
     for (var i = 0; i < pins.length; i++) {
       pins[i].remove();

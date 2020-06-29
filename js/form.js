@@ -32,13 +32,13 @@
 
   var form = document.querySelector('.ad-form');
   var main = document.querySelector('main');
-  var successPopup = document.querySelector('#success').content.querySelector('.success');
-  var errorPopup = document.querySelector('#error').content.querySelector('.error');
-  var error = document.querySelector('.error');
+  //  var successPopup = document.querySelector('#success').content.querySelector('.success');
+  // var errorPopup = document.querySelector('#error').content.querySelector('.error');
+  var error = document.querySelector('#error');
   var closeButtonError = document.querySelector('.error__button');
   var resetBtn = document.querySelector('.ad-form__reset'); // кнопка для сброса заполнеения в форме
   var submitBtn = document.querySelector('.ad-form__submit'); // кнопка отправки формы
-  var success = document.querySelector('.success');
+  var success = document.querySelector('#success');
   var offerTitle = form.querySelector('#title');
   var offerPrice = form.querySelector('#price');
   var offerRoomNumber = form.querySelector('#room_number');
@@ -198,13 +198,24 @@
     addressInput.value = x + ', ' + y;
   };
 
+  var renderErrorMessage = function (errorMessage) {
+    var message = document.createElement('div');
+    message.classList.add('error-message');
+    message.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', message);
+  };
+
+  var onSubmitError = function (errorMessage) {
+    renderErrorMessage(errorMessage);
+  };
+
   var onDocumentKeyDown = function () {
     error.remove(); // сообщение об ошибочной отправке удаляется
     document.removeEventListener('keydown', onDocumentKeyDownError);
   };
 
   // Сообщение должно исчезать по клику на произвольную область экрана.
-  var onErrorPopupClick = function () {
+  var onErrorClick = function () {
     onDocumentKeyDown();
   };
 
@@ -215,10 +226,16 @@
 
   // Описываем неуспешную отправку данных серверу
   var onError = function () {
-    main.insertAdjacentElement('afterbegin', errorPopup); //  указываем место в разметке, где будет сообщение об неудачной отправке данных
-    closeButtonError.addEventListener('click', onErrorPopupClick); // при клике на кнопку об ошибочной отправке
-    errorPopup.addEventListener('click', onErrorPopupClick);
+    main.insertAdjacentElement('afterbegin', error); //  указываем место в разметке, где будет сообщение об неудачной отправке данных
+    closeButtonError.addEventListener('click', onErrorClick); // при клике на кнопку об ошибочной отправке
+    error.addEventListener('click', onErrorClick);
     document.addEventListener('keydown', onDocumentKeyDownError);
+    onSubmitError();
+  };
+
+  // функция по закрытию успешного сообщения на Esk
+  var onDocumentKeyDownSuccess = function (evt) {
+    window.util.isEscEvent(evt, closeSuccess);
   };
 
   // Сообщение должно исчезать по клику на произвольную область экрана.
@@ -233,16 +250,11 @@
     document.removeEventListener('keydown', onDocumentKeyDownSuccess);
   };
 
-  // функция по закрытию успешного сообщения на Esk
-  var onDocumentKeyDownSuccess = function (evt) {
-    window.util.isEscEvent(evt, closeSuccess);
-  };
-
   // покажем сообщение об успешной отправке
   var onSuccess = function () {
-  //  success.classList.remove('hidden');
-    main.insertAdjacentElement('afterbegin', successPopup); //  указываем место в разметке, где будет сообщение об отправке данных
-    successPopup.addEventListener('click', onSuccessClick);
+    success.classList.remove('hidden');
+    main.insertAdjacentElement('afterbegin', success); //  указываем место в разметке, где будет сообщение об отправке данных
+    success.addEventListener('click', onSuccessClick);
     document.addEventListener('keydown', onDocumentKeyDownError);
   };
 
@@ -255,14 +267,15 @@
 
   var onFormSubmit = function (evt) {
     evt.preventDefault();
-    window.backend.upload(new FormData(form), onSuccessSubmit, onError);
+    var formData = new FormData(form);
+    window.backend.upload(formData, onSuccessSubmit, onError);
+  //  window.backend.upload(new FormData(form), onSuccessSubmit, onError);
   };
 
   // колбек для обработчика клика по кнопке оправки формы
-  var onSubmitBtnClick = function (evt) {
-    evt.preventDefault();
+  var onSubmitBtnClick = function () {
     updateFormValidation(); // вызываем функцию проверки на валидацию
-  };
+  }; // напичать условия для валидации перед отправкой
 
   // функция колбека для клика но кнопке сброса данных в форма
   var onResetBtnClick = function (evt) {
