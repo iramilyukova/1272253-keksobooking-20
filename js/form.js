@@ -32,8 +32,8 @@
 
   var form = document.querySelector('.ad-form');
   var main = document.querySelector('main');
-  //  var successPopup = document.querySelector('#success').content.querySelector('.success');
-  // var errorPopup = document.querySelector('#error').content.querySelector('.error');
+  var successPopup = document.querySelector('#success').content.querySelector('.success');
+  var errorPopup = document.querySelector('#error').content.querySelector('.error');
   var error = document.querySelector('#error');
   var closeButtonError = document.querySelector('.error__button');
   var resetBtn = document.querySelector('.ad-form__reset'); // кнопка для сброса заполнеения в форме
@@ -198,44 +198,11 @@
     addressInput.value = x + ', ' + y;
   };
 
-  var renderErrorMessage = function (errorMessage) {
-    var message = document.createElement('div');
-    message.classList.add('error-message');
-    message.textContent = errorMessage;
-    document.body.insertAdjacentElement('afterbegin', message);
-  };
-
-  var onSubmitError = function (errorMessage) {
-    renderErrorMessage(errorMessage);
-  };
-
-  var onDocumentKeyDown = function () {
-    error.remove(); // сообщение об ошибочной отправке удаляется
-    document.removeEventListener('keydown', onDocumentKeyDownError);
-  };
-
-  // Сообщение должно исчезать по клику на произвольную область экрана.
-  var onErrorClick = function () {
-    onDocumentKeyDown();
-  };
-
-  // функция по закрытию неуспешного сообщения на Esk
-  var onDocumentKeyDownError = function (evt) {
-    window.util.isEscEvent(evt, onDocumentKeyDown);
-  };
-
-  // Описываем неуспешную отправку данных серверу
-  var onError = function () {
-    main.insertAdjacentElement('afterbegin', error); //  указываем место в разметке, где будет сообщение об неудачной отправке данных
-    closeButtonError.addEventListener('click', onErrorClick); // при клике на кнопку об ошибочной отправке
-    error.addEventListener('click', onErrorClick);
-    document.addEventListener('keydown', onDocumentKeyDownError);
-    onSubmitError();
-  };
-
-  // функция по закрытию успешного сообщения на Esk
-  var onDocumentKeyDownSuccess = function (evt) {
-    window.util.isEscEvent(evt, closeSuccess);
+  // Функция закрытия сообщения по клику мышки и на Esk
+  var closeSuccess = function () {
+    success.remove();
+    success.removeEventListener('click', onSuccessClick);
+    document.removeEventListener('keydown', onDocumentKeyDownSuccess);
   };
 
   // Сообщение должно исчезать по клику на произвольную область экрана.
@@ -243,50 +210,70 @@
     closeSuccess();
   };
 
-  // Функция закрытия сообщения по клику мышки и на Esk
-  var closeSuccess = function () {
-    success.classList.add('hidden');
-    success.removeEventListener('click', onSuccessClick);
-    document.removeEventListener('keydown', onDocumentKeyDownSuccess);
+  // функция по закрытию успешного сообщения на Esk
+  var onDocumentKeyDownSuccess = function (evt) {
+    window.util.isEscEvent(evt, closeSuccess);
   };
 
   // покажем сообщение об успешной отправке
   var onSuccess = function () {
-    success.classList.remove('hidden');
-    main.insertAdjacentElement('afterbegin', success); //  указываем место в разметке, где будет сообщение об отправке данных
-    success.addEventListener('click', onSuccessClick);
+    main.insertAdjacentElement('afterbegin', successPopup); //  указываем место в разметке, где будет сообщение об отправке данных
+    successPopup.addEventListener('click', onSuccessClick);
+    document.addEventListener('keydown', onDocumentKeyDownSuccess);
+  };
+
+  var closeError = function () {
+    error.remove();
+    document.removeEventListener('keydown', onDocumentKeyDownError);
+  };
+
+  // Сообщение должно исчезать по клику на произвольную область экрана.
+  var onErrorClick = function () {
+    closeError();
+  };
+
+  // функция по закрытию неуспешного сообщения на Esk
+  var onDocumentKeyDownError = function (evt) {
+    window.util.isEscEvent(evt, closeError);
+  };
+
+  // Описываем неуспешную отправку данных серверу
+  var onError = function () {
+    main.insertAdjacentElement('afterbegin', errorPopup); //  указываем место в разметке, где будет сообщение об неудачной отправке данных
+    closeButtonError.addEventListener('click', onErrorClick); // при клике на кнопку об ошибочной отправке
+    errorPopup.addEventListener('click', onErrorClick);
     document.addEventListener('keydown', onDocumentKeyDownError);
   };
 
-  // При успешной отправке формы вызываем функции показа сообщения и деактивации формы
-  var onSuccessSubmit = function () {
+  var onFormSuccessSubmit = function () {
     onSuccess();
     window.map.deactivateMap();
-    changeFormState(false); // форма становится неактивна после смены флага
   };
 
-  var onFormSubmit = function (evt) {
+  form.addEventListener('submit', function (evt) {
+    window.backend.save(new FormData(form), onFormSuccessSubmit, onError);
     evt.preventDefault();
-    var formData = new FormData(form);
-    window.backend.upload(formData, onSuccessSubmit, onError);
-  //  window.backend.upload(new FormData(form), onSuccessSubmit, onError);
-  };
+  });
 
   // колбек для обработчика клика по кнопке оправки формы
   var onSubmitBtnClick = function () {
     updateFormValidation(); // вызываем функцию проверки на валидацию
-  }; // напичать условия для валидации перед отправкой
+  };
 
   // функция колбека для клика но кнопке сброса данных в форма
   var onResetBtnClick = function (evt) {
     evt.preventDefault();
     window.map.deactivateMap(); // делаем страницу неактивной
-    // сюдаже же добавим дективацию фильтров
   };
+
+  // var onDocumentKeyDown = function () {
+  //  error.remove(); // сообщение об ошибочной отправке удаляется
+  //   document.removeEventListener('keydown', onDocumentKeyDownError);
+  // };
 
   // слушатель на кнопку отправки
   var formListeners = function () {
-    form.addEventListener('submit', onFormSubmit);
+  //   form.addEventListener('submit', onFormSuccessSubmit);
     submitBtn.addEventListener('click', onSubmitBtnClick);
     resetBtn.addEventListener('click', onResetBtnClick);
   };
@@ -294,7 +281,7 @@
   // удаляем обработчики
   var removeFormListeners = function () {
     submitBtn.removeEventListener('click', onSubmitBtnClick);
-    form.removeEventListener('submit', onFormSubmit);
+    form.removeEventListener('submit', onFormSuccessSubmit);
     resetBtn.removeEventListener('click', onResetBtnClick);
   };
 

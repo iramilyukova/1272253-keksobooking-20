@@ -86,6 +86,7 @@
     activateMap = false;
     window.pin.removePins();
     window.card.removePopup();
+    // сделаем фильтры неактивными
   };
 
   // функцию внутри этого модуля для соблюдения принципа инкапсуляции для DOM элемента map.

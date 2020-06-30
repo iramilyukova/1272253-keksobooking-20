@@ -38,10 +38,10 @@
 
   // функция для удаления меток из массива
   var removePins = function () {
-    for (var i = 0; i < pins.length; i++) {
-      pins[i].remove();
+    pins.forEach(function (pin) {
+      pin.remove();
       pins = []; // Почистить массив
-    }
+    });
   };
 
   window.pin = {
