@@ -252,7 +252,7 @@
 
   var onFormSuccessSubmit = function () {
     showSuccessPopup();
-    //  changeFormState(false);
+    changeFormState(false);
     window.map.deactivate();
   };
 

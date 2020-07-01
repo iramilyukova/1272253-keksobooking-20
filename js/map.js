@@ -46,6 +46,7 @@
   // функция добавления для одной метки обработчика события.
   var addPinClick = function (pin, mark) { // параметры: фрагмент отрисовки марка на карте и текущая марка
     pin.addEventListener('click', function () { // на отрисованного марка на карте вешаем обработчик клика
+    //  window.pin.onPinItemClick();
       window.card.renderPopup(mark); // при нажатии вызывать функцию для рисования попапа
     });
   };

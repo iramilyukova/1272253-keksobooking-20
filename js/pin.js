@@ -19,7 +19,27 @@
     mapPoint.style.left = mark.location.x - (PinSize.WIDTH / 2) + 'px';
     mapPoint.querySelector('img').src = mark.author.avatar;
     mapPoint.querySelector('img').alt = mark.offer.title;
+
+    var onMapPointClick = function () {
+      deactivatePin();
+      mapPoint.classList.add('map__pin--active'); // добавляем подсветку актиной метке при нажатии на нее
+    };
+
+    var onMapPointEnterPress = function (evt) {
+      window.util.isEnterEvent(evt, onMapPointClick);
+    };
+
+    mapPoint.addEventListener('click', onMapPointClick);
+    mapPoint.addEventListener('keydown', onMapPointEnterPress);
+
     return mapPoint; // вернули из функции переменную со ссылкой на получившийся дом-элемент
+  };
+
+  var deactivatePin = function () {
+    var mapActivePin = document.querySelector('.map__pin--active');
+    if (mapActivePin) {
+      mapActivePin.classList.remove('map__pin--active');
+    }
   };
 
   // Записываем все метки во fragment
@@ -47,7 +67,8 @@
 
   window.pin = {
     renderPins: renderPins,
-    removePins: removePins
+    removePins: removePins,
+    deactivatePin: deactivatePin
   };
 })();
 
