@@ -67,7 +67,7 @@
 
   // Отправка данных на сервер
   var upload = function (onSuccess, onError, data) { // 2 параметра: объект с данными для отправки и колбэки, когда данные отправятся
-    produceXhr('POST', Url.UPLOAD, onSuccess, onError).send(data); // запускаем запрос серверус помощью вызова функции спараметрами и методом send с нашими данными
+    produceXhr('POST', Url.LOAD, onSuccess, onError).send(data); // запускаем запрос серверус помощью вызова функции спараметрами и методом send с нашими данными
   };
 
   window.backend = {

@@ -37,8 +37,6 @@
   var error = document.querySelector('#error');
   var closeButtonError = document.querySelector('.error__button');
   var resetBtn = document.querySelector('.ad-form__reset'); // кнопка для сброса заполнеения в форме
-  var submitBtn = document.querySelector('.ad-form__submit'); // кнопка отправки формы
-  var success = document.querySelector('#success');
   var offerTitle = form.querySelector('#title');
   var offerPrice = form.querySelector('#price');
   var offerRoomNumber = form.querySelector('#room_number');
@@ -49,7 +47,6 @@
   var selects = document.querySelectorAll('select');
   var inputs = document.querySelectorAll('input');
   var fieldsets = document.querySelectorAll('fieldset');
-  var addressInput = document.querySelector('input[name="address"]');
 
   // Функция для проверки состояния активации формы (fieldset)
   var changeFormState = function (isActive) {
@@ -66,15 +63,26 @@
 
     if (isActive) {
       form.classList.remove('ad-form--disabled');
-      formListeners();// Активируем форму
+      // addFormEvent();// Активируем форму
     } else {
       form.classList.add('ad-form--disabled');
-      removeFormListeners();
+      // removeFormEvents();
       form.reset();// деактивируем форму
     }
   };
 
-  var updateFormValidation = function () {
+  var addFormEvents = function () {
+    resetBtn.addEventListener('click', function (evt) {
+      evt.preventDefault();
+      changeFormState(false);
+      window.map.deactivate(); // делаем страницу неактивной
+    });
+
+    form.addEventListener('submit', function (evt) {
+      evt.preventDefault();
+      window.backend.upload(new FormData(form), onFormSuccessSubmit, onError);
+    });
+
     form.addEventListener('change', function (evt) {
       var targetId = evt.target.id;
       switch (targetId) {
@@ -193,32 +201,29 @@
     offerPrice.setCustomValidity(message); // назначить DOM элементу
   };
 
-  // Поставили стартовые координаты в поле с именем address
-  var setAddress = function (x, y) {
-    addressInput.value = x + ', ' + y;
-  };
-
   // Функция закрытия сообщения по клику мышки и на Esk
-  var closeSuccess = function () {
-    success.remove();
-    success.removeEventListener('click', onSuccessClick);
+  var removeSuccessPopup = function () {
+    successPopup.remove();
+    successPopup.removeEventListener('click', onSuccessPopupClick);
     document.removeEventListener('keydown', onDocumentKeyDownSuccess);
   };
 
   // Сообщение должно исчезать по клику на произвольную область экрана.
-  var onSuccessClick = function () {
-    closeSuccess();
+  var onSuccessPopupClick = function () {
+    removeSuccessPopup();
   };
 
   // функция по закрытию успешного сообщения на Esk
   var onDocumentKeyDownSuccess = function (evt) {
-    window.util.isEscEvent(evt, closeSuccess);
+    if (window.utils.isEscEvent(evt)) {
+      removeSuccessPopup();
+    }
   };
 
   // покажем сообщение об успешной отправке
-  var onSuccess = function () {
+  var showSuccessPopup = function () {
     main.insertAdjacentElement('afterbegin', successPopup); //  указываем место в разметке, где будет сообщение об отправке данных
-    successPopup.addEventListener('click', onSuccessClick);
+    successPopup.addEventListener('click', onSuccessPopupClick);
     document.addEventListener('keydown', onDocumentKeyDownSuccess);
   };
 
@@ -246,24 +251,9 @@
   };
 
   var onFormSuccessSubmit = function () {
-    onSuccess();
-    window.map.deactivateMap();
-  };
-
-  form.addEventListener('submit', function (evt) {
-    window.backend.save(new FormData(form), onFormSuccessSubmit, onError);
-    evt.preventDefault();
-  });
-
-  // колбек для обработчика клика по кнопке оправки формы
-  var onSubmitBtnClick = function () {
-    updateFormValidation(); // вызываем функцию проверки на валидацию
-  };
-
-  // функция колбека для клика но кнопке сброса данных в форма
-  var onResetBtnClick = function (evt) {
-    evt.preventDefault();
-    window.map.deactivateMap(); // делаем страницу неактивной
+    showSuccessPopup();
+    //  changeFormState(false);
+    window.map.deactivate();
   };
 
   // var onDocumentKeyDown = function () {
@@ -271,23 +261,9 @@
   //   document.removeEventListener('keydown', onDocumentKeyDownError);
   // };
 
-  // слушатель на кнопку отправки
-  var formListeners = function () {
-  //   form.addEventListener('submit', onFormSuccessSubmit);
-    submitBtn.addEventListener('click', onSubmitBtnClick);
-    resetBtn.addEventListener('click', onResetBtnClick);
-  };
-
-  // удаляем обработчики
-  var removeFormListeners = function () {
-    submitBtn.removeEventListener('click', onSubmitBtnClick);
-    form.removeEventListener('submit', onFormSuccessSubmit);
-    resetBtn.removeEventListener('click', onResetBtnClick);
-  };
-
-  var startingPage = function () {
+  var prepare = function () {
     changeFormState();
-    window.map.startMainPinPosition();
+    addFormEvents();
     validateTitle();
     validatePrice();
     validateCapacity();
@@ -295,8 +271,7 @@
   };
 
   window.form = {
-    startingPage: startingPage,
-    setAddress: setAddress,
+    prepare: prepare,
     changeFormState: changeFormState
   };
 })();

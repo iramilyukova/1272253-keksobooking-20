@@ -11,6 +11,7 @@
   };
 
   var rect = document.querySelector('.map__overlay').getBoundingClientRect();
+  var addressInput = document.querySelector('input[name="address"]');
 
   // Границы доступной области для перемещения метки
   var MIN_COORD = {
@@ -24,12 +25,11 @@
   };
 
   var map = document.querySelector('.map');
-  var mapPins = map.querySelector('.map__pins'); // метки объявлений
   var mapPinButtonMain = document.querySelector('.map__pin--main');
   var isActive = false;
 
-  // Стартовые координаты главной метки для раных состояний: активном и неактивном
-  var startMainPinPosition = function () {
+  // Стартовые координаты главной метки для разных состояний: активном и неактивном
+  var updateAddress = function () {
     var x = 0;
     var y = 0;
 
@@ -40,7 +40,7 @@
       x = mapPinButtonMain.offsetLeft + PinSetting.HALF_WIDTH;
       y = mapPinButtonMain.offsetTop + PinSetting.HALF_HEIGHT;
     }
-    window.form.setAddress(x, y);
+    addressInput.value = x + ', ' + y;
   };
 
   // функция добавления для одной метки обработчика события.
@@ -69,29 +69,24 @@
   };
 
   // Функция для перевода страницы в активное состояние
-  var activateMap = function (marks) {
+  var activate = function (marks) {
     isActive = true;
     map.classList.remove('map--faded');// Активируем карту
-    window.pin.renderMarks(marks);// Показываем все метки на странице
-    startMainPinPosition();
+    window.pin.renderPins(marks);// Показываем все метки на странице
+    updateAddress();
     window.form.changeFormState(isActive); // Функция для проверки состояния активации и активацию формы (fieldset)
   };
 
   // Функция для перевода страницы в не активное состояние
-  var deactivateMap = function () {
+  var deactivate = function () {
     isActive = false;
     map.classList.add('map--faded'); // Деактивируем карт
     window.form.changeFormState(isActive); // неактивная форма
+    updateAddress();
     loadStartPosition(); // Возвращаяем метку на первоначальное место
-    activateMap = false;
     window.pin.removePins();
     window.card.removePopup();
     // сделаем фильтры неактивными
-  };
-
-  // функцию внутри этого модуля для соблюдения принципа инкапсуляции для DOM элемента map.
-  var addMarksFragment = function (fragment) {
-    mapPins.appendChild(fragment);
   };
 
   // Навешивание обработчиков событий
@@ -101,7 +96,7 @@
       evt.preventDefault();
 
       if (!isActive && window.utils.isMouseLeftEvent(evt)) {
-        window.backend.load(activateMap); // функция для получения данных от сервера
+        window.backend.load(activate); // функция для получения данных от сервера
       }
 
       var startCoords = { // Запомним координаты точки, с которой мы начали перемещать метку.
@@ -143,7 +138,7 @@
         mapPinButtonMain.style.top = coordinates.y + 'px'; // получаем новые координаты после смещения
         mapPinButtonMain.style.left = coordinates.x + 'px';
 
-        startMainPinPosition(coordinates.x, coordinates.y);
+        updateAddress(coordinates.x, coordinates.y);
       };
 
       // Удаление обработчиков событий с mousemove, mouseup
@@ -161,17 +156,20 @@
     // Обработчикоткрытия закрытия окна по нажатию на Enter
     mapPinButtonMain.addEventListener('keydown', function (evt) {
       if (!isActive && window.utils.isEnterEvent(evt)) {
-        window.backend.load(activateMap);
+        window.backend.load(activate);
       } // При клике на левую кнопку мыши автивируем метки
     });
   };
 
+  var prepare = function () {
+    updateAddress();
+    saveStartPosition();
+    initMainPinEvents();
+  };
+
   window.map = {
-    startMainPinPosition: startMainPinPosition,
-    addMarksFragment: addMarksFragment,
-    initMainPinEvents: initMainPinEvents,
+    prepare: prepare,
     addPinClick: addPinClick,
-    deactivateMap: deactivateMap,
-    saveStartPosition: saveStartPosition
+    deactivate: deactivate
   };
 })();
