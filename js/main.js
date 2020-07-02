@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  window.form.startingPage();
-  // var marks = window.data.getMarks(8);
-  window.map.initMainPinEvents();
+  window.form.prepare();
+  window.map.prepare();
 })();

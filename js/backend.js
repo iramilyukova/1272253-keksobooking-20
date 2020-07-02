@@ -1,7 +1,10 @@
 'use strict';
 
 (function () {
-  var SERVER_URL = 'https://javascript.pages.academy/keksobooking/data';
+  var Url = {
+    LOAD: 'https://javascript.pages.academy/keksobooking/data',
+    UPLOAD: 'https://javascript.pages.academy/keksobooking'
+  };
 
   var Status = {
     SUCCESS: 200,
@@ -12,8 +15,7 @@
     TIMEOUT_TIME: 10000
   };
 
-  // Загрузка объявлений с сервера
-  var load = function (onSuccess, onError) { // указываем колбеки
+  var produceXhr = function (method, url, onSuccess, onError) {
     var xhr = new XMLHttpRequest(); // создаем спецобъект для запроса серверу
     xhr.responseType = 'json'; // воспользуеммся полем responseType, чтобы браузер сам перевел текст в объект
 
@@ -54,12 +56,23 @@
 
     xhr.timeout = Status.TIMEOUT_TIME; // 10s
 
-    xhr.open('GET', SERVER_URL);
-    xhr.send();
+    xhr.open(method, url);
+    return xhr;
+  };
+
+  // Загрузка объявлений с сервера
+  var load = function (onSuccess, onError) { // указываем колбеки
+    produceXhr('GET', Url.LOAD, onSuccess, onError).send(); // прописываем метод, адрес, колбеки успешной и неуспешной отправки
+  };
+
+  // Отправка данных на сервер
+  var upload = function (onSuccess, onError, data) { // 2 параметра: объект с данными для отправки и колбэки, когда данные отправятся
+    produceXhr('POST', Url.LOAD, onSuccess, onError).send(data); // запускаем запрос серверус помощью вызова функции спараметрами и методом send с нашими данными
   };
 
   window.backend = {
-    load: load
+    load: load,
+    upload: upload
   };
 })();
 
