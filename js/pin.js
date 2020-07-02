@@ -14,25 +14,25 @@
 
   // Отрисовываем метки на карте, клонирование
   var getPin = function (mark) {
-    var mapPoint = pinTemplate.cloneNode(true); // клонируем метку со всем ее содержимым, создается копия дом-элемента
-    mapPoint.style.top = (mark.location.y - PinSize.HEIGHT) + 'px';
-    mapPoint.style.left = mark.location.x - (PinSize.WIDTH / 2) + 'px';
-    mapPoint.querySelector('img').src = mark.author.avatar;
-    mapPoint.querySelector('img').alt = mark.offer.title;
+    var pin = pinTemplate.cloneNode(true); // клонируем метку со всем ее содержимым, создается копия дом-элемента
+    pin.style.top = (mark.location.y - PinSize.HEIGHT) + 'px';
+    pin.style.left = mark.location.x - (PinSize.WIDTH / 2) + 'px';
+    pin.querySelector('img').src = mark.author.avatar;
+    pin.querySelector('img').alt = mark.offer.title;
 
     var onMapPointClick = function () {
       deactivatePin();
-      mapPoint.classList.add('map__pin--active'); // добавляем подсветку актиной метке при нажатии на нее
+      pin.classList.add('map__pin--active'); // добавляем подсветку актиной метке при нажатии на нее
     };
 
     var onMapPointEnterPress = function (evt) {
       window.util.isEnterEvent(evt, onMapPointClick);
     };
 
-    mapPoint.addEventListener('click', onMapPointClick);
-    mapPoint.addEventListener('keydown', onMapPointEnterPress);
+    pin.addEventListener('click', onMapPointClick);
+    pin.addEventListener('keydown', onMapPointEnterPress);
 
-    return mapPoint; // вернули из функции переменную со ссылкой на получившийся дом-элемент
+    return pin; // вернули из функции переменную со ссылкой на получившийся дом-элемент
   };
 
   var deactivatePin = function () {
