@@ -239,7 +239,7 @@
 
   // функция по закрытию неуспешного сообщения на Esk
   var onDocumentKeyDownError = function (evt) {
-    window.util.isEscEvent(evt, closeError);
+    window.utils.isEscEvent(evt, closeError);
   };
 
   // Описываем неуспешную отправку данных серверу
