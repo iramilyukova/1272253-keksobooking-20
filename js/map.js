@@ -87,7 +87,8 @@
     loadStartPosition(); // Возвращаяем метку на первоначальное место
     window.pin.removePins();
     window.card.removePopup();
-    // сделаем фильтры неактивными
+    window.filter.deactivate();
+    window.filter.pins = [];
   };
 
   // Навешивание обработчиков событий

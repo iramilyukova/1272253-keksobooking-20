@@ -6,6 +6,8 @@
     HEIGHT: 66
   };
 
+  //  var PINS_COUNT = 5;
+
   var pins = [];
   var TWO = 2;
 
@@ -68,7 +70,8 @@
   window.pin = {
     renderPins: renderPins,
     removePins: removePins,
-    deactivatePin: deactivatePin
+    deactivatePin: deactivatePin,
+    getPin: getPin
   };
 })();
 

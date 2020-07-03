@@ -75,6 +75,7 @@
     resetBtn.addEventListener('click', function (evt) {
       evt.preventDefault();
       changeFormState(false);
+      window.filter.deactivate();
       window.map.deactivate(); // делаем страницу неактивной
     });
 
@@ -254,6 +255,7 @@
     showSuccessPopup();
     changeFormState(false);
     window.map.deactivate();
+    window.filter.deactivate();
   };
 
   // var onDocumentKeyDown = function () {
