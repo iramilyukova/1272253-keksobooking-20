@@ -70,10 +70,10 @@
   };
 
   // Функция для перевода страницы в активное состояние
-  var activate = function (marks) {
+  var activate = function (pins) {
     isActive = true;
-    map.classList.remove('map--faded');// Активируем карту
-    window.pin.renderPins(marks);// Показываем все метки на странице
+    map.classList.remove('map--faded'); // Активируем карту
+    window.filter.updatePins(pins);
     updateAddress();
     window.form.changeFormState(isActive); // Функция для проверки состояния активации и активацию формы (fieldset)
   };

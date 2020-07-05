@@ -6,8 +6,6 @@
     HEIGHT: 66
   };
 
-  //  var PINS_COUNT = 5;
-
   var pins = [];
   var TWO = 2;
 
@@ -43,6 +41,8 @@
       mapActivePin.classList.remove('map__pin--active');
     }
   };
+
+  // var preparedPinsArray = pins.slice(0, PINS_COUNT);
 
   // Записываем все метки во fragment
   var renderPins = function (marks) { // указали параметр со всеми заполенными данными, которые должны быть представлены на странице в виде HTML разметки. Это объекту, которые лежат в массиве

@@ -1,5 +1,7 @@
 'use strict';
 (function () {
+  var PINS_COUNT = 5;
+  var ZERO = 0;
 
   var PriceRange = {
     LOW: {
@@ -26,14 +28,14 @@
 
   var pins = [];
 
-  var activateFilters = function () {
+  var activate = function () {
     filtersSelect.forEach(function (it) {
       it.disabled = false;
     });
     housingFeatures.disabled = false;
   };
 
-  var deactivateFilters = function () {
+  var deactivate = function () {
     filters.reset();
     filtersSelect.forEach(function (it) {
       it.disabled = true;
@@ -75,26 +77,35 @@
     });
   };
 
-  var updatePins = function () {
-    var pinsCopy = pins.slice(); // возвращает новый массив, содержащий копию части исходного массива.
-    var filterPins = pinsCopy.filter(function (pin) {
+  // функция для сохранения исходного массива меток, она вызывается один раз при загрузке данных
+  var updatePins = function (items) {
+    pins = items; // запишет доступных пинов из глобального массива для установки предвыбранными фильтрами
+    filterPins(); // запускаем первичную фильтрацию на случай того, что значения стоят не по дефолту
+  };
+
+  var filterPins = function () {
+    filterPins = pins.filter(function (pin) {
       return filtrationByType(pin) && filtrationByPrice(pin) && filtrationByRooms(pin) && filtrationByGuests(pin) && filtrationByFeatures(pin);
     });
-    window.pin.getPin(filterPins);
+
+    // показываем с помощью метода slice только 5 меток
+    var displayPins = filterPins.length > PINS_COUNT ? filterPins.slice(ZERO, PINS_COUNT) : filterPins;
+    // Показываем 5 меток на странице с учетом фильтрации
+    window.pin.renderPins(displayPins);
   };
 
   var onFilterChange = function () {
     window.pin.removePins();
     window.card.removePopup();
-    updatePins();
+    filterPins(); // вызываем фильтрацию пинов
   };
 
-  filters.addEventListener('change', onFilterChange);
-
+  filters.addEventListener('change', onFilterChange); // когда будет происходить 'change', то колбеком вызовем ф-ю
 
   window.filter = {
-    activate: activateFilters,
-    deactivate: deactivateFilters,
+    activate: activate,
+    deactivate: deactivate,
+    updatePins: updatePins,
     pins: []
   };
 })();
