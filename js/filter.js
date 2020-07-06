@@ -18,13 +18,13 @@
     }
   };
 
-  var filters = document.querySelector('.map__filters');
-  var filtersSelect = filters.querySelectorAll('select');
-  var housingType = filters.querySelector('#housing-type');
-  var housingPrice = filters.querySelector('#housing-price');
-  var housingRooms = filters.querySelector('#housing-rooms');
-  var housingGuests = filters.querySelector('#housing-guests');
-  var housingFeatures = filters.querySelector('#housing-features');
+  var filterForm = document.querySelector('.map__filters');
+  var filtersSelect = filterForm.querySelectorAll('select');
+  var housingType = filterForm.querySelector('#housing-type');
+  var housingPrice = filterForm.querySelector('#housing-price');
+  var housingRooms = filterForm.querySelector('#housing-rooms');
+  var housingGuests = filterForm.querySelector('#housing-guests');
+  var housingFeatures = filterForm.querySelector('#housing-features');
 
   var pins = [];
 
@@ -36,7 +36,7 @@
   };
 
   var deactivate = function () {
-    filters.reset();
+    filterForm.reset();
     filtersSelect.forEach(function (it) {
       it.disabled = true;
     });
@@ -100,7 +100,7 @@
     filterPins(); // вызываем фильтрацию пинов
   };
 
-  filters.addEventListener('change', onFilterChange); // когда будет происходить 'change', то колбеком вызовем ф-ю
+  filterForm.addEventListener('change', onFilterChange); // когда будет происходить 'change', то колбеком вызовем ф-ю
 
   window.filter = {
     activate: activate,
