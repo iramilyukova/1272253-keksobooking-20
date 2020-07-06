@@ -84,12 +84,12 @@
   };
 
   var filterPins = function () {
-    filterPins = pins.filter(function (pin) {
+    var filterItems = pins.filter(function (pin) {
       return filtrationByType(pin) && filtrationByPrice(pin) && filtrationByRooms(pin) && filtrationByGuests(pin) && filtrationByFeatures(pin);
     });
 
     // показываем с помощью метода slice только 5 меток
-    var displayPins = filterPins.length > PINS_COUNT ? filterPins.slice(ZERO, PINS_COUNT) : filterPins;
+    var displayPins = filterItems.length > PINS_COUNT ? filterItems.slice(ZERO, PINS_COUNT) : filterItems;
     // Показываем 5 меток на странице с учетом фильтрации
     window.pin.renderPins(displayPins);
   };
@@ -101,6 +101,7 @@
   };
 
   filterForm.addEventListener('change', onFilterChange); // когда будет происходить 'change', то колбеком вызовем ф-ю
+
 
   window.filter = {
     activate: activate,
