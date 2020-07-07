@@ -24,10 +24,10 @@
   };
 
   var TYPES = {
-    PALACE: 'palace',
-    FLAT: 'flat',
-    HOUSE: 'house',
-    BUNGALO: 'bungalo'
+    FLAT: 'Квартира',
+    BUNGALO: 'Бунгало',
+    HOUSE: 'Дом',
+    PALACE: 'Дворец'
   };
 
   var form = document.querySelector('.ad-form');
@@ -276,7 +276,8 @@
 
   window.form = {
     prepare: prepare,
-    changeFormState: changeFormState
+    changeFormState: changeFormState,
+    TYPES: TYPES
   };
 })();
 

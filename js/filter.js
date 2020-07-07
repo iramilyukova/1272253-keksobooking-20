@@ -60,7 +60,7 @@
   // фильтруем по типу цене
   var filtrationByPrice = function (item) {
     var filteringPrice = PriceRange[housingPrice.value.toUpperCase()]; // привели значение цены к нижнему регистру
-    return getIsAnyType(housingPrice.value) || filteringPrice && item.offer.price >= filteringPrice.MIN && item.offer.price <= filteringPrice.MAX; // если выбран фильтр цены, то вторым условием станет true
+    return getIsAnyType(housingPrice.value) || (filteringPrice && item.offer.price > filteringPrice.MIN && item.offer.price < filteringPrice.MAX); // левая или правая часть выражения возвращают true
   };
 
   // Сортировка по кол-ву комнат

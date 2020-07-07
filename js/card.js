@@ -43,6 +43,7 @@
     mapCard.querySelector('.popup__text--price').textContent = mark.offer.price + ' ₽/ночь';
     mapCard.querySelector('.popup__text--capacity').textContent = mark.offer.rooms + ' комнаты для ' + mark.offer.guests + ' гостей';
     mapCard.querySelector('.popup__text--time').textContent = 'Заезд после ' + mark.offer.checkin + ', выезд до ' + mark.offer.checkout;
+    mapCard.querySelector('.popup__type').textContent = window.form.TYPES[mark.offer.type.toUpperCase()];
     mapCard.querySelector('.popup__description').textContent = mark.offer.description;
     mapCard.querySelector('.popup__avatar').src = mark.author.avatar;
     mapCard.querySelector('.popup__features').innerHTML = ''; // вносим в размерку .popup__features

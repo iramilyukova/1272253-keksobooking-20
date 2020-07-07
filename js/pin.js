@@ -14,25 +14,27 @@
 
   // Отрисовываем метки на карте, клонирование
   var getPin = function (mark) {
-    var pin = pinTemplate.cloneNode(true); // клонируем метку со всем ее содержимым, создается копия дом-элемента
-    pin.style.top = (mark.location.y - PinSize.HEIGHT) + 'px';
-    pin.style.left = mark.location.x - (PinSize.WIDTH / 2) + 'px';
-    pin.querySelector('img').src = mark.author.avatar;
-    pin.querySelector('img').alt = mark.offer.title;
+    var pinItem = pinTemplate.cloneNode(true); // клонируем метку со всем ее содержимым, создается копия дом-элемента
+    pinItem.style.top = mark.location.y - PinSize.HEIGHT + 'px';
+    pinItem.style.left = mark.location.x - (PinSize.WIDTH / 2) + 'px';
+    pinItem.querySelector('img').src = mark.author.avatar;
+    pinItem.querySelector('img').alt = mark.offer.title;
 
     var onMapPointClick = function () {
       deactivatePin();
-      pin.classList.add('map__pin--active'); // добавляем подсветку актиной метке при нажатии на нее
+      pinItem.classList.add('map__pin--active'); // добавляем подсветку актиной метке при нажатии на нее
+      window.card.removePopup();
+      window.card.renderPopup(mark);
     };
 
-    var onMapPointEnterPress = function (evt) {
+    var onPinItemEnterPress = function (evt) {
       window.util.isEnterEvent(evt, onMapPointClick);
     };
 
-    pin.addEventListener('click', onMapPointClick);
-    pin.addEventListener('keydown', onMapPointEnterPress);
+    // pinItem.addEventListener('click', onPinItemClick);
+    // pinItem.addEventListener('keydown', onPinItemEnterPress);
 
-    return pin; // вернули из функции переменную со ссылкой на получившийся дом-элемент
+    return pinItem; // вернули из функции переменную со ссылкой на получившийся дом-элемент
   };
 
   var deactivatePin = function () {
@@ -41,8 +43,6 @@
       mapActivePin.classList.remove('map__pin--active');
     }
   };
-
-  // var preparedPinsArray = pins.slice(0, PINS_COUNT);
 
   // Записываем все метки во fragment
   var renderPins = function (marks) { // указали параметр со всеми заполенными данными, которые должны быть представлены на странице в виде HTML разметки. Это объекту, которые лежат в массиве
