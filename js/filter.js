@@ -4,18 +4,8 @@
   var ZERO = 0;
 
   var PriceRange = {
-    LOW: {
-      MIN: 0,
-      MAX: 10000
-    },
-    MIDDLE: {
-      MIN: 10000,
-      MAX: 50000
-    },
-    HIGH: {
-      MIN: 50000,
-      MAX: Infinity
-    }
+    LOW: 10000,
+    UPPER: 50000
   };
 
   var filterForm = document.querySelector('.map__filters');
@@ -57,10 +47,19 @@
     return filterItem(housingType, item.offer, 'type'); // записываем названия пареметоров: тип фильтра, текущее поле с ключом 'type'
   };
 
-  // фильтруем по типу цене
+  // фильтруем по цене
   var filtrationByPrice = function (item) {
-    var filteringPrice = PriceRange[housingPrice.value.toUpperCase()]; // привели значение цены к нижнему регистру
-    return getIsAnyType(housingPrice.value) || (filteringPrice && item.offer.price > filteringPrice.MIN && item.offer.price < filteringPrice.MAX); // левая или правая часть выражения возвращают true
+    switch (housingPrice.value) {
+      case 'low': // Если занчение цены низкое
+        return item.offer.price < PriceRange.LOW; // то значение будет меньше 10 тыс.
+      case 'middle':
+        return item.offer.price > PriceRange.LOW && item.offer.price < PriceRange.UPPER;
+      case 'high':
+        return item.offer.price > PriceRange.UPPER;
+
+      default:
+        return true;
+    }
   };
 
   // Сортировка по кол-ву комнат

@@ -50,10 +50,6 @@
     });
   };
 
-  var onPinItemEnterPress = function (evt) {
-    window.util.isEnterEvent(evt, onMapPointClick);
-  };
-
   // объект для сохранения стартовых координат метки в неактивном состоянии
   var defaultMainPinPosition = {
     top: null,
