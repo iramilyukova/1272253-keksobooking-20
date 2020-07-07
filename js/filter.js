@@ -43,9 +43,13 @@
     housingFeatures.disabled = true;
   };
 
+  var getIsAnyType = function (value) {
+    return value === 'any';
+  };
+
   // Общая функция для фильтрации полей с параметрами: выбранное значение, текущий элемент и ключ
   var filterItem = function (it, item, key) {
-    return it.value === 'any' ? true : it.value === item[key].toString(); // если выбрано любое значение, то true, если нет, то какое-то конкретное
+    return getIsAnyType(it.value) || it.value === item[key].toString(); // если выбрано любое значение, то true, если нет, то какое-то конкретное
   };
 
   // фильтруем по типу жилья
@@ -55,8 +59,8 @@
 
   // фильтруем по типу цене
   var filtrationByPrice = function (item) {
-    var filteringPrice = PriceRange[housingPrice.value.toUpperCase()]; // привели значение цены скк нижнему регистру
-    return filteringPrice ? item.offer.price >= filteringPrice.MIN && item.offer.price <= filteringPrice.MAX : true; // если выбран фильтр цены, то вторым условием станет true
+    var filteringPrice = PriceRange[housingPrice.value.toUpperCase()]; // привели значение цены к нижнему регистру
+    return getIsAnyType(housingPrice.value) || filteringPrice && item.offer.price >= filteringPrice.MIN && item.offer.price <= filteringPrice.MAX; // если выбран фильтр цены, то вторым условием станет true
   };
 
   // Сортировка по кол-ву комнат
