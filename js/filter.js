@@ -4,8 +4,14 @@
   var ZERO = 0;
 
   var PriceRange = {
-    LOW: 10000,
+    LOWER: 10000,
     UPPER: 50000
+  };
+
+  var BorderPrice = {
+    LOW: 'low',
+    MIDDLE: 'middle',
+    HIGHT: 'high'
   };
 
   var filterForm = document.querySelector('.map__filters');
@@ -50,11 +56,11 @@
   // фильтруем по цене
   var filtrationByPrice = function (item) {
     switch (housingPrice.value) {
-      case 'low': // Если занчение цены низкое
-        return item.offer.price < PriceRange.LOW; // то значение будет меньше 10 тыс.
-      case 'middle':
-        return item.offer.price > PriceRange.LOW && item.offer.price < PriceRange.UPPER;
-      case 'high':
+      case BorderPrice.LOW: // Если занчение цены низкое
+        return item.offer.price < PriceRange.LOWER; // то значение будет меньше 10 тыс.
+      case BorderPrice.MIDDLE:
+        return item.offer.price >= PriceRange.LOWER && item.offer.price <= PriceRange.UPPER;
+      case BorderPrice.HIGHT:
         return item.offer.price > PriceRange.UPPER;
 
       default:
