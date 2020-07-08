@@ -46,7 +46,6 @@
   // функция добавления для одной метки обработчика события.
   var addPinClick = function (pin, mark) { // параметры: фрагмент отрисовки марка на карте и текущая марка
     pin.addEventListener('click', function () { // на отрисованного марка на карте вешаем обработчик клика
-    //  window.pin.onPinItemClick();
       window.card.renderPopup(mark); // при нажатии вызывать функцию для рисования попапа
     });
   };
@@ -70,10 +69,10 @@
   };
 
   // Функция для перевода страницы в активное состояние
-  var activate = function (marks) {
+  var activate = function (pins) {
     isActive = true;
-    map.classList.remove('map--faded');// Активируем карту
-    window.pin.renderPins(marks);// Показываем все метки на странице
+    map.classList.remove('map--faded'); // Активируем карту
+    window.filter.updatePins(pins);
     updateAddress();
     window.form.changeFormState(isActive); // Функция для проверки состояния активации и активацию формы (fieldset)
   };
@@ -87,7 +86,8 @@
     loadStartPosition(); // Возвращаяем метку на первоначальное место
     window.pin.removePins();
     window.card.removePopup();
-    // сделаем фильтры неактивными
+    window.filter.deactivate();
+    window.filter.pins = [];
   };
 
   // Навешивание обработчиков событий

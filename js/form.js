@@ -24,10 +24,10 @@
   };
 
   var TYPES = {
-    PALACE: 'palace',
-    FLAT: 'flat',
-    HOUSE: 'house',
-    BUNGALO: 'bungalo'
+    FLAT: 'Квартира',
+    BUNGALO: 'Бунгало',
+    HOUSE: 'Дом',
+    PALACE: 'Дворец'
   };
 
   var form = document.querySelector('.ad-form');
@@ -75,6 +75,7 @@
     resetBtn.addEventListener('click', function (evt) {
       evt.preventDefault();
       changeFormState(false);
+      window.filter.deactivate();
       window.map.deactivate(); // делаем страницу неактивной
     });
 
@@ -239,7 +240,9 @@
 
   // функция по закрытию неуспешного сообщения на Esk
   var onDocumentKeyDownError = function (evt) {
-    window.utils.isEscEvent(evt, closeError);
+    if (window.utils.isEscEvent(evt)) {
+      closeError();
+    }
   };
 
   // Описываем неуспешную отправку данных серверу
@@ -254,6 +257,7 @@
     showSuccessPopup();
     changeFormState(false);
     window.map.deactivate();
+    window.filter.deactivate();
   };
 
   // var onDocumentKeyDown = function () {
@@ -272,7 +276,8 @@
 
   window.form = {
     prepare: prepare,
-    changeFormState: changeFormState
+    changeFormState: changeFormState,
+    TYPES: TYPES
   };
 })();
 

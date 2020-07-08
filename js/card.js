@@ -22,6 +22,18 @@
     }
   };
 
+  // создаем фрагмент с фитчами и записываем его во фрагмент
+  var createFeatureFragment = function (mark) {
+    var featureFragment = document.createDocumentFragment();
+    mark.offer.features.forEach(function (item) {
+      var featureItem = document.createElement('li');
+      featureItem.className = 'popup__feature popup__feature--' + item;
+      featureFragment.appendChild(featureItem);
+    });
+
+    return featureFragment;
+  };
+
   // Заполняем объявление на карте. Клонирование
   var renderPopup = function (mark) {
     removePopup();
@@ -31,8 +43,11 @@
     mapCard.querySelector('.popup__text--price').textContent = mark.offer.price + ' ₽/ночь';
     mapCard.querySelector('.popup__text--capacity').textContent = mark.offer.rooms + ' комнаты для ' + mark.offer.guests + ' гостей';
     mapCard.querySelector('.popup__text--time').textContent = 'Заезд после ' + mark.offer.checkin + ', выезд до ' + mark.offer.checkout;
-    mapCard.querySelector('.popup__features').textContent = mark.offer.description;
+    mapCard.querySelector('.popup__type').textContent = window.form.TYPES[mark.offer.type.toUpperCase()];
+    mapCard.querySelector('.popup__description').textContent = mark.offer.description;
     mapCard.querySelector('.popup__avatar').src = mark.author.avatar;
+    mapCard.querySelector('.popup__features').innerHTML = ''; // вносим в размерку .popup__features
+    mapCard.querySelector('.popup__features').appendChild(createFeatureFragment(mark)); // записываем фрагмент с фитчами в конец .popup__features
     renderPhotos(mark.offer.photos);
     mapFiltersContainer.insertAdjacentElement('beforebegin', mapCard);
 

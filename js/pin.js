@@ -14,25 +14,27 @@
 
   // Отрисовываем метки на карте, клонирование
   var getPin = function (mark) {
-    var pin = pinTemplate.cloneNode(true); // клонируем метку со всем ее содержимым, создается копия дом-элемента
-    pin.style.top = (mark.location.y - PinSize.HEIGHT) + 'px';
-    pin.style.left = mark.location.x - (PinSize.WIDTH / 2) + 'px';
-    pin.querySelector('img').src = mark.author.avatar;
-    pin.querySelector('img').alt = mark.offer.title;
+    var pinItem = pinTemplate.cloneNode(true); // клонируем метку со всем ее содержимым, создается копия дом-элемента
+    pinItem.style.top = mark.location.y - PinSize.HEIGHT + 'px';
+    pinItem.style.left = mark.location.x - (PinSize.WIDTH / 2) + 'px';
+    pinItem.querySelector('img').src = mark.author.avatar;
+    pinItem.querySelector('img').alt = mark.offer.title;
 
     var onMapPointClick = function () {
       deactivatePin();
-      pin.classList.add('map__pin--active'); // добавляем подсветку актиной метке при нажатии на нее
+      pinItem.classList.add('map__pin--active'); // добавляем подсветку актиной метке при нажатии на нее
+      window.card.removePopup();
+      window.card.renderPopup(mark);
     };
 
-    var onMapPointEnterPress = function (evt) {
+    var onPinItemEnterPress = function (evt) {
       window.util.isEnterEvent(evt, onMapPointClick);
     };
 
-    pin.addEventListener('click', onMapPointClick);
-    pin.addEventListener('keydown', onMapPointEnterPress);
+    // pinItem.addEventListener('click', onPinItemClick);
+    // pinItem.addEventListener('keydown', onPinItemEnterPress);
 
-    return pin; // вернули из функции переменную со ссылкой на получившийся дом-элемент
+    return pinItem; // вернули из функции переменную со ссылкой на получившийся дом-элемент
   };
 
   var deactivatePin = function () {
@@ -68,7 +70,8 @@
   window.pin = {
     renderPins: renderPins,
     removePins: removePins,
-    deactivatePin: deactivatePin
+    deactivatePin: deactivatePin,
+    getPin: getPin
   };
 })();
 
