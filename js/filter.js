@@ -103,11 +103,11 @@
     window.pin.renderPins(displayPins);
   };
 
-  var onFilterChange = function () {
+  var onFilterChange = window.debounce(function () {
     window.pin.removePins();
     window.card.removePopup();
     filterPins(); // вызываем фильтрацию пинов
-  };
+  });
 
   filterForm.addEventListener('change', onFilterChange); // когда будет происходить 'change', то колбеком вызовем ф-ю
 
