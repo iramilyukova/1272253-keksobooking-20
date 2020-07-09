@@ -87,6 +87,7 @@
     window.pin.removePins();
     window.card.removePopup();
     window.filter.deactivate();
+    window.photo.remove();
     window.filter.pins = [];
   };
 
