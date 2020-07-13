@@ -14,6 +14,13 @@
     HIGHT: 'high'
   };
 
+  var TypeFilter = {
+    ANY: 'any',
+    TYPE: 'type',
+    ROOMS: 'rooms',
+    GUESTS: 'guests'
+  };
+
   var filterForm = document.querySelector('.map__filters');
   var filtersSelect = filterForm.querySelectorAll('select');
   var housingType = filterForm.querySelector('#housing-type');
@@ -40,7 +47,7 @@
   };
 
   var getIsAnyType = function (value) {
-    return value === 'any';
+    return value === TypeFilter.ANY;
   };
 
   // Общая функция для фильтрации полей с параметрами: выбранное значение, текущий элемент и ключ
@@ -50,7 +57,7 @@
 
   // фильтруем по типу жилья
   var filtrationByType = function (item) {
-    return filterItem(housingType, item.offer, 'type'); // записываем названия пареметоров: тип фильтра, текущее поле с ключом 'type'
+    return filterItem(housingType, item.offer, TypeFilter.TYPE); // записываем названия пареметоров: тип фильтра, текущее поле с ключом 'type'
   };
 
   // фильтруем по цене
@@ -70,12 +77,12 @@
 
   // Сортировка по кол-ву комнат
   var filtrationByRooms = function (item) {
-    return filterItem(housingRooms, item.offer, 'rooms');
+    return filterItem(housingRooms, item.offer, TypeFilter.ROOMS);
   };
 
   // Сортировка по кол-ву гостей
   var filtrationByGuests = function (item) {
-    return filterItem(housingGuests, item.offer, 'guests');
+    return filterItem(housingGuests, item.offer, TypeFilter.GUESTS);
   };
 
   // Сортировка по фичам
@@ -103,13 +110,13 @@
     window.pin.renderPins(displayPins);
   };
 
-  var onFilterChange = window.debounce(function () {
+  var onFilterFormChange = window.debounce(function () {
     window.pin.removePins();
     window.card.removePopup();
     filterPins(); // вызываем фильтрацию пинов
   });
 
-  filterForm.addEventListener('change', onFilterChange); // когда будет происходить 'change', то колбеком вызовем ф-ю
+  filterForm.addEventListener('change', onFilterFormChange); // когда будет происходить 'change', то колбеком вызовем ф-ю
 
 
   window.filter = {

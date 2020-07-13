@@ -22,18 +22,6 @@
     }
   };
 
-  // создаем фрагмент с фитчами и записываем его во фрагмент
-  var createFeatureFragment = function (mark) {
-    var featureFragment = document.createDocumentFragment();
-    mark.offer.features.forEach(function (item) {
-      var featureItem = document.createElement('li');
-      featureItem.className = 'popup__feature popup__feature--' + item;
-      featureFragment.appendChild(featureItem);
-    });
-
-    return featureFragment;
-  };
-
   // Переводим названия типа жилья
   var convertTypeHouse = function (type) {
     var typeValue = window.form.TYPES[type];
@@ -49,12 +37,16 @@
     mapCard.querySelector('.popup__text--price').textContent = mark.offer.price + ' ₽/ночь';
     mapCard.querySelector('.popup__text--capacity').textContent = mark.offer.rooms + ' комнаты для ' + mark.offer.guests + ' гостей';
     mapCard.querySelector('.popup__text--time').textContent = 'Заезд после ' + mark.offer.checkin + ', выезд до ' + mark.offer.checkout;
-    mapCard.querySelector('.popup__type').textContent = convertTypeHouse(mark.offer.type.toUpperCase());
+    mapCard.querySelector('.popup__type').textContent = convertTypeHouse[mark.offer.type.toUpperCase()];
     mapCard.querySelector('.popup__description').textContent = mark.offer.description;
     mapCard.querySelector('.popup__avatar').src = mark.author.avatar;
-    mapCard.querySelector('.popup__features').innerHTML = ''; // вносим в размерку .popup__features
-    mapCard.querySelector('.popup__features').appendChild(createFeatureFragment(mark)); // записываем фрагмент с фитчами в конец .popup__features
-    renderPhotos(mark.offer.photos);
+
+    var popupFeaturesContainer = mapCard.querySelector('.popup__features');
+    renderFeatures(popupFeaturesContainer, mark.offer.features);
+
+    var popupPhotosContainer = mapCard.querySelector('.popup__photos'); // конрейнер для фотографий
+    renderPhotos(popupPhotosContainer, mark.offer.photos);
+
     mapFiltersContainer.insertAdjacentElement('beforebegin', mapCard);
 
     var closePopupButton = mapCard.querySelector('.popup__close');// Закрываем объявление по нажатию на крестик или по нажатию на Esc
@@ -62,14 +54,33 @@
     closePopupButton.addEventListener('click', removePopup); // Закрываем объявление по нажатию на крестик
   };
 
-  // Функция проверки конейнера с фотографиями на наличие фото
-  var renderPhotos = function (imgs) {
-    var popupPhoto = mapCard.querySelector('.popup__photos'); // конрейнер для фотографий
-    if (imgs.length === 0) {
-      popupPhoto.remove(); // если нет фотографий удалить блок popup__photos
-    } else {
-      renderPhotosImages(popupPhoto, imgs); // вызвать функцию renderPhotos и передать 2 параметра, 1 контэйнер, 2 массив imgs
+  // рендерим фитчи с проверкой на их наличии в контейнере
+  var renderFeatures = function (container, features) {
+    if (features.length === 0) {
+      container.remove();
+      return;
     }
+
+    container.innerHTML = ''; // вносим в разметку контейнер
+
+    var featureFragment = document.createDocumentFragment(); // фрагмент с фитчами
+    features.forEach(function (item) {
+      var featureItem = document.createElement('li');
+      featureItem.className = 'popup__feature popup__feature--' + item;
+      featureFragment.appendChild(featureItem); // получившийся li складываем во фрагмент
+    });
+
+    container.appendChild(featureFragment); // а фрагмент в контейнер
+  };
+
+  // Функция рендера и проверки контейнера с фотографиями на наличие фото
+  var renderPhotos = function (container, imgs) {
+    if (imgs.length === 0) {
+      container.remove();
+      return;
+    }
+
+    renderPhotosImages(container, imgs); // вызвать функцию renderPhotos и передать 2 параметра, 1 контэйнер, 2 массив imgs
   };
 
   // Колонируем фотографии в их контейнер
