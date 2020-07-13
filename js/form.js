@@ -23,11 +23,11 @@
     NOT_FOR_GUEST: '100'
   };
 
-  var TYPES = {
-    FLAT: 'Квартира',
-    BUNGALO: 'Бунгало',
-    HOUSE: 'Дом',
-    PALACE: 'Дворец'
+  var HouseType = {
+    PALACE: 'palace',
+    FLAT: 'flat',
+    HOUSE: 'house',
+    BUNGALO: 'bungalo'
   };
 
   var form = document.querySelector('.ad-form');
@@ -35,7 +35,7 @@
   var successPopup = document.querySelector('#success').content.querySelector('.success');
   var errorPopup = document.querySelector('#error').content.querySelector('.error');
   var error = document.querySelector('#error');
-  var closeButtonError = document.querySelector('.error__button');
+  var closeButtonError = form.querySelector('.error__button');
   var resetBtn = document.querySelector('.ad-form__reset'); // кнопка для сброса заполнеения в форме
   var offerTitle = form.querySelector('#title');
   var offerPrice = form.querySelector('#price');
@@ -63,10 +63,8 @@
 
     if (isActive) {
       form.classList.remove('ad-form--disabled');
-      // addFormEvent();// Активируем форму
     } else {
       form.classList.add('ad-form--disabled');
-      // removeFormEvents();
       form.reset();// деактивируем форму
     }
   };
@@ -81,7 +79,8 @@
 
     form.addEventListener('submit', function (evt) {
       evt.preventDefault();
-      window.backend.upload(new FormData(form), onFormSuccessSubmit, onError);
+      var formData = new FormData(form);
+      window.backend.upload(formData, onFormSuccessSubmit, onError);
     });
 
     form.addEventListener('change', function (evt) {
@@ -162,19 +161,19 @@
   var updatePriceLmit = function () {
     var housingTypeValue = offerType.value;
     switch (housingTypeValue) {
-      case TYPES.BUNGALO:
+      case HouseType.BUNGALO:
         offerPrice.placeholder = PriceNight.ZERO; // указываем, что placeholder  = 0, минимальная цена = 0
         offerPrice.min = PriceNight.ZERO;
         break;
-      case TYPES.FLAT:
+      case HouseType.FLAT:
         offerPrice.placeholder = PriceNight.ONE_THOUSAND; // в размерке меняем placeholder  = 1000, минимальная цена = 1000
         offerPrice.min = PriceNight.ONE_THOUSAND; // связываем плейсхолдер с минимальным значением
         break;
-      case TYPES.HOUSE:
+      case HouseType.HOUSE:
         offerPrice.placeholder = PriceNight.FIVE_THOUSAND;
         offerPrice.min = PriceNight.FIVE_THOUSAND;
         break;
-      case TYPES.PALACE:
+      case HouseType.PALACE:
         offerPrice.placeholder = PriceNight.TEN_THOUSAND;
         offerPrice.min = PriceNight.TEN_THOUSAND;
         break;
@@ -189,11 +188,11 @@
     var message = '';
 
     if (offerPrice.validity.rangeUnderflow) { // проверка нижней границы стоимости жилья (Если число в поле ввода меньше min атрибут ввода)
-      switch (housingTypeValue) { // если housingTypeValue == TYPES.BUNGALO, то...
-        case TYPES.BUNGALO: message = 'Цена должна быть не менее 0 руб.'; break; // если выбран тип жилья "бунгало"
-        case TYPES.FLAT: message = 'Цена должна быть не менее 1000 руб.'; break; // если выбрана квартира
-        case TYPES.HOUSE: message = 'Цена должна быть не менее 5000 руб.'; break; // если выбран "дом"
-        case TYPES.PALACE: message = 'Цена должна быть не менее 10000 руб.'; break;
+      switch (housingTypeValue) { // если housingTypeValue == HouseType.BUNGALO, то...
+        case HouseType.BUNGALO: message = 'Цена должна быть не менее 0 руб.'; break; // если выбран тип жилья "бунгало"
+        case HouseType.FLAT: message = 'Цена должна быть не менее 1000 руб.'; break; // если выбрана квартира
+        case HouseType.HOUSE: message = 'Цена должна быть не менее 5000 руб.'; break; // если выбран "дом"
+        case HouseType.PALACE: message = 'Цена должна быть не менее 10000 руб.'; break;
         default: message = ''; break; // если пользователь ничего не ввел в поле
       }
     } else if (offerPrice.validity.rangeOverflow) { // проверка максимальной стоимости жилья
@@ -260,11 +259,6 @@
     window.filter.deactivate();
   };
 
-  // var onDocumentKeyDown = function () {
-  //  error.remove(); // сообщение об ошибочной отправке удаляется
-  //   document.removeEventListener('keydown', onDocumentKeyDownError);
-  // };
-
   var prepare = function () {
     changeFormState();
     addFormEvents();
@@ -277,7 +271,9 @@
   window.form = {
     prepare: prepare,
     changeFormState: changeFormState,
-    TYPES: TYPES
+    TYPES: HouseType,
+    successPopup: successPopup,
+    errorPopup: errorPopup
   };
 })();
 

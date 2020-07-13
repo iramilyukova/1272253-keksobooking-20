@@ -20,16 +20,16 @@
     pinItem.querySelector('img').src = mark.author.avatar;
     pinItem.querySelector('img').alt = mark.offer.title;
 
-    var onMapPointClick = function () {
-      deactivatePin();
-      pinItem.classList.add('map__pin--active'); // добавляем подсветку актиной метке при нажатии на нее
-      window.card.removePopup();
-      window.card.renderPopup(mark);
-    };
+    //  var onMapPointClick = function () {
+    //    deactivatePin();
+    //    pinItem.classList.add('map__pin--active'); // добавляем подсветку актиной метке при нажатии на нее
+    //   window.card.removePopup();
+    //   window.card.renderPopup(mark);
+    // };
 
-    var onPinItemEnterPress = function (evt) {
-      window.util.isEnterEvent(evt, onMapPointClick);
-    };
+    //   var onPinItemEnterPress = function (evt) {
+    //     window.util.isEnterEvent(evt, onMapPointClick);
+    //   };
 
     // pinItem.addEventListener('click', onPinItemClick);
     // pinItem.addEventListener('keydown', onPinItemEnterPress);
