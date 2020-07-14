@@ -36,7 +36,6 @@
   var errorPopup = document.querySelector('#error').content.querySelector('.error');
   var error = document.querySelector('#error');
   var closeButtonError = form.querySelector('.error__button');
-  // var sendForm = form.querySelector('.ad-form__submit'); // кнопка для отправки заполненных данных в форме
   var resetBtn = document.querySelector('.ad-form__reset'); // кнопка для сброса заполнеения в форме
   var offerTitle = form.querySelector('#title');
   var offerPrice = form.querySelector('#price');
