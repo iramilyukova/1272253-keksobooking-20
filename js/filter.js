@@ -1,26 +1,5 @@
 'use strict';
 (function () {
-  var PINS_COUNT = 5;
-  var ZERO = 0;
-
-  var PriceRange = {
-    LOWER: 10000,
-    UPPER: 50000
-  };
-
-  var BorderPrice = {
-    LOW: 'low',
-    MIDDLE: 'middle',
-    HIGHT: 'high'
-  };
-
-  var TypeFilter = {
-    ANY: 'any',
-    TYPE: 'type',
-    ROOMS: 'rooms',
-    GUESTS: 'guests'
-  };
-
   var filterForm = document.querySelector('.map__filters');
   var filtersSelect = filterForm.querySelectorAll('select');
   var housingType = filterForm.querySelector('#housing-type');
@@ -47,7 +26,7 @@
   };
 
   var getIsAnyType = function (value) {
-    return value === TypeFilter.ANY;
+    return value === window.utils.TypeFilter.ANY;
   };
 
   // Общая функция для фильтрации полей с параметрами: выбранное значение, текущий элемент и ключ
@@ -57,18 +36,18 @@
 
   // фильтруем по типу жилья
   var filtrationByType = function (item) {
-    return filterItem(housingType, item.offer, TypeFilter.TYPE); // записываем названия пареметоров: тип фильтра, текущее поле с ключом 'type'
+    return filterItem(housingType, item.offer, window.utils.TypeFilter.TYPE); // записываем названия пареметоров: тип фильтра, текущее поле с ключом 'type'
   };
 
   // фильтруем по цене
   var filtrationByPrice = function (item) {
     switch (housingPrice.value) {
-      case BorderPrice.LOW: // Если занчение цены низкое
-        return item.offer.price < PriceRange.LOWER; // то значение будет меньше 10 тыс.
-      case BorderPrice.MIDDLE:
-        return item.offer.price >= PriceRange.LOWER && item.offer.price <= PriceRange.UPPER;
-      case BorderPrice.HIGHT:
-        return item.offer.price > PriceRange.UPPER;
+      case window.utils.BorderPrice.LOW: // Если занчение цены низкое
+        return item.offer.price < window.utils.PriceRange.LOWER; // то значение будет меньше 10 тыс.
+      case window.utils.BorderPrice.MIDDLE:
+        return item.offer.price >= window.utils.PriceRange.LOWER && item.offer.price <= window.utils.PriceRange.UPPER;
+      case window.utils.BorderPrice.HIGHT:
+        return item.offer.price > window.utils.PriceRange.UPPER;
 
       default:
         return true;
@@ -77,12 +56,12 @@
 
   // Сортировка по кол-ву комнат
   var filtrationByRooms = function (item) {
-    return filterItem(housingRooms, item.offer, TypeFilter.ROOMS);
+    return filterItem(housingRooms, item.offer, window.utils.TypeFilter.ROOMS);
   };
 
   // Сортировка по кол-ву гостей
   var filtrationByGuests = function (item) {
-    return filterItem(housingGuests, item.offer, TypeFilter.GUESTS);
+    return filterItem(housingGuests, item.offer, window.utils.TypeFilter.GUESTS);
   };
 
   // Сортировка по фичам
@@ -105,7 +84,7 @@
     });
 
     // показываем с помощью метода slice только 5 меток
-    var displayPins = filterItems.length > PINS_COUNT ? filterItems.slice(ZERO, PINS_COUNT) : filterItems;
+    var displayPins = filterItems.length > window.utils.PINS_COUNT ? filterItems.slice(window.utils.ZERO, window.utils.PINS_COUNT) : filterItems;
     // Показываем 5 меток на странице с учетом фильтрации
     window.pin.renderPins(displayPins);
   };

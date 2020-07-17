@@ -1,14 +1,6 @@
 'use strict';
 
 (function () {
-  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
-
-  var TypePhotoOptions = {
-    WIDTH: 70,
-    HEIGHT: 70,
-    BORDER_RADIUS: 5
-  };
-
   var userPhotoChooser = document.querySelector('.ad-form__field input[type=file]'); // поле ввода, с помощью которого пользователь выбирает аватарку
   var mapAvatarUploader = document.querySelector('.ad-form-header__preview img'); // картинка, куда мы будем выставлять превью загруженной аватарки
   var typePhotoChooser = document.querySelector('.ad-form__upload input[type=file]'); // поле ввода, с помощью которого выбирается фото жилья
@@ -22,9 +14,9 @@
   var changeTypePhoto = function (result) {
     var newPhoto = document.createElement('img');
     newPhoto.src = result;
-    newPhoto.width = TypePhotoOptions.WIDTH;
-    newPhoto.height = TypePhotoOptions.HEIGHT;
-    newPhoto.style.borderRadius = TypePhotoOptions.BORDER_RADIUS + 'px';
+    newPhoto.width = window.utils.TypePhotoOptions.WIDTH;
+    newPhoto.height = window.utils.TypePhotoOptions.HEIGHT;
+    newPhoto.style.borderRadius = window.utils.TypePhotoOptions.BORDER_RADIUS + 'px';
     typePhotoImage.appendChild(newPhoto); // запишем новое фото в превью фото жилья
   };
 
@@ -34,7 +26,7 @@
     if (file) {
       var fileName = file.name.toLowerCase(); // Файл в JS представлен в виде структуры, похожей на объект со св-ми. В св-ве name есть имя файла. Приведём название файла к строчным буквам
 
-      var matches = FILE_TYPES.some(function (item) { // проверим, оканчивается ли имя файла одним из допустимых расширений.
+      var matches = window.utils.FILE_TYPES.some(function (item) { // проверим, оканчивается ли имя файла одним из допустимых расширений.
         return fileName.endsWith(item); // с помощью метода some пройдём по массиву FILE_TYPES и для каждого элемента проверим, оканчивается ли название файла на него. Используем метод строки endsWith.
       });
 

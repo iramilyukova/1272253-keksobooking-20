@@ -1,13 +1,9 @@
 'use strict';
 
 (function () {
-  var PinSize = {
-    WIDTH: 66,
-    HEIGHT: 66
-  };
+  var activePin = null;
 
   var pins = [];
-  var TWO = 2;
 
   var mapPins = document.querySelector('.map .map__pins'); // метки объявлений
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -15,18 +11,24 @@
   // Отрисовываем метки на карте, клонирование
   var getPin = function (mark) {
     var pinItem = pinTemplate.cloneNode(true); // клонируем метку со всем ее содержимым, создается копия дом-элемента
-    pinItem.style.top = mark.location.y - PinSize.HEIGHT + 'px';
-    pinItem.style.left = mark.location.x - (PinSize.WIDTH / 2) + 'px';
+    pinItem.style.top = mark.location.y - window.utils.PinSize.HEIGHT + 'px';
+    pinItem.style.left = mark.location.x - (window.utils.PinSize.WIDTH / 2) + 'px';
     pinItem.querySelector('img').src = mark.author.avatar;
     pinItem.querySelector('img').alt = mark.offer.title;
 
     return pinItem; // вернули из функции переменную со ссылкой на получившийся дом-элемент
   };
 
-  var deactivatePin = function () {
-    var mapActivePin = document.querySelector('.map__pin--active');
-    if (mapActivePin) {
-      mapActivePin.classList.remove('map__pin--active');
+  // функция для посвечивания метки при активном попапе
+  var addActivePin = function (pin) {
+    activePin = pin; // записали что activePin имеет значение, выбран конкретный пин
+    activePin.classList.add('map__pin--active'); // добавляем подсветку
+  };
+
+  var removeActivePin = function () {
+    if (activePin) { // если активный пин есть, то нужно его удалить
+      activePin.classList.remove('map__pin--active'); // убираем посветку
+      activePin = null; // говорим, что элемента у нас нет
     }
   };
 
@@ -36,7 +38,7 @@
 
     marks.forEach(function (mark, index) {
       var pin = getPin(mark); // ссылаемся на функцию отрисовки метки (на дом-элемент, который мы склонировали с помощью темплейта) и отрисовываем каждого текущего марка на карте
-      pin.tabIndex = index + TWO;
+      pin.tabIndex = index + window.utils.TWO;
       pins.push(pin); // записали каждую метку в массив пинов
 
       fragment.appendChild(pin); // сложили все во фрагмент
@@ -56,7 +58,8 @@
   window.pin = {
     renderPins: renderPins,
     removePins: removePins,
-    deactivatePin: deactivatePin,
+    addActivePin: addActivePin,
+    removeActivePin: removeActivePin,
     getPin: getPin
   };
 })();

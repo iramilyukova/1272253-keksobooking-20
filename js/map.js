@@ -1,30 +1,8 @@
 'use strict';
 
 (function () {
-  var PinSetting = {
-    HALF_WIDTH: 33,
-    HALF_HEIGHT: 33,
-    TAIL_HEIGHT: 16,
-    MIN_X: 0,
-    MIN_Y: 130,
-    MAX_Y: 630
-  };
-
-  var rect = document.querySelector('.map__overlay').getBoundingClientRect();
-  var addressInput = document.querySelector('input[name="address"]');
-
-  // Границы доступной области для перемещения метки
-  var MIN_COORD = {
-    X: PinSetting.MIN_X - PinSetting.HALF_WIDTH,
-    Y: PinSetting.MIN_Y - PinSetting.HALF_HEIGHT - PinSetting.TAIL_HEIGHT
-  };
-
-  var MAX_COORD = {
-    X: rect.width - PinSetting.HALF_WIDTH,
-    Y: PinSetting.MAX_Y - PinSetting.HALF_HEIGHT - PinSetting.TAIL_HEIGHT
-  };
-
   var map = document.querySelector('.map');
+  var addressInput = document.querySelector('input[name="address"]');
   var mapPinButtonMain = document.querySelector('.map__pin--main');
   var isActive = false;
 
@@ -34,11 +12,11 @@
     var y = 0;
 
     if (isActive) {
-      x = mapPinButtonMain.offsetLeft + PinSetting.HALF_HEIGHT;
-      y = mapPinButtonMain.offsetTop + PinSetting.HALF_HEIGHT + PinSetting.TAIL_HEIGHT;
+      x = mapPinButtonMain.offsetLeft + window.utils.PinSetting.HALF_HEIGHT;
+      y = mapPinButtonMain.offsetTop + window.utils.PinSetting.HALF_HEIGHT + window.utils.PinSetting.TAIL_HEIGHT;
     } else {
-      x = mapPinButtonMain.offsetLeft + PinSetting.HALF_WIDTH;
-      y = mapPinButtonMain.offsetTop + PinSetting.HALF_HEIGHT;
+      x = mapPinButtonMain.offsetLeft + window.utils.PinSetting.HALF_WIDTH;
+      y = mapPinButtonMain.offsetTop + window.utils.PinSetting.HALF_HEIGHT;
     }
     addressInput.value = x + ', ' + y;
   };
@@ -47,6 +25,7 @@
   var addPinClick = function (pin, mark) { // параметры: фрагмент отрисовки марка на карте и текущая марка
     pin.addEventListener('click', function () { // на отрисованного марка на карте вешаем обработчик клика
       window.card.renderPopup(mark); // при нажатии вызывать функцию для рисования попапа
+      window.pin.addActivePin(pin); // через замыкание передаем наш пин, чтобы он посвечивался при появлении попапа
     });
   };
 
@@ -82,8 +61,8 @@
     isActive = false;
     map.classList.add('map--faded'); // Деактивируем карт
     window.form.changeFormState(isActive); // неактивная форма
-    updateAddress();
     loadStartPosition(); // Возвращаяем метку на первоначальное место
+    updateAddress();
     window.pin.removePins();
     window.card.removePopup();
     window.filter.deactivate();
@@ -98,7 +77,7 @@
       evt.preventDefault();
 
       if (!isActive && window.utils.isMouseLeftEvent(evt)) {
-        window.backend.load(activate); // функция для получения данных от сервера
+        window.backend.load(activate, window.form.showErrorPopup); // функция для получения данных от сервера
       }
 
       var startCoords = { // Запомним координаты точки, с которой мы начали перемещать метку.
@@ -125,16 +104,16 @@
           y: mapPinButtonMain.offsetTop - shift.y
         };
 
-        if (coordinates.x < MIN_COORD.X) { // Проверяем не заходит ли метка за рамки
-          coordinates.x = MIN_COORD.X;
-        } else if (coordinates.x > MAX_COORD.X) {
-          coordinates.x = MAX_COORD.X;
+        if (coordinates.x < window.utils.MIN_COORD.X) { // Проверяем не заходит ли метка за рамки
+          coordinates.x = window.utils.MIN_COORD.X;
+        } else if (coordinates.x > window.utils.MAX_COORD.X) {
+          coordinates.x = window.utils.MAX_COORD.X;
         }
 
-        if (coordinates.y < MIN_COORD.Y) {
-          coordinates.y = MIN_COORD.Y;
-        } else if (coordinates.y > MAX_COORD.Y) {
-          coordinates.y = MAX_COORD.Y;
+        if (coordinates.y < window.utils.MIN_COORD.Y) {
+          coordinates.y = window.utils.MIN_COORD.Y;
+        } else if (coordinates.y > window.utils.MAX_COORD.Y) {
+          coordinates.y = window.utils.MAX_COORD.Y;
         }
 
         mapPinButtonMain.style.top = coordinates.y + 'px'; // получаем новые координаты после смещения

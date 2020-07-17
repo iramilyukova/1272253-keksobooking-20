@@ -17,7 +17,7 @@
   var removePopup = function () {
     if (mapCard !== null) { // если ссылка на дом-элемент не пустая, т.е уже открыто одно объявление
       mapCard.remove(); // то удалить, чтобы на странице было показано только одно
-      window.pin.deactivatePin();
+      window.pin.removeActivePin(); // убираем подсветку с выбранной метки
       document.removeEventListener('keydown', onDocumentKeyDown);
     }
   };
