@@ -8,11 +8,11 @@
 
   var onDocumentKeyDown = function (evt) {
     if (window.utils.isEscEvent(evt)) {
-      onRemovePopup();
+      onRemoveDocument();
     }
   };
 
-  var onRemovePopup = function () {
+  var onRemoveDocument = function () {
     if (mapCard !== null) {
       mapCard.remove();
       window.pin.removeActivate();
@@ -26,7 +26,7 @@
   };
 
   var renderPopup = function (mark) {
-    onRemovePopup();
+    onRemoveDocument();
     mapCard = popupTemplate.cloneNode(true);
     mapCard.querySelector('.popup__title').textContent = mark.offer.title;
     mapCard.querySelector('.popup__text--address').textContent = mark.offer.address;
@@ -47,7 +47,7 @@
 
     var closePopupButton = mapCard.querySelector('.popup__close');
     document.addEventListener('keydown', onDocumentKeyDown);
-    closePopupButton.addEventListener('click', onRemovePopup);
+    closePopupButton.addEventListener('click', onRemoveDocument);
   };
 
   var renderFeatures = function (container, features) {
@@ -94,7 +94,7 @@
 
   window.card = {
     renderPopup: renderPopup,
-    onRemovePopup: onRemovePopup
+    onRemovePopup: onRemoveDocument
   };
 })();
 
