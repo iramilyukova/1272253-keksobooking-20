@@ -79,7 +79,7 @@
           validatePrice();
           break;
         case offerType.id:
-          updatePriceLmit();
+          updatePriceLimit();
           validatePrice();
           break;
         default: break;
@@ -106,19 +106,19 @@
 
     var message = '';
 
-    if (roomNumber === window.utils.RoomtType.ONE) {
+    if (roomNumber === window.utils.RoomsType.ONE) {
       if (capacityValue !== window.utils.GuestType.ONE) {
         message = 'Выберите не более 1 гостя';
       }
-    } else if (roomNumber === window.utils.RoomtType.TWO) {
+    } else if (roomNumber === window.utils.RoomsType.TWO) {
       if (capacityValue !== window.utils.GuestType.ONE && capacityValue !== window.utils.GuestType.TWO) {
         message = 'Выберите не более 1 гостя или 2 гостей';
       }
-    } else if (roomNumber === window.utils.RoomtType.THREE) {
+    } else if (roomNumber === window.utils.RoomsType.THREE) {
       if (capacityValue !== window.utils.GuestType.ONE && capacityValue !== window.utils.GuestType.TWO && capacityValue !== window.utils.GuestType.THREE) {
         message = 'Выберите 3 гостей или 2 гостей или 1 гостя';
       }
-    } else if (roomNumber === window.utils.RoomtType.HUNDERT) {
+    } else if (roomNumber === window.utils.RoomsType.HUNDRED) {
       if (capacityValue !== window.utils.GuestType.NOT_FOR_GUEST) {
         message = 'Не предназначены для гостей';
       }
@@ -137,7 +137,7 @@
     }
   };
 
-  var updatePriceLmit = function () {
+  var updatePriceLimit = function () {
     var housingTypeValue = offerType.value;
     switch (housingTypeValue) {
       case window.utils.HouseType.BUNGALO:
@@ -244,7 +244,7 @@
 
   var validate = function () {
     updateTimes(timeIn.id);
-    updatePriceLmit();
+    updatePriceLimit();
     validateTitle();
     validatePrice();
     validateCapacity();

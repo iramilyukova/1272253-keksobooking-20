@@ -33,7 +33,7 @@
     return getIsAnyType(it.value) || it.value === item[key].toString();
   };
 
-  var filtrationByType = function (item) {
+  var filterByType = function (item) {
     return filterItem(housingType, item.offer, window.utils.TypeFilter.TYPE);
   };
 
@@ -51,15 +51,15 @@
     }
   };
 
-  var filtrationByRooms = function (item) {
+  var filterByRooms = function (item) {
     return filterItem(housingRooms, item.offer, window.utils.TypeFilter.ROOMS);
   };
 
-  var filtrationByGuests = function (item) {
+  var filterByGuests = function (item) {
     return filterItem(housingGuests, item.offer, window.utils.TypeFilter.GUESTS);
   };
 
-  var filtrationByFeatures = function (item) {
+  var filterByFeatures = function (item) {
     var checkedFeaturesItems = housingFeatures.querySelectorAll('input:checked');
     return Array.from(checkedFeaturesItems).every(function (element) {
       return item.offer.features.includes(element.value);
@@ -73,11 +73,11 @@
 
   var filterPins = function () {
     var filterItems = pins.filter(function (pin) {
-      return filtrationByType(pin) && filtrationByPrice(pin) && filtrationByRooms(pin) && filtrationByGuests(pin) && filtrationByFeatures(pin);
+      return filterByType(pin) && filtrationByPrice(pin) && filterByRooms(pin) && filterByGuests(pin) && filterByFeatures(pin);
     });
 
     var displayPins = filterItems.length > window.utils.PINS_COUNT ? filterItems.slice(window.utils.ZERO, window.utils.PINS_COUNT) : filterItems;
-    window.pin.renderPins(displayPins);
+    window.pin.renderElements(displayPins);
   };
 
   var onFilterFormChange = window.debounce(function () {

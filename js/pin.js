@@ -8,7 +8,7 @@
   var mapPins = document.querySelector('.map .map__pins');
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
-  var getPin = function (mark) {
+  var getElement = function (mark) {
     var pinItem = pinTemplate.cloneNode(true);
     pinItem.style.top = mark.location.y - window.utils.PinSize.HEIGHT + 'px';
     pinItem.style.left = mark.location.x - (window.utils.PinSize.WIDTH / 2) + 'px';
@@ -18,23 +18,23 @@
     return pinItem;
   };
 
-  var addActivePin = function (pin) {
+  var addActivate = function (pin) {
     activePin = pin;
     activePin.classList.add('map__pin--active');
   };
 
-  var removeActivePin = function () {
+  var removeActivate = function () {
     if (activePin) {
       activePin.classList.remove('map__pin--active');
       activePin = null;
     }
   };
 
-  var renderPins = function (marks) {
+  var renderElements = function (marks) {
     var fragment = document.createDocumentFragment();
 
     marks.forEach(function (mark, index) {
-      var pin = getPin(mark);
+      var pin = getElement(mark);
       pin.tabIndex = index + window.utils.TWO;
       pins.push(pin);
 
@@ -44,7 +44,7 @@
     mapPins.appendChild(fragment);
   };
 
-  var removePins = function () {
+  var removeElements = function () {
     pins.forEach(function (pin) {
       pin.remove();
     });
@@ -52,11 +52,10 @@
   };
 
   window.pin = {
-    renderPins: renderPins,
-    removePins: removePins,
-    addActivePin: addActivePin,
-    removeActivePin: removeActivePin,
-    getPin: getPin
+    renderElements: renderElements,
+    removeElements: removeElements,
+    addActivate: addActivate,
+    removeActivate: removeActivate
   };
 })();
 

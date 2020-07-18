@@ -14,11 +14,11 @@
     TEN_THOUSAND: '10000'
   };
 
-  var RoomtType = {
+  var RoomsType = {
     ONE: '1',
     TWO: '2',
     THREE: '3',
-    HUNDERT: '100'
+    HUNDRED: '100'
   };
 
   var GuestType = {
@@ -82,7 +82,7 @@
   var BorderPrice = {
     LOW: 'low',
     MIDDLE: 'middle',
-    HIGHT: 'high'
+    HIGHT: 'night'
   };
 
   var TypeFilter = {
@@ -90,6 +90,20 @@
     TYPE: 'type',
     ROOMS: 'rooms',
     GUESTS: 'guests'
+  };
+
+  var Url = {
+    LOAD: 'https://javascript.pages.academy/keksobooking/data',
+    UPLOAD: 'https://javascript.pages.academy/keksobooking'
+  };
+
+  var DEBOUNCE_INTERVAL = 500;
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+
+  var TypePhotoOptions = {
+    WIDTH: 70,
+    HEIGHT: 70,
+    BORDER_RADIUS: 5
   };
 
   var isEscEvent = function (evt) {
@@ -104,21 +118,6 @@
     return evt.which === KeyCode.MOUSE_LEFT;
   };
 
-  var Url = {
-    LOAD: 'https://javascript.pages.academy/keksobooking/data',
-    UPLOAD: 'https://javascript.pages.academy/keksobooking'
-  };
-
-  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
-
-  var TypePhotoOptions = {
-    WIDTH: 70,
-    HEIGHT: 70,
-    BORDER_RADIUS: 5
-  };
-
-  var DEBOUNCE_INTERVAL = 500;
-
   window.utils = {
     isEscEvent: isEscEvent,
     isEnterEvent: isEnterEvent,
@@ -126,7 +125,7 @@
     PriceNight: PriceNight,
     GuestType: GuestType,
     HouseType: HouseType,
-    RoomtType: RoomtType,
+    RoomsType: RoomsType,
     PinSetting: PinSetting,
     MIN_COORD: MIN_COORD,
     MAX_COORD: MAX_COORD,

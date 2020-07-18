@@ -25,7 +25,7 @@
   var addPinClick = function (pin, mark) { // параметры: фрагмент отрисовки марка на карте и текущая марка
     pin.addEventListener('click', function () { // на отрисованного марка на карте вешаем обработчик клика
       window.card.renderPopup(mark); // при нажатии вызывать функцию для рисования попапа
-      window.pin.addActivePin(pin); // через замыкание передаем наш пин, чтобы он посвечивался при появлении попапа
+      window.pin.addActivate(pin); // через замыкание передаем наш пин, чтобы он посвечивался при появлении попапа
     });
   };
 
@@ -64,8 +64,8 @@
     window.form.deactivate(); // неактивная форма
     loadStartPosition(); // Возвращаяем метку на первоначальное место
     updateAddress();
-    window.pin.removePins();
-    window.card.removePopup();
+    window.pin.removeElements();
+    window.card.onRemovePopup();
     window.filter.deactivate();
     window.photo.remove();
     window.filter.pins = [];
