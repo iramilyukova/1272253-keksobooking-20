@@ -31,11 +31,10 @@
     validate();
   };
 
-  // Функция для проверки состояния активации формы (fieldset)
   var changeFormState = function (isActive) {
 
     Array.from(fieldsets).forEach(function (fieldset) {
-      fieldset.disabled = !isActive; // Если страница не активная то fieldset выключен.
+      fieldset.disabled = !isActive;
     });
     Array.from(selects).forEach(function (select) {
       select.disabled = !isActive;
@@ -48,17 +47,16 @@
       form.classList.remove('ad-form--disabled');
     } else {
       form.classList.add('ad-form--disabled');
-      form.reset();// деактивируем форму
+      form.reset();
     }
   };
 
-  // добавление событий формы
   var addFormEvents = function () {
     resetBtn.addEventListener('click', function (evt) {
       evt.preventDefault();
       deactivate();
       window.filter.deactivate();
-      window.map.deactivate(); // делаем страницу неактивной
+      window.map.deactivate();
     });
 
     form.addEventListener('submit', function (evt) {
@@ -71,7 +69,7 @@
       var targetId = evt.target.id;
       switch (targetId) {
         case offerRoomNumber.id:
-        case offerCapacity.id: // Метод валидации должен вызываться только при инициализации события change от одного из 2 select
+        case offerCapacity.id:
           validateCapacity();
           break;
         case offerTitle.id:
@@ -90,7 +88,6 @@
     });
   };
 
-  // Прописываем условия для правильного заполнения заголовка
   var validateTitle = function () {
     if (offerTitle.validity.tooShort) {
       offerTitle.setCustomValidity('Заголовок должно состоять минимум из 30 символов');
@@ -99,26 +96,25 @@
     } else if (offerTitle.validity.valueMissing) {
       offerTitle.setCustomValidity('Введите, пожалуйста, заголовок объявления. Это обязательно поле для заполнения');
     } else {
-      offerTitle.setCustomValidity(''); // не забыть сбросить значение поля, если это значение стало корректно.
+      offerTitle.setCustomValidity('');
     }
   };
 
-  // Проверяем соотвествие колличества гостей и комнат
   var validateCapacity = function () {
-    var capacityValue = offerCapacity.value; // взять значение c DOM элемента
-    var roomNumber = offerRoomNumber.value; // взять значение c DOM элемента
+    var capacityValue = offerCapacity.value;
+    var roomNumber = offerRoomNumber.value;
 
     var message = '';
 
-    if (roomNumber === window.utils.RoomtType.ONE) { // если выбраная 1 комната
-      if (capacityValue !== window.utils.GuestType.ONE) { // проверяем, что введенное значение 1 комнаты не равно одному гостю
+    if (roomNumber === window.utils.RoomtType.ONE) {
+      if (capacityValue !== window.utils.GuestType.ONE) {
         message = 'Выберите не более 1 гостя';
       }
-    } else if (roomNumber === window.utils.RoomtType.TWO) { // если выбраны 2 комнаты
-      if (capacityValue !== window.utils.GuestType.ONE && capacityValue !== window.utils.GuestType.TWO) { // значение 2 комнат не равно значению 1 или 2 гостей
+    } else if (roomNumber === window.utils.RoomtType.TWO) {
+      if (capacityValue !== window.utils.GuestType.ONE && capacityValue !== window.utils.GuestType.TWO) {
         message = 'Выберите не более 1 гостя или 2 гостей';
       }
-    } else if (roomNumber === window.utils.RoomtType.THREE) { // если выбраны 3 комнаты
+    } else if (roomNumber === window.utils.RoomtType.THREE) {
       if (capacityValue !== window.utils.GuestType.ONE && capacityValue !== window.utils.GuestType.TWO && capacityValue !== window.utils.GuestType.THREE) {
         message = 'Выберите 3 гостей или 2 гостей или 1 гостя';
       }
@@ -127,7 +123,7 @@
         message = 'Не предназначены для гостей';
       }
     }
-    offerCapacity.setCustomValidity(message); // назначить DOM элементу
+    offerCapacity.setCustomValidity(message);
   };
 
   var updateTimes = function (elementId) {
@@ -141,17 +137,16 @@
     }
   };
 
-  // Функция для обновления плейсхолдера и нижней границы стоимости проживания
   var updatePriceLmit = function () {
     var housingTypeValue = offerType.value;
     switch (housingTypeValue) {
       case window.utils.HouseType.BUNGALO:
-        offerPrice.placeholder = window.utils.PriceNight.ZERO; // указываем, что placeholder  = 0, минимальная цена = 0
+        offerPrice.placeholder = window.utils.PriceNight.ZERO;
         offerPrice.min = window.utils.PriceNight.ZERO;
         break;
       case window.utils.HouseType.FLAT:
-        offerPrice.placeholder = window.utils.PriceNight.ONE_THOUSAND; // в размерке меняем placeholder  = 1000, минимальная цена = 1000
-        offerPrice.min = window.utils.PriceNight.ONE_THOUSAND; // связываем плейсхолдер с минимальным значением
+        offerPrice.placeholder = window.utils.PriceNight.ONE_THOUSAND;
+        offerPrice.min = window.utils.PriceNight.ONE_THOUSAND;
         break;
       case window.utils.HouseType.HOUSE:
         offerPrice.placeholder = window.utils.PriceNight.FIVE_THOUSAND;
@@ -165,27 +160,25 @@
     }
   };
 
-  // Прописываем условия для правильного заполнения поля с ценой жилья
   var validatePrice = function () {
-    var housingTypeValue = offerType.value; // взять значение c DOM элемента
+    var housingTypeValue = offerType.value;
 
     var message = '';
 
-    if (offerPrice.validity.rangeUnderflow) { // проверка нижней границы стоимости жилья (Если число в поле ввода меньше min атрибут ввода)
-      switch (housingTypeValue) { // если housingTypeValue == HouseType.BUNGALO, то...
-        case window.utils.HouseType.BUNGALO: message = 'Цена должна быть не менее 0 руб.'; break; // если выбран тип жилья "бунгало"
-        case window.utils.HouseType.FLAT: message = 'Цена должна быть не менее 1000 руб.'; break; // если выбрана квартира
-        case window.utils.HouseType.HOUSE: message = 'Цена должна быть не менее 5000 руб.'; break; // если выбран "дом"
+    if (offerPrice.validity.rangeUnderflow) {
+      switch (housingTypeValue) {
+        case window.utils.HouseType.BUNGALO: message = 'Цена должна быть не менее 0 руб.'; break;
+        case window.utils.HouseType.FLAT: message = 'Цена должна быть не менее 1000 руб.'; break;
+        case window.utils.HouseType.HOUSE: message = 'Цена должна быть не менее 5000 руб.'; break;
         case window.utils.HouseType.PALACE: message = 'Цена должна быть не менее 10000 руб.'; break;
-        default: message = ''; break; // если пользователь ничего не ввел в поле
+        default: message = ''; break;
       }
-    } else if (offerPrice.validity.rangeOverflow) { // проверка максимальной стоимости жилья
-      message = 'Цена должна быть не более 1 000 000 руб.'; // (rangeOverflow)Если число в поле ввода больше max атрибут ввода
+    } else if (offerPrice.validity.rangeOverflow) {
+      message = 'Цена должна быть не более 1 000 000 руб.';
     }
-    offerPrice.setCustomValidity(message); // назначить DOM элементу
+    offerPrice.setCustomValidity(message);
   };
 
-  // Функция закрытия сообщения по клику мышки и на Esk
   var removeSuccessPopup = function () {
     if (successPopup !== null) {
       successPopup.remove();
@@ -194,31 +187,28 @@
     }
   };
 
-  // функция по закрытию успешного сообщения на Esk
   var onDocumentKeyDownSuccess = function (evt) {
     if (window.utils.isEscEvent(evt)) {
-      removeSuccessPopup(); // для закрытия сообщения по клику мышки и на Esk
+      removeSuccessPopup();
     }
   };
 
-  // покажем сообщение об успешной отправке
   var showSuccessPopup = function () {
     successPopup = successPopupTemplate.cloneNode(true);
-    main.insertAdjacentElement('afterbegin', successPopup); //  указываем место в разметке, где будет сообщение об отправке данных
-    successPopup.addEventListener('click', function () { // записали анонимной функцией
-      removeSuccessPopup(); // Сообщение должно исчезать по клику на произвольную область экрана.
+    main.insertAdjacentElement('afterbegin', successPopup);
+    successPopup.addEventListener('click', function () {
+      removeSuccessPopup();
     });
     document.addEventListener('keydown', onDocumentKeyDownSuccess);
   };
 
-  // покажем сообщение о неуспешной отправке
   var showErrorPopup = function () {
     errorPopup = errorPopupTemplate.cloneNode(true);
-    errorPopup.querySelector('.error__button').addEventListener('click', function () { // записали анонимной функцией
-      closeError(); // Сообщение должно исчезать по клику на произвольную область экрана.
+    errorPopup.querySelector('.error__button').addEventListener('click', function () {
+      closeError();
     });
     document.addEventListener('keydown', onDocumentKeyDownError);
-    main.insertAdjacentElement('afterbegin', errorPopup); //  указываем место в разметке, где будет сообщение об неудачной отправке данных
+    main.insertAdjacentElement('afterbegin', errorPopup);
   };
 
   var closeError = function () {
@@ -229,14 +219,12 @@
     }
   };
 
-  // функция по закрытию неуспешного сообщения на Esk
   var onDocumentKeyDownError = function (evt) {
     if (window.utils.isEscEvent(evt)) {
       closeError();
     }
   };
 
-  // Описываем неуспешную отправку данных серверу
   var onFormErrorSubmit = function () {
     showErrorPopup();
   };
@@ -255,7 +243,7 @@
   };
 
   var validate = function () {
-    updateTimes(timeIn.id); // передаем параметром время заезда
+    updateTimes(timeIn.id);
     updatePriceLmit();
     validateTitle();
     validatePrice();

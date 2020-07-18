@@ -51,7 +51,6 @@
 
   var rect = document.querySelector('.map__overlay').getBoundingClientRect();
 
-  // Границы доступной области для перемещения метки
   var MIN_COORD = {
     X: PinSetting.MIN_X - PinSetting.HALF_WIDTH,
     Y: PinSetting.MIN_Y - PinSetting.HALF_HEIGHT - PinSetting.TAIL_HEIGHT
@@ -102,7 +101,7 @@
   };
 
   var isMouseLeftEvent = function (evt) {
-    return evt.which === KeyCode.MOUSE_LEFT; // проверка на нажатие левой кнопки мышки, обратились к свойству which этого объекта
+    return evt.which === KeyCode.MOUSE_LEFT;
   };
 
   var Url = {

@@ -2,12 +2,12 @@
 
 (function () {
   var produceXhr = function (method, url, onSuccess, onError) {
-    var xhr = new XMLHttpRequest(); // создаем спецобъект для запроса серверу
-    xhr.responseType = 'json'; // воспользуеммся полем responseType, чтобы браузер сам перевел текст в объект
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
       var error;
-      switch (xhr.status) { // Если статус xhr.status равен ...
+      switch (xhr.status) {
         case window.utils.Status.SUCCESS:
           onSuccess(xhr.response);
           break;
@@ -32,28 +32,25 @@
       }
     });
 
-    xhr.addEventListener('error', function () { // Подпишемся на событие об ошибке
+    xhr.addEventListener('error', function () {
       onError('Произошла ошибка соединения');
     });
 
-    xhr.addEventListener('timeout', function () { // слушаем событие времени обработки сетевого запроса
+    xhr.addEventListener('timeout', function () {
       onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
     });
 
-    xhr.timeout = window.utils.Status.TIMEOUT_TIME; // 10s
-
+    xhr.timeout = window.utils.Status.TIMEOUT_TIME;
     xhr.open(method, url);
     return xhr;
   };
 
-  // Загрузка объявлений с сервера
-  var load = function (onSuccess, onError) { // указываем колбеки
-    produceXhr('GET', window.utils.Url.LOAD, onSuccess, onError).send(); // прописываем метод, адрес, колбеки успешной и неуспешной отправки
+  var load = function (onSuccess, onError) {
+    produceXhr('GET', window.utils.Url.LOAD, onSuccess, onError).send();
   };
 
-  // Отправка данных на сервер
-  var upload = function (onSuccess, onError, data) { // 2 параметра: объект с данными для отправки и колбэки, когда данные отправятся
-    produceXhr('POST', window.utils.Url.UPLOAD, onSuccess, onError).send(data); // запускаем запрос серверус помощью вызова функции спараметрами и методом send с нашими данными
+  var upload = function (onSuccess, onError, data) {
+    produceXhr('POST', window.utils.Url.UPLOAD, onSuccess, onError).send(data);
   };
 
   window.backend = {
