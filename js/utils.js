@@ -25,7 +25,7 @@
     ONE: '1',
     TWO: '2',
     THREE: '3',
-    NOT_FOR_GUEST: '100'
+    NOT_FOR_GUEST: '0'
   };
 
   var HouseType = {
@@ -145,4 +145,3 @@
     TWO: TWO
   };
 })();
-

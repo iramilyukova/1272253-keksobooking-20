@@ -21,6 +21,16 @@
   var errorPopup = null;
   var successPopup = null;
 
+  var activate = function () {
+    changeFormState(true);
+    validate();
+  };
+
+  var deactivate = function () {
+    changeFormState(false);
+    validate();
+  };
+
   // Функция для проверки состояния активации формы (fieldset)
   var changeFormState = function (isActive) {
 
@@ -46,7 +56,7 @@
   var addFormEvents = function () {
     resetBtn.addEventListener('click', function (evt) {
       evt.preventDefault();
-      changeFormState(false);
+      deactivate();
       window.filter.deactivate();
       window.map.deactivate(); // делаем страницу неактивной
     });
@@ -177,21 +187,15 @@
 
   // Функция закрытия сообщения по клику мышки и на Esk
   var removeSuccessPopup = function () {
-    if (successPopup) {
+    if (successPopup !== null) {
       successPopup.remove();
-      successPopup.removeEventListener('click', onSuccessPopupClick);
+      successPopup = null;
       document.removeEventListener('keydown', onDocumentKeyDownSuccess);
     }
   };
 
-  // Сообщение должно исчезать по клику на произвольную область экрана.
-  var onSuccessPopupClick = function () {
-    removeSuccessPopup();
-  };
-
   // функция по закрытию успешного сообщения на Esk
   var onDocumentKeyDownSuccess = function (evt) {
-    successPopup = successPopupTemplate.cloneNode(true);
     if (window.utils.isEscEvent(evt)) {
       removeSuccessPopup(); // для закрытия сообщения по клику мышки и на Esk
     }
@@ -199,7 +203,7 @@
 
   // покажем сообщение об успешной отправке
   var showSuccessPopup = function () {
-    successPopup = errorPopupTemplate.cloneNode(true);
+    successPopup = successPopupTemplate.cloneNode(true);
     main.insertAdjacentElement('afterbegin', successPopup); //  указываем место в разметке, где будет сообщение об отправке данных
     successPopup.addEventListener('click', function () { // записали анонимной функцией
       removeSuccessPopup(); // Сообщение должно исчезать по клику на произвольную область экрана.
@@ -218,8 +222,9 @@
   };
 
   var closeError = function () {
-    if (errorPopup) {
+    if (errorPopup !== null) {
       errorPopup.remove();
+      errorPopup = null;
       document.removeEventListener('keydown', onDocumentKeyDownError);
     }
   };
@@ -244,19 +249,23 @@
   };
 
   var prepare = function () {
-    changeFormState();
+    deactivate();
     addFormEvents();
+    validate();
+  };
+
+  var validate = function () {
+    updateTimes(timeIn.id); // передаем параметром время заезда
+    updatePriceLmit();
     validateTitle();
     validatePrice();
     validateCapacity();
-    updateTimes(timeIn.id); // передаем параметром время заезда
   };
 
   window.form = {
     prepare: prepare,
-    changeFormState: changeFormState,
+    activate: activate,
+    deactivate: deactivate,
     showErrorPopup: showErrorPopup
   };
 })();
-
-

@@ -53,14 +53,15 @@
     map.classList.remove('map--faded'); // Активируем карту
     window.filter.updatePins(pins);
     updateAddress();
-    window.form.changeFormState(isActive); // Функция для проверки состояния активации и активацию формы (fieldset)
+    window.form.activate(); // Функция для проверки состояния активации и активацию формы (fieldset)
+    window.filter.activate();
   };
 
   // Функция для перевода страницы в не активное состояние
   var deactivate = function () {
     isActive = false;
     map.classList.add('map--faded'); // Деактивируем карт
-    window.form.changeFormState(isActive); // неактивная форма
+    window.form.deactivate(); // неактивная форма
     loadStartPosition(); // Возвращаяем метку на первоначальное место
     updateAddress();
     window.pin.removePins();
