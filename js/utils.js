@@ -3,6 +3,19 @@
 (function () {
   var DEBOUNCE_INTERVAL = 500;
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+  var PINS_COUNT = 5;
+  var ZERO = 0;
+  var TWO = 2;
+
+  var MIN_COORD = {
+    X: PinSetting.MIN_X - PinSetting.HALF_WIDTH,
+    Y: PinSetting.MIN_Y - PinSetting.HALF_HEIGHT - PinSetting.TAIL_HEIGHT
+  };
+
+  var MAX_COORD = {
+    X: rect.width - PinSetting.HALF_WIDTH,
+    Y: PinSetting.MAX_Y - PinSetting.HALF_HEIGHT - PinSetting.TAIL_HEIGHT
+  };
 
   var KeyCode = {
     ESC: 27,
@@ -52,18 +65,6 @@
     HEIGHT: 66
   };
 
-  var rect = document.querySelector('.map__overlay').getBoundingClientRect();
-
-  var MIN_COORD = {
-    X: PinSetting.MIN_X - PinSetting.HALF_WIDTH,
-    Y: PinSetting.MIN_Y - PinSetting.HALF_HEIGHT - PinSetting.TAIL_HEIGHT
-  };
-
-  var MAX_COORD = {
-    X: rect.width - PinSetting.HALF_WIDTH,
-    Y: PinSetting.MAX_Y - PinSetting.HALF_HEIGHT - PinSetting.TAIL_HEIGHT
-  };
-
   var Status = {
     SUCCESS: 200,
     INVALID_REQUEST: 400,
@@ -72,10 +73,6 @@
     SERVER_ERROR: 500,
     TIMEOUT_TIME: 10000
   };
-
-  var PINS_COUNT = 5;
-  var ZERO = 0;
-  var TWO = 2;
 
   var PriceRange = {
     LOWER: 10000,
@@ -105,6 +102,8 @@
     HEIGHT: 70,
     BORDER_RADIUS: 5
   };
+
+  var rect = document.querySelector('.map__overlay').getBoundingClientRect();
 
   var isEscEvent = function (evt) {
     return evt.keyCode === KeyCode.ESC;

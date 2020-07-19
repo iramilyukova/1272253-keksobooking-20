@@ -37,7 +37,7 @@
     return filterItem(housingType, item.offer, window.utils.TypeFilter.TYPE);
   };
 
-  var filtrationByPrice = function (item) {
+  var filterByPrice = function (item) {
     switch (housingPrice.value) {
       case window.utils.BorderPrice.LOW:
         return item.offer.price < window.utils.PriceRange.LOWER;
@@ -73,7 +73,7 @@
 
   var filterPins = function () {
     var filterItems = pins.filter(function (pin) {
-      return filterByType(pin) && filtrationByPrice(pin) && filterByRooms(pin) && filterByGuests(pin) && filterByFeatures(pin);
+      return filterByType(pin) && filterByPrice(pin) && filterByRooms(pin) && filterByGuests(pin) && filterByFeatures(pin);
     });
 
     var displayPins = filterItems.length > window.utils.PINS_COUNT ? filterItems.slice(window.utils.ZERO, window.utils.PINS_COUNT) : filterItems;
