@@ -105,16 +105,16 @@
           y: mapPinButtonMain.offsetTop - shift.y
         };
 
-        if (coordinates.x < window.utils.MIN_COORD.X) { // Проверяем не заходит ли метка за рамки
-          coordinates.x = window.utils.MIN_COORD.X;
-        } else if (coordinates.x > window.utils.MAX_COORD.X) {
-          coordinates.x = window.utils.MAX_COORD.X;
+        if (coordinates.x < window.utils.minCoord.x) { // Проверяем не заходит ли метка за рамки
+          coordinates.x = window.utils.minCoord.x;
+        } else if (coordinates.x > window.utils.maxCoord.x) {
+          coordinates.x = window.utils.maxCoord.x;
         }
 
-        if (coordinates.y < window.utils.MIN_COORD.Y) {
-          coordinates.y = window.utils.MIN_COORD.Y;
-        } else if (coordinates.y > window.utils.MAX_COORD.Y) {
-          coordinates.y = window.utils.MAX_COORD.Y;
+        if (coordinates.y < window.utils.minCoord.y) {
+          coordinates.y = window.utils.minCoord.y;
+        } else if (coordinates.y > window.utils.maxCoord.y) {
+          coordinates.y = window.utils.maxCoord.y;
         }
 
         mapPinButtonMain.style.top = coordinates.y + 'px'; // получаем новые координаты после смещения

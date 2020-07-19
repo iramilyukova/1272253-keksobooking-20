@@ -7,16 +7,6 @@
   var ZERO = 0;
   var TWO = 2;
 
-  var MIN_COORD = {
-    X: PinSetting.MIN_X - PinSetting.HALF_WIDTH,
-    Y: PinSetting.MIN_Y - PinSetting.HALF_HEIGHT - PinSetting.TAIL_HEIGHT
-  };
-
-  var MAX_COORD = {
-    X: rect.width - PinSetting.HALF_WIDTH,
-    Y: PinSetting.MAX_Y - PinSetting.HALF_HEIGHT - PinSetting.TAIL_HEIGHT
-  };
-
   var KeyCode = {
     ESC: 27,
     ENTER: 13,
@@ -49,15 +39,6 @@
     FLAT: 'flat',
     HOUSE: 'house',
     BUNGALO: 'bungalo'
-  };
-
-  var PinSetting = {
-    HALF_WIDTH: 33,
-    HALF_HEIGHT: 33,
-    TAIL_HEIGHT: 16,
-    MIN_X: 0,
-    MIN_Y: 130,
-    MAX_Y: 630
   };
 
   var PinSize = {
@@ -103,7 +84,26 @@
     BORDER_RADIUS: 5
   };
 
+  var PinSetting = {
+    HALF_WIDTH: 33,
+    HALF_HEIGHT: 33,
+    TAIL_HEIGHT: 16,
+    MIN_X: 0,
+    MIN_Y: 130,
+    MAX_Y: 630
+  };
+
   var rect = document.querySelector('.map__overlay').getBoundingClientRect();
+
+  var minCoord = {
+    x: PinSetting.MIN_X - PinSetting.HALF_WIDTH,
+    y: PinSetting.MIN_Y - PinSetting.HALF_HEIGHT - PinSetting.TAIL_HEIGHT
+  };
+
+  var maxCoord = {
+    x: rect.width - PinSetting.HALF_WIDTH,
+    y: PinSetting.MAX_Y - PinSetting.HALF_HEIGHT - PinSetting.TAIL_HEIGHT
+  };
 
   var isEscEvent = function (evt) {
     return evt.keyCode === KeyCode.ESC;
@@ -126,8 +126,8 @@
     HouseType: HouseType,
     RoomsType: RoomsType,
     PinSetting: PinSetting,
-    MIN_COORD: MIN_COORD,
-    MAX_COORD: MAX_COORD,
+    minCoord: minCoord,
+    maxCoord: maxCoord,
     PinSize: PinSize,
     Url: Url,
     Status: Status,
