@@ -1,6 +1,9 @@
 'use strict';
 
 (function () {
+  var DEBOUNCE_INTERVAL = 500;
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+
   var KeyCode = {
     ESC: 27,
     ENTER: 13,
@@ -82,7 +85,7 @@
   var BorderPrice = {
     LOW: 'low',
     MIDDLE: 'middle',
-    HIGHT: 'night'
+    HIGH: 'high'
   };
 
   var TypeFilter = {
@@ -96,9 +99,6 @@
     LOAD: 'https://javascript.pages.academy/keksobooking/data',
     UPLOAD: 'https://javascript.pages.academy/keksobooking'
   };
-
-  var DEBOUNCE_INTERVAL = 500;
-  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
   var TypePhotoOptions = {
     WIDTH: 70,

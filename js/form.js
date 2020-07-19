@@ -65,15 +65,16 @@
       window.backend.upload(onFormSuccessSubmit, onFormErrorSubmit, formData);
     });
 
+    offerTitle.addEventListener('input', function () {
+      validateTitle();
+    });
+
     form.addEventListener('change', function (evt) {
       var targetId = evt.target.id;
       switch (targetId) {
         case offerRoomNumber.id:
         case offerCapacity.id:
           validateCapacity();
-          break;
-        case offerTitle.id:
-          validateTitle();
           break;
         case offerPrice.id:
           validatePrice();

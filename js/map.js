@@ -65,7 +65,7 @@
     loadStartPosition(); // Возвращаяем метку на первоначальное место
     updateAddress();
     window.pin.removeElements();
-    window.card.onRemovePopup();
+    window.card.removePopup();
     window.filter.deactivate();
     window.photo.remove();
     window.filter.pins = [];
