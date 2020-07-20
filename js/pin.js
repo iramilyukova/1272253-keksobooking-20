@@ -58,4 +58,3 @@
     removeActivate: removeActivate
   };
 })();
-

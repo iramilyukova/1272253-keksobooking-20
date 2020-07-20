@@ -81,7 +81,7 @@
   };
 
   var onFilterFormChange = window.debounce(function () {
-    window.pin.removePins();
+    window.pin.removeElements();
     window.card.removePopup();
     filterPins();
   });

@@ -95,14 +95,18 @@
 
   var rect = document.querySelector('.map__overlay').getBoundingClientRect();
 
-  var minCoord = {
-    x: PinSetting.MIN_X - PinSetting.HALF_WIDTH,
-    y: PinSetting.MIN_Y - PinSetting.HALF_HEIGHT - PinSetting.TAIL_HEIGHT
+  var getMinCoord = function () {
+    return {
+      x: PinSetting.MIN_X - PinSetting.HALF_WIDTH,
+      y: PinSetting.MIN_Y - PinSetting.HALF_HEIGHT - PinSetting.TAIL_HEIGHT
+    };
   };
 
-  var maxCoord = {
-    x: rect.width - PinSetting.HALF_WIDTH,
-    y: PinSetting.MAX_Y - PinSetting.HALF_HEIGHT - PinSetting.TAIL_HEIGHT
+  var getMaxCoord = function () {
+    return {
+      x: rect.width - PinSetting.HALF_WIDTH,
+      y: PinSetting.MAX_Y - PinSetting.HALF_HEIGHT - PinSetting.TAIL_HEIGHT
+    };
   };
 
   var isEscEvent = function (evt) {
@@ -126,8 +130,8 @@
     HouseType: HouseType,
     RoomsType: RoomsType,
     PinSetting: PinSetting,
-    minCoord: minCoord,
-    maxCoord: maxCoord,
+    getMinCoord: getMinCoord,
+    getMaxCoord: getMaxCoord,
     PinSize: PinSize,
     Url: Url,
     Status: Status,

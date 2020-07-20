@@ -74,6 +74,10 @@
   // Навешивание обработчиков событий
   var initMainPinEvents = function () { // При клике на кнопку автивируем метки
     // Перетаскиваем метку
+
+    var minCoord = window.utils.getMinCoord();
+    var maxCoord = window.utils.getMaxCoord();
+
     mapPinButtonMain.addEventListener('mousedown', function (evt) { // обработаем событие начала перетаскивания метки mousedown.
       evt.preventDefault();
 
@@ -105,16 +109,16 @@
           y: mapPinButtonMain.offsetTop - shift.y
         };
 
-        if (coordinates.x < window.utils.minCoord.x) { // Проверяем не заходит ли метка за рамки
-          coordinates.x = window.utils.minCoord.x;
-        } else if (coordinates.x > window.utils.maxCoord.x) {
-          coordinates.x = window.utils.maxCoord.x;
+        if (coordinates.x < minCoord.x) { // Проверяем не заходит ли метка за рамки
+          coordinates.x = minCoord.x;
+        } else if (coordinates.x > maxCoord.x) {
+          coordinates.x = maxCoord.x;
         }
 
-        if (coordinates.y < window.utils.minCoord.y) {
-          coordinates.y = window.utils.minCoord.y;
-        } else if (coordinates.y > window.utils.maxCoord.y) {
-          coordinates.y = window.utils.maxCoord.y;
+        if (coordinates.y < minCoord.y) {
+          coordinates.y = minCoord.y;
+        } else if (coordinates.y > maxCoord.y) {
+          coordinates.y = maxCoord.y;
         }
 
         mapPinButtonMain.style.top = coordinates.y + 'px'; // получаем новые координаты после смещения
